@@ -57,6 +57,56 @@ class DatabaseManager:
         self.conn.close()
 
 
+import csv
+
+# ==========================================
+# PHASE 1.5: REPORT GENERATOR
+# ==========================================
+class ReportGenerator:
+    """Gera relatórios consolidados a partir do banco de dados SQLite."""
+    
+    def __init__(self, db_manager: DatabaseManager):
+        self.db = db_manager
+
+    def fetch_active_jobs(self) -> List[tuple]:
+        """Busca todas as vagas no banco de dados, ordenadas pelas mais recentes."""
+        query = "SELECT job_title, link, publication_date FROM jobs ORDER BY publication_date DESC, id DESC"
+        with self.db.conn:
+            cursor = self.db.conn.execute(query)
+            return cursor.fetchall()
+
+    def generate_csv(self, filename: str = "vagas_abertas.csv") -> None:
+        """Exporta as vagas para uma planilha CSV."""
+        jobs = self.fetch_active_jobs()
+        
+        with open(filename, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file, delimiter=';') # Ponto e vírgula é melhor para o Excel em português
+            writer.writerow(["Data de Captura", "Título do Processo Seletivo", "Link de Acesso"])
+            
+            for job in jobs:
+                writer.writerow([job[2], job[0], job[1]])
+                
+        logging.info(f"📊 Relatório CSV gerado: {filename} com {len(jobs)} vagas.")
+
+    def generate_markdown(self, filename: str = "VAGAS_ATIVAS.md") -> None:
+        """Exporta as vagas para um arquivo Markdown (Tabela visual para o GitHub)."""
+        jobs = self.fetch_active_jobs()
+        
+        with open(filename, mode='w', encoding='utf-8') as file:
+            file.write("# 🏥 Painel de Processos Seletivos Ativos\n\n")
+            file.write("Esta tabela é atualizada automaticamente pelo nosso bot.\n\n")
+            file.write("| Data | Título da Vaga | Link |\n")
+            file.write("| :--- | :--- | :--- |\n")
+            
+            for job in jobs:
+                title = job[0].replace("|", "-") # Evita quebrar a tabela se o título tiver o caractere pipe
+                link = job[1]
+                date = job[2]
+                file.write(f"| {date} | **{title}** | [Acessar Edital]({link}) |\n")
+                
+        logging.info(f"📝 Relatório Markdown gerado: {filename} com {len(jobs)} vagas.")
+
+
 # ==========================================
 # PHASE 3: TELEGRAM NOTIFIER
 # ==========================================
@@ -414,4 +464,9 @@ if __name__ == "__main__":
                     messages_sent += 1
 
     logging.info(f"Execution finished. {new_jobs_count} new jobs added. {messages_sent} Telegram alerts sent.")
+
+    reporter = ReportGenerator(db_manager=db)
+    reporter.generate_csv()
+    reporter.generate_markdown()
+    
     db.close()
