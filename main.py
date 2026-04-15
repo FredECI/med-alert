@@ -379,7 +379,7 @@ if __name__ == "__main__":
         PCIScraper(),
         GoogleNewsScraper(),
         G1Scraper(),
-        PCISaudeRSSScraper(),
+        PCISaudeScraper(),
         JCConcursosScraper()
     ]
 
