@@ -1,0 +1,42 @@
+name: MedAlert Bot
+
+on:
+  schedule:
+    # Roda todos os dias às 08:00 e 18:00 (Horário de Brasília)
+    # O Cron do GitHub usa UTC. Brasília é UTC-3.
+    # Portanto, 11:00 UTC = 08:00 BRT | 21:00 UTC = 18:00 BRT
+    - cron: '0 11,21 * * *'
+  workflow_dispatch: # Adiciona um botão no GitHub para você rodar manualmente quando quiser
+
+jobs:
+  scrape-and-notify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do Repositório
+      uses: actions/checkout@v4
+
+    - name: Configurar o Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Instalar Dependências
+      run: |
+        python -m pip install --upgrade pip
+        pip install cloudscraper beautifulsoup4
+
+    - name: Executar o Bot
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: python main.py
+
+    - name: Salvar Banco de Dados
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add med_alerts.db
+        # Só faz o commit se houver vagas novas no banco de dados
+        git diff --quiet && git diff --staged --quiet || git commit -m "🤖 Atualizando banco de dados de vagas"
+        git push
