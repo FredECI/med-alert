@@ -191,55 +191,50 @@ class PCIScraper(BaseScraper):
         return list(unique_jobs)
     
 
-class PCISaudeRSSScraper(BaseScraper):
+class PCISaudeScraper(BaseScraper):
     """
-    Scraper infalível baseado em XML/RSS. 
-    Lê o feed oficial do PCI Concursos focado EXCLUSIVAMENTE em Saúde.
+    Substituto do RSS. Scraper focado na página de Saúde geral do PCI.
     """
     def __init__(self):
         super().__init__()
-        self.url = "https://www.pciconcursos.com.br/rss/saude/"
+        self.url = "https://www.pciconcursos.com.br/concursos/saude/"
 
     def scrape(self) -> List[Dict[str, str]]:
-        xml_content = self.fetch_html(self.url)
-        if not xml_content:
+        html_content = self.fetch_html(self.url)
+        if not html_content:
             return []
 
-        # Usamos o BeautifulSoup para ler as tags <item> do XML
-        soup = BeautifulSoup(xml_content, "xml") # É recomendável ter o lxml instalado, mas funciona com html.parser na maioria das vezes
+        soup = BeautifulSoup(html_content, "html.parser")
         found_jobs = []
         
-        items = soup.find_all("item")
+        all_links = soup.find_all("a")
 
-        for item in items:
-            title_element = item.find("title")
-            link_element = item.find("link")
-            desc_element = item.find("description")
-            pubdate_element = item.find("pubDate")
-
-            if not title_element or not link_element:
+        for link_element in all_links:
+            title = link_element.text.strip()
+            link_href = link_element.get("href", "")
+            
+            if not title or "concursos" not in link_href:
                 continue
 
-            title = title_element.text.strip()
-            link = link_element.text.strip()
-            
-            # O RSS junta título e descrição, ideal para nossa varredura de palavras
-            full_text = f"{title} {desc_element.text if desc_element else ''}"
-
-            # Como já estamos no feed de SAÚDE, o foco principal é checar a Região e se é pra Médico
-            if self.is_in_target_state(full_text) and self.is_relevant(full_text):
+            parent_block = link_element.parent
+            if not parent_block:
+                continue
                 
-                # Limpa a data ou usa a data atual
-                pub_date = pubdate_element.text.strip() if pubdate_element else datetime.now().strftime("%Y-%m-%d")
+            block_text = parent_block.text.strip()
 
+            # Na aba de saúde, focamos fortemente no filtro regional e de palavras
+            if self.is_in_target_state(block_text) and self.is_relevant(block_text):
+                
+                pub_date = datetime.now().strftime("%Y-%m-%d")
+                
                 found_jobs.append({
                     "title": f"[PCI Saúde] {title}",
-                    "link": link,
+                    "link": link_href if link_href.startswith("http") else f"https://www.pciconcursos.com.br{link_href}",
                     "pub_date": pub_date
                 })
 
         unique_jobs = {job['link']: job for job in found_jobs}.values()
-        logging.info(f"[PCISaudeRSS] Found {len(unique_jobs)} relevant medical jobs.")
+        logging.info(f"[PCISaude] Found {len(unique_jobs)} relevant medical jobs.")
         return list(unique_jobs)
 
 
@@ -328,11 +323,11 @@ class G1Scraper(BaseScraper):
         return list(unique_jobs)
     
 class JCConcursosScraper(BaseScraper):
-    """Scraper para o portal JC Concursos, focado na busca interna deles."""
+    """Scraper para o portal JC Concursos, buscando na página geral do RJ."""
     def __init__(self):
         super().__init__()
-        # URL de busca já filtrando por "medico rio de janeiro"
-        self.url = "https://jcconcursos.com.br/concursos/rj/medico"
+        # URL atualizada: Página principal de concursos do RJ
+        self.url = "https://jcconcursos.com.br/concursos/rj"
 
     def scrape(self) -> List[Dict[str, str]]:
         html_content = self.fetch_html(self.url)
@@ -342,22 +337,20 @@ class JCConcursosScraper(BaseScraper):
         soup = BeautifulSoup(html_content, "html.parser")
         found_jobs = []
         
-        # O JC Concursos geralmente usa listas <ul> e <li> com a classe 'row' ou 'list-group'
         cards = soup.find_all("a", href=True)
 
         for card in cards:
             title = card.text.strip()
             link_href = card.get("href")
             
-            # Filtra links que não sejam de notícias ou editais de concurso
             if "/concursos/" not in link_href and "/noticia/" not in link_href:
                 continue
                 
-            # Evita capturar menus
-            if len(title) < 15:
+            if len(title) < 15: # Evita capturar menus curtos
                 continue
 
-            if self.is_in_target_state(title) and self.is_relevant(title):
+            # Agora nós usamos o filtro do bot para encontrar as vagas médicas dentro da página do RJ
+            if self.is_relevant(title):
                 
                 full_link = link_href if link_href.startswith("http") else f"https://jcconcursos.com.br{link_href}"
                 
