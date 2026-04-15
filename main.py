@@ -1,4 +1,5 @@
 import os
+import re
 import sqlite3
 import logging
 import requests
@@ -187,8 +188,12 @@ class BaseScraper:
 
     def is_relevant(self, text: str) -> bool:
         text_lower = text.lower()
-        words = text_lower.replace(",", " ").replace("-", " ").split()
-        return any(keyword in words for keyword in self.keywords)
+        for keyword in self.keywords:
+            pattern = r'\b' + re.escape(keyword) + r'\b'
+            
+            if re.search(pattern, text_lower):
+                return True
+        return False
 
     def is_in_target_state(self, text: str) -> bool:
         text_lower = text.lower()
@@ -297,6 +302,50 @@ class PCISaudeScraper(BaseScraper):
         logging.info(f"[PCISaude] Found {len(unique_jobs)} relevant medical jobs.")
         return list(unique_jobs)
 
+
+class PCIEstadualScraper(BaseScraper):
+    """Focado exclusivamente na listagem completa do Estado do Rio de Janeiro."""
+    def __init__(self):
+        super().__init__()
+        self.url = "https://www.pciconcursos.com.br/concursos/rj/"
+
+    def scrape(self) -> List[Dict[str, str]]:
+        html_content = self.fetch_html(self.url)
+        if not html_content:
+            return []
+
+        soup = BeautifulSoup(html_content, "html.parser")
+        found_jobs = []
+        
+        all_links = soup.find_all("a")
+
+        for link_element in all_links:
+            title = link_element.text.strip()
+            link_href = link_element.get("href", "")
+            
+            if not title or "concursos" not in link_href:
+                continue
+
+            parent_block = link_element.parent
+            if not parent_block:
+                continue
+                
+            block_text = parent_block.text.strip()
+
+            # Passa no nosso filtro (com regex corrigido)?
+            if self.is_in_target_state(block_text) and self.is_relevant(block_text):
+                pub_date = datetime.now().strftime("%Y-%m-%d")
+                
+                found_jobs.append({
+                    "title": f"[PCI RJ] {title}",
+                    "link": link_href if link_href.startswith("http") else f"https://www.pciconcursos.com.br{link_href}",
+                    "pub_date": pub_date
+                })
+
+        unique_jobs = {job['link']: job for job in found_jobs}.values()
+        logging.info(f"[PCIEstadual] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
+    
 
 class GoogleNewsScraper(BaseScraper):
     """
@@ -425,6 +474,50 @@ class JCConcursosScraper(BaseScraper):
         return list(unique_jobs)
     
 
+class BingNewsScraper(BaseScraper):
+    """Busca em blogs médicos, portais de prefeituras e jornais locais através do Bing News."""
+    def __init__(self):
+        super().__init__()
+        # Query já foca nas cidades-alvo e na carreira
+        self.url = "https://www.bing.com/news/search?q=concurso+medico+rio+de+janeiro+OR+macae+OR+campos&qft=interval%3d%227%22" # Últimos 7 dias
+
+    def scrape(self) -> List[Dict[str, str]]:
+        html_content = self.fetch_html(self.url)
+        if not html_content:
+            return []
+
+        soup = BeautifulSoup(html_content, "html.parser")
+        found_jobs = []
+        
+        # O Bing agrupa as notícias em div.news-card
+        cards = soup.find_all("div", class_="news-card")
+
+        for card in cards:
+            link_element = card.find("a", class_="title")
+            if not link_element:
+                continue
+
+            title = link_element.text.strip()
+            link_href = link_element.get("href", "")
+            
+            # Aqui, analisamos tanto o título quanto o snippet da notícia
+            snippet_element = card.find("div", class_="snippet")
+            snippet = snippet_element.text.strip() if snippet_element else ""
+            
+            full_text = f"{title} {snippet}"
+
+            if self.is_relevant(full_text):
+                found_jobs.append({
+                    "title": f"[Radar/News] {title}",
+                    "link": link_href,
+                    "pub_date": datetime.now().strftime("%Y-%m-%d")
+                })
+
+        unique_jobs = {job['link']: job for job in found_jobs}.values()
+        logging.info(f"[BingNews] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
+    
+
 # ==========================================
 # PHASE 4: MAIN EXECUTION LOGIC
 # ==========================================
@@ -440,7 +533,9 @@ if __name__ == "__main__":
         GoogleNewsScraper(),
         G1Scraper(),
         PCISaudeScraper(),
-        JCConcursosScraper()
+        JCConcursosScraper(),
+        PCIEstadualScraper(),
+        BingNewsScraper()
     ]
 
     new_jobs_count = 0
