@@ -144,7 +144,7 @@ class TelegramNotifier:
 
 
 # ==========================================
-# PHASE 2: SCRAPING ENGINE (UPDATED & RESILIENT)
+# PHASE 2: SCRAPING ENGINE
 # ==========================================
 class BaseScraper:
     def __init__(self):
@@ -158,8 +158,7 @@ class BaseScraper:
             "médico", "medico", "clínico geral", "clinico geral", 
             "saúde da família", "saude da familia", "crm", 
             "esf", "psf", "ubs", "upa", "plantão", "plantao", 
-            "atenção básica", "atencao basica", "medicina",
-            "pronto socorro", "pronto atendimento"
+            "medicina", "pronto socorro", "pronto atendimento"
         ]
         self.state_filters = [
             "rj", "rio de janeiro", "macaé", "macae", 
