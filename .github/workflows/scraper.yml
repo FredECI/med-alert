@@ -36,6 +36,6 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add med_alerts.db vagas_abertas.csv VAGAS_ATIVAS.md
+        git add med_alerts.db vagas_abertas.csv index.md
         git diff --quiet && git diff --staged --quiet || git commit -m "🤖 Atualizando banco e relatórios de vagas"
         git push

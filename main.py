@@ -88,23 +88,32 @@ class ReportGenerator:
                 
         logging.info(f"📊 Relatório CSV gerado: {filename} com {len(jobs)} vagas.")
 
-    def generate_markdown(self, filename: str = "VAGAS_ATIVAS.md") -> None:
-        """Exporta as vagas para um arquivo Markdown (Tabela visual para o GitHub)."""
+    def generate_markdown(self, filename: str = "index.md") -> None:
+        """Exporta as vagas para um arquivo index.md (Página inicial do site)."""
         jobs = self.fetch_active_jobs()
         
         with open(filename, mode='w', encoding='utf-8') as file:
-            file.write("# 🏥 Painel de Processos Seletivos Ativos\n\n")
-            file.write("Esta tabela é atualizada automaticamente pelo nosso bot.\n\n")
-            file.write("| Data | Título da Vaga | Link |\n")
+            # Esse cabeçalho (Frontmatter) diz ao GitHub para usar um layout legal
+            file.write("---\n")
+            file.write("layout: default\n")
+            file.write("title: MedAlert RJ\n")
+            file.write("---\n\n")
+            
+            file.write("# 🩺 MedAlert: Radar de Oportunidades\n\n")
+            file.write("Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.\n\n")
+            
+            file.write(f"**Última atualização do robô:** {datetime.now().strftime('%d/%m/%Y às %H:%M')}\n\n")
+            
+            file.write("| Data de Descoberta | Título do Processo Seletivo | Link Oficial |\n")
             file.write("| :--- | :--- | :--- |\n")
             
             for job in jobs:
-                title = job[0].replace("|", "-") # Evita quebrar a tabela se o título tiver o caractere pipe
+                title = job[0].replace("|", "-")
                 link = job[1]
                 date = job[2]
                 file.write(f"| {date} | **{title}** | [Acessar Edital]({link}) |\n")
                 
-        logging.info(f"📝 Relatório Markdown gerado: {filename} com {len(jobs)} vagas.")
+        logging.info(f"📝 Site gerado: {filename} com {len(jobs)} vagas.")
 
 
 # ==========================================
@@ -468,5 +477,5 @@ if __name__ == "__main__":
     reporter = ReportGenerator(db_manager=db)
     reporter.generate_csv()
     reporter.generate_markdown()
-    
+
     db.close()
