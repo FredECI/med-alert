@@ -177,6 +177,89 @@ class PCIScraper(BaseScraper):
         logging.info(f"[PCIScraper] Found {len(unique_jobs)} relevant medical jobs.")
         return list(unique_jobs)
 
+class GoogleNewsScraper(BaseScraper):
+    """
+    Scraper focado no Google News, buscando por termos específicos.
+    Isso engloba Folha Dirigida, Estratégia Concursos, Sanar, etc.
+    """
+    def __init__(self):
+        super().__init__()
+        # A URL já traz a busca "concurso medico" filtrada para os últimos 7 dias (when:7d)
+        self.url = "https://news.google.com/search?q=concurso%20medico%20rj%20OR%20rio%20de%20janeiro%20OR%20macae%20when%3A7d&hl=pt-BR&gl=BR&ceid=BR%3Apt-419"
+
+    def scrape(self) -> List[Dict[str, str]]:
+        html_content = self.fetch_html(self.url)
+        if not html_content:
+            return []
+
+        soup = BeautifulSoup(html_content, "html.parser")
+        found_jobs = []
+        
+        # No Google News, as notícias costumam estar em tags <article>
+        articles = soup.find_all("article")
+
+        for article in articles:
+            link_element = article.find("a")
+            if not link_element:
+                continue
+
+            title = link_element.text.strip()
+            # Os links do Google News começam com "./articles/...", precisamos consertar isso
+            raw_link = link_element.get("href", "")
+            if raw_link.startswith("./"):
+                link_href = f"https://news.google.com{raw_link[1:]}"
+            else:
+                link_href = raw_link
+
+            article_text = article.text.strip()
+
+            # Como a própria URL de busca já é filtrada, aqui somos um pouco mais flexíveis,
+            # mas ainda garantimos que tenha a ver com a área médica.
+            if self.is_relevant(article_text):
+                found_jobs.append({
+                    "title": f"[Notícia/Radar] {title}",
+                    "link": link_href,
+                    "pub_date": datetime.now().strftime("%Y-%m-%d")
+                })
+
+        # Remove duplicatas baseadas no link
+        unique_jobs = {job['link']: job for job in found_jobs}.values()
+        logging.info(f"[GoogleNews] Found {len(unique_jobs)} relevant medical news/jobs.")
+        return list(unique_jobs)
+
+
+class G1Scraper(BaseScraper):
+    """Scraper focado na editoria de concursos do G1 (Nacional e Sudeste)."""
+    def __init__(self):
+        super().__init__()
+        self.url = "https://g1.globo.com/trabalho-e-carreira/concursos/"
+
+    def scrape(self) -> List[Dict[str, str]]:
+        html_content = self.fetch_html(self.url)
+        if not html_content:
+            return []
+
+        soup = BeautifulSoup(html_content, "html.parser")
+        found_jobs = []
+        
+        # O G1 usa a classe 'feed-post-link' para os títulos das notícias na home
+        links = soup.find_all("a", class_="feed-post-link")
+
+        for link_element in links:
+            title = link_element.text.strip()
+            link_href = link_element.get("href", "")
+
+            # Precisamos verificar o título da notícia para saber se é do nosso interesse
+            if self.is_in_target_state(title) and self.is_relevant(title):
+                found_jobs.append({
+                    "title": f"[G1] {title}",
+                    "link": link_href,
+                    "pub_date": datetime.now().strftime("%Y-%m-%d")
+                })
+
+        unique_jobs = {job['link']: job for job in found_jobs}.values()
+        logging.info(f"[G1Scraper] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
 
 # ==========================================
 # PHASE 4: MAIN EXECUTION LOGIC
@@ -188,7 +271,11 @@ if __name__ == "__main__":
 
     db = DatabaseManager()
     notifier = TelegramNotifier(bot_token=TELEGRAM_BOT_TOKEN, chat_id=TELEGRAM_CHAT_ID)
-    scrapers: List[BaseScraper] = [PCIScraper()]
+    scrapers: List[BaseScraper] = [
+        PCIScraper(),
+        GoogleNewsScraper(),
+        G1Scraper()
+    ]
 
     new_jobs_count = 0
     messages_sent = 0
