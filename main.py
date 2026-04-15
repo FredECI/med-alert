@@ -96,7 +96,7 @@ class BaseScraper:
             'desktop': True
         })
         self.keywords = ["médico", "medico", "clínico geral", "clinico geral", "saúde da família", "saude da familia", "crm"]
-        self.state_filters = ["rj", "rio de janeiro", "macaé", "macae"]
+        self.state_filters = ["rj", "rio de janeiro", "macaé", "macae", "região dos lagos", "regiao dos lagos", "rio das ostras", "campos"]
 
     def fetch_html(self, url: str) -> Optional[str]:
         try:
