@@ -158,7 +158,8 @@ class BaseScraper:
             "médico", "medico", "clínico geral", "clinico geral", 
             "saúde da família", "saude da familia", "crm", 
             "esf", "psf", "ubs", "upa", "plantão", "plantao", 
-            "medicina", "pronto socorro", "pronto atendimento"
+            "medicina", "pronto socorro", "pronto atendimento",
+            "posto de saúde", "posto de saude"
         ]
         self.state_filters = [
             "rj", "rio de janeiro", "macaé", "macae", 
@@ -186,7 +187,8 @@ class BaseScraper:
 
     def is_relevant(self, text: str) -> bool:
         text_lower = text.lower()
-        return any(keyword in text_lower for keyword in self.keywords)
+        words = text_lower.replace(",", " ").replace("-", " ").split()
+        return any(keyword in words for keyword in self.keywords)
 
     def is_in_target_state(self, text: str) -> bool:
         text_lower = text.lower()
