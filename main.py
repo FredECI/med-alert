@@ -95,8 +95,21 @@ class BaseScraper:
             'platform': 'windows',
             'desktop': True
         })
-        self.keywords = ["médico", "medico", "clínico geral", "clinico geral", "saúde da família", "saude da familia", "crm"]
-        self.state_filters = ["rj", "rio de janeiro", "macaé", "macae", "região dos lagos", "regiao dos lagos", "rio das ostras", "campos"]
+        self.keywords = [
+            "médico", "medico", "clínico geral", "clinico geral", 
+            "saúde da família", "saude da familia", "crm", 
+            "esf", "psf", "ubs", "upa", "plantão", "plantao", 
+            "atenção básica", "atencao basica", "medicina",
+            "pronto socorro", "pronto atendimento"
+        ]
+        self.state_filters = [
+            "rj", "rio de janeiro", "macaé", "macae", 
+            "região dos lagos", "regiao dos lagos", "rio das ostras", 
+            "campos", "campos dos goytacazes", "carapebus", 
+            "quissamã", "quissama", "cabo frio", "búzios", "buzios",
+            "são joão da barra", "sao joao da barra", "casimiro",
+            "saquarema", "araruama", "arraial do cabo"
+        ]
 
     def fetch_html(self, url: str) -> Optional[str]:
         try:
@@ -176,6 +189,59 @@ class PCIScraper(BaseScraper):
 
         logging.info(f"[PCIScraper] Found {len(unique_jobs)} relevant medical jobs.")
         return list(unique_jobs)
+    
+
+class PCISaudeRSSScraper(BaseScraper):
+    """
+    Scraper infalível baseado em XML/RSS. 
+    Lê o feed oficial do PCI Concursos focado EXCLUSIVAMENTE em Saúde.
+    """
+    def __init__(self):
+        super().__init__()
+        self.url = "https://www.pciconcursos.com.br/rss/saude/"
+
+    def scrape(self) -> List[Dict[str, str]]:
+        xml_content = self.fetch_html(self.url)
+        if not xml_content:
+            return []
+
+        # Usamos o BeautifulSoup para ler as tags <item> do XML
+        soup = BeautifulSoup(xml_content, "xml") # É recomendável ter o lxml instalado, mas funciona com html.parser na maioria das vezes
+        found_jobs = []
+        
+        items = soup.find_all("item")
+
+        for item in items:
+            title_element = item.find("title")
+            link_element = item.find("link")
+            desc_element = item.find("description")
+            pubdate_element = item.find("pubDate")
+
+            if not title_element or not link_element:
+                continue
+
+            title = title_element.text.strip()
+            link = link_element.text.strip()
+            
+            # O RSS junta título e descrição, ideal para nossa varredura de palavras
+            full_text = f"{title} {desc_element.text if desc_element else ''}"
+
+            # Como já estamos no feed de SAÚDE, o foco principal é checar a Região e se é pra Médico
+            if self.is_in_target_state(full_text) and self.is_relevant(full_text):
+                
+                # Limpa a data ou usa a data atual
+                pub_date = pubdate_element.text.strip() if pubdate_element else datetime.now().strftime("%Y-%m-%d")
+
+                found_jobs.append({
+                    "title": f"[PCI Saúde] {title}",
+                    "link": link,
+                    "pub_date": pub_date
+                })
+
+        unique_jobs = {job['link']: job for job in found_jobs}.values()
+        logging.info(f"[PCISaudeRSS] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
+
 
 class GoogleNewsScraper(BaseScraper):
     """
@@ -260,6 +326,51 @@ class G1Scraper(BaseScraper):
         unique_jobs = {job['link']: job for job in found_jobs}.values()
         logging.info(f"[G1Scraper] Found {len(unique_jobs)} relevant medical jobs.")
         return list(unique_jobs)
+    
+class JCConcursosScraper(BaseScraper):
+    """Scraper para o portal JC Concursos, focado na busca interna deles."""
+    def __init__(self):
+        super().__init__()
+        # URL de busca já filtrando por "medico rio de janeiro"
+        self.url = "https://jcconcursos.com.br/concursos/rj/medico"
+
+    def scrape(self) -> List[Dict[str, str]]:
+        html_content = self.fetch_html(self.url)
+        if not html_content:
+            return []
+
+        soup = BeautifulSoup(html_content, "html.parser")
+        found_jobs = []
+        
+        # O JC Concursos geralmente usa listas <ul> e <li> com a classe 'row' ou 'list-group'
+        cards = soup.find_all("a", href=True)
+
+        for card in cards:
+            title = card.text.strip()
+            link_href = card.get("href")
+            
+            # Filtra links que não sejam de notícias ou editais de concurso
+            if "/concursos/" not in link_href and "/noticia/" not in link_href:
+                continue
+                
+            # Evita capturar menus
+            if len(title) < 15:
+                continue
+
+            if self.is_in_target_state(title) and self.is_relevant(title):
+                
+                full_link = link_href if link_href.startswith("http") else f"https://jcconcursos.com.br{link_href}"
+                
+                found_jobs.append({
+                    "title": f"[JC Concursos] {title}",
+                    "link": full_link,
+                    "pub_date": datetime.now().strftime("%Y-%m-%d")
+                })
+
+        unique_jobs = {job['link']: job for job in found_jobs}.values()
+        logging.info(f"[JCConcursos] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
+    
 
 # ==========================================
 # PHASE 4: MAIN EXECUTION LOGIC
@@ -274,7 +385,9 @@ if __name__ == "__main__":
     scrapers: List[BaseScraper] = [
         PCIScraper(),
         GoogleNewsScraper(),
-        G1Scraper()
+        G1Scraper(),
+        PCISaudeRSSScraper(),
+        JCConcursosScraper()
     ]
 
     new_jobs_count = 0
