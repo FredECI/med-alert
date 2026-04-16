@@ -176,7 +176,8 @@ class BaseScraper:
             "saúde da família", "saude da familia", "crm", 
             "esf", "psf", "ubs", "upa", "plantão", "plantao", 
             "medicina", "pronto socorro", "pronto atendimento",
-            "posto de saúde", "posto de saude", "generalista"
+            "posto de saúde", "posto de saude", "generalista",
+            "saúde", "saude"
         ]
         self.state_filters = [
             "rj", "rio de janeiro", "macaé", "macae", 
