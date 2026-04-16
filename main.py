@@ -114,7 +114,9 @@ class ReportGenerator:
             file.write("| :--- | :--- | :--- |\n")
             
             for job in jobs:
-                title = job[0].replace("|", "-")
+                raw_title = str(job[0])
+                title = raw_title.replace("\n", " ").replace("\r", " ").replace("|", "-")
+                title = " ".join(title.split())
                 link = job[1]
                 date = job[2]
                 file.write(f"| {date} | **{title}** | [Acessar Edital]({link}) |\n")
