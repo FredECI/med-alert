@@ -6,7 +6,7 @@ import requests
 import cloudscraper
 from bs4 import BeautifulSoup
 from typing import List, Dict, Optional
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 # ==========================================
 # LOGGING CONFIGURATION
@@ -103,7 +103,11 @@ class ReportGenerator:
             file.write("# 🩺 MedAlert: Radar de Oportunidades\n\n")
             file.write("Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.\n\n")
             
-            file.write(f"**Última atualização do robô:** {datetime.now().strftime('%d/%m/%Y às %H:%M')}\n\n")
+            # Configura o fuso horário para UTC-3 (Horário de Brasília/RJ)
+            fuso_br = timezone(timedelta(hours=-3))
+            data_hora_atual = datetime.now(fuso_br).strftime('%d/%m/%Y às %H:%M')
+            
+            file.write(f"**Última atualização do robô:** {data_hora_atual}\n\n")
             
             file.write("| Data de Descoberta | Título do Processo Seletivo | Link Oficial |\n")
             file.write("| :--- | :--- | :--- |\n")
@@ -596,4 +600,3 @@ if __name__ == "__main__":
     # -----------------------------------------------
 
     db.close()
-    
