@@ -121,27 +121,39 @@ class ReportGenerator:
 # PHASE 3: TELEGRAM NOTIFIER
 # ==========================================
 class TelegramNotifier:
-    """Handles sending notifications via Telegram Bot API."""
+    """Handles sending notifications to multiple Telegram chats."""
     
-    def __init__(self, bot_token: str, chat_id: str):
+    def __init__(self, bot_token: str, chat_ids: List[str]):
         self.bot_token = bot_token
-        self.chat_id = chat_id
+        self.chat_ids = chat_ids
         self.base_url = f"https://api.telegram.org/bot{self.bot_token}/sendMessage"
 
-    def send_message(self, text: str) -> bool:
-        payload = {
-            "chat_id": self.chat_id,
-            "text": text,
-            "parse_mode": "Markdown",
-            "disable_web_page_preview": True # Keeps the chat clean without huge link previews
-        }
-        try:
-            response = requests.post(self.base_url, json=payload, timeout=10)
-            response.raise_for_status()
-            return True
-        except requests.RequestException as e:
-            logging.error(f"Failed to send Telegram message. Error: {e}")
-            return False
+    def send_message(self, text: str) -> int:
+        """
+        Envia a mensagem para todos os chats configurados.
+        Retorna a quantidade de mensagens enviadas com sucesso.
+        """
+        success_count = 0
+        
+        if not self.chat_ids:
+            logging.warning("Nenhum Chat ID configurado para envio.")
+            return 0
+
+        for chat_id in self.chat_ids:
+            payload = {
+                "chat_id": chat_id,
+                "text": text,
+                "parse_mode": "Markdown",
+                "disable_web_page_preview": True
+            }
+            try:
+                response = requests.post(self.base_url, json=payload, timeout=10)
+                response.raise_for_status()
+                success_count += 1
+            except requests.RequestException as e:
+                logging.error(f"Failed to send Telegram message to {chat_id}. Error: {e}")
+                
+        return success_count
 
 
 # ==========================================
@@ -522,12 +534,19 @@ class BingNewsScraper(BaseScraper):
 # PHASE 4: MAIN EXECUTION LOGIC
 # ==========================================
 if __name__ == "__main__":
+    import os
+    
     TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-    TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-    logging.info("Starting MedAlert RJ Scraper Engine...")
+    
+    # Pega a string do GitHub e transforma em uma lista do Python, removendo espaços
+    raw_chat_ids = os.getenv("TELEGRAM_CHAT_IDS", "")
+    TELEGRAM_CHAT_IDS = [chat_id.strip() for chat_id in raw_chat_ids.split(",") if chat_id.strip()]
+
+    logging.info(f"Starting MedAlert RJ Scraper Engine... (Broadcasting to {len(TELEGRAM_CHAT_IDS)} chats)")
 
     db = DatabaseManager()
-    notifier = TelegramNotifier(bot_token=TELEGRAM_BOT_TOKEN, chat_id=TELEGRAM_CHAT_ID)
+    notifier = TelegramNotifier(bot_token=TELEGRAM_BOT_TOKEN, chat_ids=TELEGRAM_CHAT_IDS)
+    
     scrapers: List[BaseScraper] = [
         PCIScraper(),
         GoogleNewsScraper(),
@@ -555,7 +574,6 @@ if __name__ == "__main__":
                 new_jobs_count += 1
                 logging.info(f"🆕 NEW JOB SAVED: {job['title']}")
                 
-                # Format the message for Telegram
                 msg = (
                     f"🚨 *Novo Processo Seletivo Encontrado!*\n\n"
                     f"🏥 *Vaga:* {job['title']}\n"
@@ -563,15 +581,19 @@ if __name__ == "__main__":
                     f"🔗 [Clique aqui para acessar o edital]({job['link']})"
                 )
                 
-                # Send and mark as sent
-                if notifier.send_message(msg):
+                # Envia para todos. Se pelo menos 1 pessoa receber, marcamos como enviado.
+                sends = notifier.send_message(msg)
+                if sends > 0:
                     db.mark_as_sent(job['link'])
-                    messages_sent += 1
+                    messages_sent += sends
 
     logging.info(f"Execution finished. {new_jobs_count} new jobs added. {messages_sent} Telegram alerts sent.")
-
+    
+    # --- GERAR RELATÓRIOS APÓS A VARREDURA ---
     reporter = ReportGenerator(db_manager=db)
     reporter.generate_csv()
     reporter.generate_markdown()
+    # -----------------------------------------------
 
     db.close()
+    
