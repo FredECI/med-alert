@@ -1,5 +1,6 @@
 import os
 import re
+import time
 import sqlite3
 import logging
 import requests
@@ -535,6 +536,141 @@ class BingNewsScraper(BaseScraper):
         return list(unique_jobs)
     
 
+import time
+
+class TrabalhaBrasilScraper(BaseScraper):
+    """Scraper paramétrico para o Trabalha Brasil, iterando sobre múltiplas cidades."""
+    def __init__(self, cities: List[str]):
+        super().__init__()
+        self.cities = cities
+        # Trabalha Brasil tem um antibot agressivo, garantimos que o cloudscraper esteja mascarado
+        self.scraper.headers.update({"Referer": "https://www.google.com/"})
+
+    def scrape(self) -> List[Dict[str, str]]:
+        found_jobs = []
+        
+        for city in self.cities:
+            # Constrói a URL dinamicamente substituindo espaços por hifens (ex: rio-das-ostras)
+            formatted_city = city.lower().replace(" ", "-")
+            url = f"https://www.trabalhabrasil.com.br/vagas-de-emprego-em-{formatted_city}-rj/medico"
+            
+            html_content = self.fetch_html(url)
+            if not html_content:
+                continue
+
+            soup = BeautifulSoup(html_content, "html.parser")
+            
+            # Busca todos os links da página que possuam '/medico/' na URL (padrão das vagas deles)
+            all_links = soup.find_all("a", href=True)
+            
+            for link in all_links:
+                link_href = link.get("href", "")
+                title = link.text.strip()
+                
+                # Ignora links vazios ou de navegação
+                if "/medico/" not in link_href.lower() or len(title) < 5:
+                    continue
+                
+                # Para evitar pegar menus, garantimos que o texto do link tenha palavras chave
+                if self.is_relevant(title):
+                    full_link = link_href if link_href.startswith("http") else f"https://www.trabalhabrasil.com.br{link_href}"
+                    
+                    found_jobs.append({
+                        "title": f"[Trabalha Brasil - {city.title()}] {title[:60]}...", # Limita o título para não poluir
+                        "link": full_link,
+                        "pub_date": datetime.now().strftime("%Y-%m-%d")
+                    })
+                    
+            # Respiro de 2 segundos para não tomar block do site por varrer muitas cidades rápido
+            time.sleep(2)
+
+        unique_jobs = {job['link']: job for job in found_jobs}.values()
+        logging.info(f"[TrabalhaBrasil] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
+
+
+class PandaPeUnimedScraper(BaseScraper):
+    """Scraper para o portal InfoJobs/PandaPé da Unimed Costa do Sol."""
+    def __init__(self):
+        super().__init__()
+        self.url = "https://unimedcostadosol.pandape.infojobs.com.br"
+
+    def scrape(self) -> List[Dict[str, str]]:
+        html_content = self.fetch_html(self.url)
+        if not html_content:
+            return []
+
+        soup = BeautifulSoup(html_content, "html.parser")
+        found_jobs = []
+        
+        # PandaPé geralmente agrupa vagas em links com a classe 'job-link' ou dentro de listas '<li>'
+        job_links = soup.find_all("a", href=True)
+
+        for link in job_links:
+            link_href = link.get("href", "")
+            title = link.text.strip()
+            
+            # Filtro para ignorar o menu do site e pegar apenas páginas de detalhe de vaga (/Detail/)
+            if "/Detail/" not in link_href and "vaga" not in link_href.lower():
+                continue
+
+            if self.is_relevant(title):
+                full_link = link_href if link_href.startswith("http") else f"{self.url}{link_href}"
+                
+                found_jobs.append({
+                    "title": f"[Unimed Costa do Sol] {title}",
+                    "link": full_link,
+                    "pub_date": datetime.now().strftime("%Y-%m-%d")
+                })
+
+        unique_jobs = {job['link']: job for job in found_jobs}.values()
+        logging.info(f"[PandaPeUnimed] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
+
+
+class MacaeGovScraper(BaseScraper):
+    """Scraper institucional para o diário de notícias da Prefeitura de Macaé."""
+    def __init__(self):
+        super().__init__()
+        self.url = "https://www.macae.rj.gov.br/noticias"
+        # Palavras de gatilho para editais
+        self.gov_triggers = ["concurso", "processo seletivo", "vaga", "inscrição", "inscricao", "edital"]
+
+    def scrape(self) -> List[Dict[str, str]]:
+        html_content = self.fetch_html(self.url)
+        if not html_content:
+            return []
+
+        soup = BeautifulSoup(html_content, "html.parser")
+        found_jobs = []
+        
+        news_links = soup.find_all("a", href=True)
+
+        for link in news_links:
+            link_href = link.get("href", "")
+            title = link.text.strip().lower()
+            
+            if "noticia" not in link_href:
+                continue
+
+            # A notícia deve falar sobre contratação E ser da área médica/saúde
+            has_trigger = any(trigger in title for trigger in self.gov_triggers)
+            is_medical = "saúde" in title or "saude" in title or self.is_relevant(title)
+            
+            if has_trigger and is_medical:
+                full_link = link_href if link_href.startswith("http") else f"https://www.macae.rj.gov.br{link_href}"
+                
+                found_jobs.append({
+                    "title": f"[Pref. Macaé] {link.text.strip()}",
+                    "link": full_link,
+                    "pub_date": datetime.now().strftime("%Y-%m-%d")
+                })
+
+        unique_jobs = {job['link']: job for job in found_jobs}.values()
+        logging.info(f"[MacaeGov] Found {len(unique_jobs)} relevant governmental news/jobs.")
+        return list(unique_jobs)
+    
+
 # ==========================================
 # PHASE 4: MAIN EXECUTION LOGIC
 # ==========================================
@@ -552,6 +688,9 @@ if __name__ == "__main__":
     db = DatabaseManager()
     notifier = TelegramNotifier(bot_token=TELEGRAM_BOT_TOKEN, chat_ids=TELEGRAM_CHAT_IDS)
     
+    # Definindo as cidades para o Trabalha Brasil
+    cidades_alvo = ["Macae", "Rio de Janeiro", "Rio das Ostras", "Campos dos Goytacazes", "Cabo Frio"]
+
     scrapers: List[BaseScraper] = [
         PCIScraper(),
         GoogleNewsScraper(),
@@ -559,38 +698,49 @@ if __name__ == "__main__":
         PCISaudeScraper(),
         JCConcursosScraper(),
         PCIEstadualScraper(),
-        BingNewsScraper()
+        BingNewsScraper(),
+        TrabalhaBrasilScraper(cities=cidades_alvo),
+        PandaPeUnimedScraper(),
+        MacaeGovScraper()
     ]
 
     new_jobs_count = 0
     messages_sent = 0
 
+    # Loop de execução blindado
     for scraper in scrapers:
-        jobs = scraper.scrape()
-        
-        for job in jobs:
-            is_new = db.insert_job(
-                title=job["title"],
-                link=job["link"],
-                pub_date=job["pub_date"]
-            )
+        try:
+            # Tenta executar o scraper atual
+            jobs = scraper.scrape()
             
-            if is_new:
-                new_jobs_count += 1
-                logging.info(f"🆕 NEW JOB SAVED: {job['title']}")
-                
-                msg = (
-                    f"🚨 *Novo Processo Seletivo Encontrado!*\n\n"
-                    f"🏥 *Vaga:* {job['title']}\n"
-                    f"📅 *Data limite/Info:* {job['pub_date']}\n\n"
-                    f"🔗 [Clique aqui para acessar o edital]({job['link']})"
+            for job in jobs:
+                is_new = db.insert_job(
+                    title=job["title"],
+                    link=job["link"],
+                    pub_date=job["pub_date"]
                 )
                 
-                # Envia para todos. Se pelo menos 1 pessoa receber, marcamos como enviado.
-                sends = notifier.send_message(msg)
-                if sends > 0:
-                    db.mark_as_sent(job['link'])
-                    messages_sent += sends
+                if is_new:
+                    new_jobs_count += 1
+                    logging.info(f"🆕 NEW JOB SAVED: {job['title']}")
+                    
+                    msg = (
+                        f"🚨 *Nova Oportunidade/Processo Encontrado!*\n\n"
+                        f"🏥 *Vaga:* {job['title']}\n"
+                        f"📅 *Data:* {job['pub_date']}\n\n"
+                        f"🔗 [Clique aqui para acessar]({job['link']})"
+                    )
+                    
+                    sends = notifier.send_message(msg)
+                    if sends > 0:
+                        db.mark_as_sent(job['link'])
+                        messages_sent += sends
+                        
+        except Exception as e:
+            # Se UM scraper explodir (ex: site fora do ar, erro 500), ele avisa no log mas continua para o próximo!
+            nome_scraper = scraper.__class__.__name__
+            logging.error(f"❌ Erro crítico ao executar {nome_scraper}: {e}. Pulando para o próximo.")
+            continue
 
     logging.info(f"Execution finished. {new_jobs_count} new jobs added. {messages_sent} Telegram alerts sent.")
     
