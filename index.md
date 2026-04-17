@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 17/04/2026 às 08:43
+**Última atualização do robô:** 17/04/2026 às 18:34
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-04-17 | **[Radar/News] Mais mulheres denunciam médico ginecologista de 81 anos por abusos sexuais em atendimentos, no Paraná: 'Não falaram antes por medo'** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/04/17/mais-mulheres-denunciam-medico-ginecologista-de-81-anos-por-abusos-sexuais-em-atendimentos-no-parana-nao-falaram-antes-por-medo.ghtml) |
 | 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-cabo-frio-rj/medico/5009470) |
 | 2026-04-16 | **[Trabalha Brasil - Campos Dos Goytacazes] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-bom-jesus-do-norte-es/medico/5018635) |
 | 2026-04-16 | **[Trabalha Brasil - Campos Dos Goytacazes] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-cambuci-rj/medico/4090009) |
