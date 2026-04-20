@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 20/04/2026 às 09:00
+**Última atualização do robô:** 20/04/2026 às 18:39
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-04-20 | **[Pref. Macaé] 15h53 - Prazo para inscrição em concurso da Saúde com 191 vagas termina no dia 30** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/prazo-para-inscricao-em-concurso-da-saude-com-191-vagas-termina-no-dia-30) |
 | 2026-04-18 | **[Radar/News] A revolução da saúde feminina: o crescimento das FemTechs e a personalização do cuidado com fertilidade, menopausa e hormônios** | [Acessar Edital](https://www.msn.com/pt-br/saude/medicina/a-revolu%C3%A7%C3%A3o-da-sa%C3%BAde-feminina-o-crescimento-das-femtechs-e-a-personaliza%C3%A7%C3%A3o-do-cuidado-com-fertilidade-menopausa-e-horm%C3%B4nios/ar-AA21bejj?ocid=BingNewsVerp) |
 | 2026-04-17 | **[Radar/News] Mais mulheres denunciam médico ginecologista de 81 anos por abusos sexuais em atendimentos, no Paraná: 'Não falaram antes por medo'** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/04/17/mais-mulheres-denunciam-medico-ginecologista-de-81-anos-por-abusos-sexuais-em-atendimentos-no-parana-nao-falaram-antes-por-medo.ghtml) |
 | 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-cabo-frio-rj/medico/5009470) |
