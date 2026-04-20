@@ -7,7 +7,7 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 19/04/2026 às 18:27
+**Última atualização do robô:** 20/04/2026 às 09:00
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
