@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 22/04/2026 às 18:43
+**Última atualização do robô:** 23/04/2026 às 08:54
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-04-23 | **[JC Concursos] 23/04/2026 - 06:35Concurso CRM MA: nova seleção em breve para níveis médio e superior** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-crm-ma-nova-selecao-em-breve-para-niveis-medio-e-superior-142053) |
 | 2026-04-21 | **[Radar/News] 'Preciso vigiar constantemente meus filhos': ratos, pulgas e parasitas proliferam em campos de deslocados em Gaza** | [Acessar Edital](https://oglobo.globo.com/mundo/noticia/2026/04/21/preciso-vigiar-constantemente-meus-filhos-ratos-pulgas-e-parasitas-proliferam-em-campos-de-deslocados-em-gaza.ghtml) |
 | 2026-04-20 | **[Pref. Macaé] 15h53 - Prazo para inscrição em concurso da Saúde com 191 vagas termina no dia 30** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/prazo-para-inscricao-em-concurso-da-saude-com-191-vagas-termina-no-dia-30) |
 | 2026-04-18 | **[Radar/News] A revolução da saúde feminina: o crescimento das FemTechs e a personalização do cuidado com fertilidade, menopausa e hormônios** | [Acessar Edital](https://www.msn.com/pt-br/saude/medicina/a-revolu%C3%A7%C3%A3o-da-sa%C3%BAde-feminina-o-crescimento-das-femtechs-e-a-personaliza%C3%A7%C3%A3o-do-cuidado-com-fertilidade-menopausa-e-horm%C3%B4nios/ar-AA21bejj?ocid=BingNewsVerp) |
