@@ -7,10 +7,12 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 24/04/2026 às 08:53
+**Última atualização do robô:** 24/04/2026 às 18:40
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-04-24 | **[Radar/News] Ordem elogia escolha de Campos Fernandes como coordenar pacto para a saúde** | [Acessar Edital](https://www.noticiasaominuto.com/pais/2979087/ordem-elogia-escolha-de-campos-fernandes-como-coordenar-pacto-para-a-saude) |
+| 2026-04-24 | **[Radar/News] Nomeação de Adalberto Campos Fernandes. "O problema é que a saúde é uma questão da competência da AR, vamos ver como reagem os partidos"** | [Acessar Edital](https://www.msn.com/pt-pt/noticias/other/nomea%C3%A7%C3%A3o-de-adalberto-campos-fernandes-o-problema-%C3%A9-que-a-sa%C3%BAde-%C3%A9-uma-quest%C3%A3o-da-compet%C3%AAncia-da-ar-vamos-ver-como-reagem-os-partidos/vi-AA21EG7Q?ocid=BingNewsVerp) |
 | 2026-04-23 | **[JC Concursos] 23/04/2026 - 06:35Concurso CRM MA: nova seleção em breve para níveis médio e superior** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-crm-ma-nova-selecao-em-breve-para-niveis-medio-e-superior-142053) |
 | 2026-04-21 | **[Radar/News] 'Preciso vigiar constantemente meus filhos': ratos, pulgas e parasitas proliferam em campos de deslocados em Gaza** | [Acessar Edital](https://oglobo.globo.com/mundo/noticia/2026/04/21/preciso-vigiar-constantemente-meus-filhos-ratos-pulgas-e-parasitas-proliferam-em-campos-de-deslocados-em-gaza.ghtml) |
 | 2026-04-20 | **[Pref. Macaé] 15h53 - Prazo para inscrição em concurso da Saúde com 191 vagas termina no dia 30** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/prazo-para-inscricao-em-concurso-da-saude-com-191-vagas-termina-no-dia-30) |
