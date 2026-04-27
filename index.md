@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 26/04/2026 às 18:29
+**Última atualização do robô:** 27/04/2026 às 09:16
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-04-27 | **[Radar/News] Ordem dos Médicos elogia escolha de Campos Fernandes como coordenador pacto para a saúde** | [Acessar Edital](https://www.sapo.pt/artigo/ordem-dos-medicos-elogia-escolha-de-campos-fernandes-como-coordenar-pacto-para-a-saude-69ecbd5a6502b3e81c7681fe) |
 | 2026-04-24 | **[Radar/News] Ordem elogia escolha de Campos Fernandes como coordenar pacto para a saúde** | [Acessar Edital](https://www.noticiasaominuto.com/pais/2979087/ordem-elogia-escolha-de-campos-fernandes-como-coordenar-pacto-para-a-saude) |
 | 2026-04-24 | **[Radar/News] Nomeação de Adalberto Campos Fernandes. "O problema é que a saúde é uma questão da competência da AR, vamos ver como reagem os partidos"** | [Acessar Edital](https://www.msn.com/pt-pt/noticias/other/nomea%C3%A7%C3%A3o-de-adalberto-campos-fernandes-o-problema-%C3%A9-que-a-sa%C3%BAde-%C3%A9-uma-quest%C3%A3o-da-compet%C3%AAncia-da-ar-vamos-ver-como-reagem-os-partidos/vi-AA21EG7Q?ocid=BingNewsVerp) |
 | 2026-04-23 | **[JC Concursos] 23/04/2026 - 06:35Concurso CRM MA: nova seleção em breve para níveis médio e superior** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-crm-ma-nova-selecao-em-breve-para-niveis-medio-e-superior-142053) |
