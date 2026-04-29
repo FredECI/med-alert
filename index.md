@@ -7,10 +7,12 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 28/04/2026 às 18:51
+**Última atualização do robô:** 29/04/2026 às 09:11
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-04-29 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/10117733) |
+| 2026-04-29 | **[JC Concursos] 29/04/2026 - 06:56Concurso Saúde RJ: edital para 287 vagas está previsto para ser publicado até junho** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-edital-para-287-deve-ser-publicado-ate-junho-142194) |
 | 2026-04-27 | **[Radar/News] Ordem dos Médicos elogia escolha de Campos Fernandes como coordenador pacto para a saúde** | [Acessar Edital](https://www.sapo.pt/artigo/ordem-dos-medicos-elogia-escolha-de-campos-fernandes-como-coordenar-pacto-para-a-saude-69ecbd5a6502b3e81c7681fe) |
 | 2026-04-24 | **[Radar/News] Ordem elogia escolha de Campos Fernandes como coordenar pacto para a saúde** | [Acessar Edital](https://www.noticiasaominuto.com/pais/2979087/ordem-elogia-escolha-de-campos-fernandes-como-coordenar-pacto-para-a-saude) |
 | 2026-04-24 | **[Radar/News] Nomeação de Adalberto Campos Fernandes. "O problema é que a saúde é uma questão da competência da AR, vamos ver como reagem os partidos"** | [Acessar Edital](https://www.msn.com/pt-pt/noticias/other/nomea%C3%A7%C3%A3o-de-adalberto-campos-fernandes-o-problema-%C3%A9-que-a-sa%C3%BAde-%C3%A9-uma-quest%C3%A3o-da-compet%C3%AAncia-da-ar-vamos-ver-como-reagem-os-partidos/vi-AA21EG7Q?ocid=BingNewsVerp) |
