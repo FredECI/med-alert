@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 30/04/2026 às 09:09
+**Última atualização do robô:** 30/04/2026 às 18:49
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-04-30 | **[Radar/News] Endrick diz que futebol não é agradável e quer futuro do filho longe dos campos: 'Espero que se torne advogado, médico...'** | [Acessar Edital](https://www.espn.com.br/futebol/frances/artigo/_/id/16648301/endrick-diz-futebol-nao-e-agradavel-quer-futuro-filho-longe-campos-espero-que-se-torne-advogado-medico) |
 | 2026-04-29 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/10117733) |
 | 2026-04-29 | **[JC Concursos] 29/04/2026 - 06:56Concurso Saúde RJ: edital para 287 vagas está previsto para ser publicado até junho** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-edital-para-287-deve-ser-publicado-ate-junho-142194) |
 | 2026-04-27 | **[Radar/News] Ordem dos Médicos elogia escolha de Campos Fernandes como coordenador pacto para a saúde** | [Acessar Edital](https://www.sapo.pt/artigo/ordem-dos-medicos-elogia-escolha-de-campos-fernandes-como-coordenar-pacto-para-a-saude-69ecbd5a6502b3e81c7681fe) |
