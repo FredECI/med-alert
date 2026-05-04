@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 03/05/2026 às 18:33
+**Última atualização do robô:** 04/05/2026 às 09:18
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-04 | **[Radar/News] A opção Dark Mode permite-lhe poupar até 30% de bateria.** | [Acessar Edital](https://observador.pt/programas/explicador/pacto-saude-desde-que-nao-sirva-para-proteger-o-governo/) |
 | 2026-05-03 | **[Radar/News] A “Capital do Boi Gordo” que nasceu no gado hoje é um polo de saúde, educação e qualidade de vida no interior paulista** | [Acessar Edital](https://www.correiobraziliense.com.br/cbradar/a-capital-do-boi-gordo-que-nasceu-no-gado-hoje-e-um-polo-de-saude-educacao-e-qualidade-de-vida-no-interior-paulista/) |
 | 2026-04-30 | **[Radar/News] Endrick diz que futebol não é agradável e quer futuro do filho longe dos campos: 'Espero que se torne advogado, médico...'** | [Acessar Edital](https://www.espn.com.br/futebol/frances/artigo/_/id/16648301/endrick-diz-futebol-nao-e-agradavel-quer-futuro-filho-longe-campos-espero-que-se-torne-advogado-medico) |
 | 2026-04-29 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/10117733) |
