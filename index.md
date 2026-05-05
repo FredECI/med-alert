@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 05/05/2026 às 08:55
+**Última atualização do robô:** 05/05/2026 às 18:54
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-05 | **[Radar/News] Últimos dias: ES tem 60 vagas na saúde com salários de até R$ 10,5 mil** | [Acessar Edital](https://www.folhavitoria.com.br/trabalho/concursos/ultimos-dias-es-tem-60-vagas-na-saude-com-salarios-de-ate-r-105-mil/) |
 | 2026-05-05 | **[Radar/News] PSD aceita repto de Seguro na Saúde mas traça linha vermelha** | [Acessar Edital](https://observador.pt/especiais/psd-aceita-desafio-de-seguro-na-saude-mas-traca-linha-vermelha-o-governo-e-que-governa/) |
 | 2026-05-04 | **[Radar/News] Mariana Vieira da Silva vai representar o PS no Pacto Estratégico para a Saúde** | [Acessar Edital](https://sicnoticias.pt/pais/politica/2026-05-04-video-mariana-vieira-da-silva-vai-representar-o-ps-no-pacto-estrategico-para-a-saude-dbb93738) |
 | 2026-05-04 | **[Radar/News] A opção Dark Mode permite-lhe poupar até 30% de bateria.** | [Acessar Edital](https://observador.pt/programas/explicador/pacto-saude-desde-que-nao-sirva-para-proteger-o-governo/) |
