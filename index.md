@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 04/05/2026 às 18:53
+**Última atualização do robô:** 05/05/2026 às 08:55
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-05 | **[Radar/News] PSD aceita repto de Seguro na Saúde mas traça linha vermelha** | [Acessar Edital](https://observador.pt/especiais/psd-aceita-desafio-de-seguro-na-saude-mas-traca-linha-vermelha-o-governo-e-que-governa/) |
 | 2026-05-04 | **[Radar/News] Mariana Vieira da Silva vai representar o PS no Pacto Estratégico para a Saúde** | [Acessar Edital](https://sicnoticias.pt/pais/politica/2026-05-04-video-mariana-vieira-da-silva-vai-representar-o-ps-no-pacto-estrategico-para-a-saude-dbb93738) |
 | 2026-05-04 | **[Radar/News] A opção Dark Mode permite-lhe poupar até 30% de bateria.** | [Acessar Edital](https://observador.pt/programas/explicador/pacto-saude-desde-que-nao-sirva-para-proteger-o-governo/) |
 | 2026-05-03 | **[Radar/News] A “Capital do Boi Gordo” que nasceu no gado hoje é um polo de saúde, educação e qualidade de vida no interior paulista** | [Acessar Edital](https://www.correiobraziliense.com.br/cbradar/a-capital-do-boi-gordo-que-nasceu-no-gado-hoje-e-um-polo-de-saude-educacao-e-qualidade-de-vida-no-interior-paulista/) |
