@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 08/05/2026 às 09:05
+**Última atualização do robô:** 08/05/2026 às 18:51
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-08 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-tres-processos-seletivos-com-vagas-para-diversos-cargos) |
 | 2026-05-08 | **[Radar/News] Justiça manda soltar ginecologista de 81 anos acusado de estupro por paciente em trabalho de parto, no Paraná** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/05/08/justica-manda-soltar-ginecologista-de-81-anos-acusado-de-estupro-por-paciente-em-trabalho-de-parto-no-parana.ghtml) |
 | 2026-05-07 | **[Radar/News] Ginecologista de 81 anos é preso acusado de estuprar paciente em trabalho de parto, no Paraná; médico já foi denunciado por 4 mulheres** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/05/07/ginecologista-de-81-anos-e-preso-acusado-de-estuprar-paciente-em-trabalho-de-parto-no-parana-medico-ja-foi-denunciado-por-4-mulheres.ghtml) |
 | 2026-05-05 | **[Radar/News] Últimos dias: ES tem 60 vagas na saúde com salários de até R$ 10,5 mil** | [Acessar Edital](https://www.folhavitoria.com.br/trabalho/concursos/ultimos-dias-es-tem-60-vagas-na-saude-com-salarios-de-ate-r-105-mil/) |
