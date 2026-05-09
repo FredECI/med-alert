@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 08/05/2026 às 18:51
+**Última atualização do robô:** 09/05/2026 às 08:41
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-09 | **[Radar/News] PCP indica Bernardino Soares para pacto para a saúde, mas critica** | [Acessar Edital](https://www.noticiasaominuto.com/politica/2987002/pcp-indica-bernardino-soares-para-pacto-para-a-saude-mas-critica) |
 | 2026-05-08 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-tres-processos-seletivos-com-vagas-para-diversos-cargos) |
 | 2026-05-08 | **[Radar/News] Justiça manda soltar ginecologista de 81 anos acusado de estupro por paciente em trabalho de parto, no Paraná** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/05/08/justica-manda-soltar-ginecologista-de-81-anos-acusado-de-estupro-por-paciente-em-trabalho-de-parto-no-parana.ghtml) |
 | 2026-05-07 | **[Radar/News] Ginecologista de 81 anos é preso acusado de estuprar paciente em trabalho de parto, no Paraná; médico já foi denunciado por 4 mulheres** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/05/07/ginecologista-de-81-anos-e-preso-acusado-de-estuprar-paciente-em-trabalho-de-parto-no-parana-medico-ja-foi-denunciado-por-4-mulheres.ghtml) |
