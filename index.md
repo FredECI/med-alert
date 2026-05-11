@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 11/05/2026 às 10:38
+**Última atualização do robô:** 11/05/2026 às 18:58
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-11 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/13270645) |
 | 2026-05-09 | **[Radar/News] PCP indica Bernardino Soares para pacto para a saúde, mas critica** | [Acessar Edital](https://www.noticiasaominuto.com/politica/2987002/pcp-indica-bernardino-soares-para-pacto-para-a-saude-mas-critica) |
 | 2026-05-08 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-tres-processos-seletivos-com-vagas-para-diversos-cargos) |
 | 2026-05-08 | **[Radar/News] Justiça manda soltar ginecologista de 81 anos acusado de estupro por paciente em trabalho de parto, no Paraná** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/05/08/justica-manda-soltar-ginecologista-de-81-anos-acusado-de-estupro-por-paciente-em-trabalho-de-parto-no-parana.ghtml) |
