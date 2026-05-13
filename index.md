@@ -7,10 +7,12 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 13/05/2026 às 10:07
+**Última atualização do robô:** 13/05/2026 às 19:04
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-13 | **SMS - Prefeitura do Rio de Janeiro** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/prefeitura-do-rio-de-janeiro-rj-abre-processo-seletivo-com-vagas-para-medicos) |
+| 2026-05-13 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-editais-de-processo-seletivo-para-medicos-de-diversas-areas) |
 | 2026-05-13 | **[JC Concursos] 13/05/2026 - 09:03SEST SENAT abre vagas para cargos administrativos e na área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/empregos/sest-senat-abre-vagas-para-cargos-administrativos-e-na-area-da-saude-142540) |
 | 2026-05-12 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-processos-seletivos-com-vagas-para-diferentes-cargos) |
 | 2026-05-11 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/13270645) |
