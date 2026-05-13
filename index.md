@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 12/05/2026 às 19:04
+**Última atualização do robô:** 13/05/2026 às 10:07
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-13 | **[JC Concursos] 13/05/2026 - 09:03SEST SENAT abre vagas para cargos administrativos e na área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/empregos/sest-senat-abre-vagas-para-cargos-administrativos-e-na-area-da-saude-142540) |
 | 2026-05-12 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-processos-seletivos-com-vagas-para-diferentes-cargos) |
 | 2026-05-11 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/13270645) |
 | 2026-05-09 | **[Radar/News] PCP indica Bernardino Soares para pacto para a saúde, mas critica** | [Acessar Edital](https://www.noticiasaominuto.com/politica/2987002/pcp-indica-bernardino-soares-para-pacto-para-a-saude-mas-critica) |
