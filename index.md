@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 18/05/2026 às 11:26
+**Última atualização do robô:** 18/05/2026 às 18:59
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-18 | **[Radar/News] Saiba o estado de saúde do ex-líder religioso preso por estupros no DF** | [Acessar Edital](https://www.metropoles.com/distrito-federal/na-mira/saiba-o-estado-de-saude-do-ex-lider-religioso-preso-por-estupros-no-df) |
 | 2026-05-18 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-processos-seletivos-para-medicos-com-salarios-de-ate-26-5-mil) |
 | 2026-05-17 | **[Radar/News] Menino de 10 anos é internado em estado grave após atropelamento por ônibus do transporte público de São José dos Campos (SP) neste sábado (16)** | [Acessar Edital](https://diariodotransporte.com.br/2026/05/16/menino-de-10-anos-e-internado-em-estado-grave-apos-atropelamento-por-onibus-do-transporte-publico-de-sao-jose-dos-campos-sp-neste-sabado-16/) |
 | 2026-05-14 | **[Radar/News] Estudante de medicina chama UBS de ‘lugar de c*’ e prefeito aciona Justiça por injúria** | [Acessar Edital](https://ndmais.com.br/justica/estudante-de-medicina-debocha-ubs-prefeito-aciona-justica/) |
