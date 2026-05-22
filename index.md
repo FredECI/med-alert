@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 21/05/2026 às 19:12
+**Última atualização do robô:** 22/05/2026 às 10:24
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-22 | **[Radar/News] Liliana Campos revela história de menino com doença autoimune: “Esta é a realidade”** | [Acessar Edital](https://sic.pt/sic-caras/passadeira-vermelha/2026-05-22-video-liliana-campos-revela-historia-de-menino-com-doenca-autoimune-esta-e-a-realidade-14421d7f) |
 | 2026-05-21 | **[JC Concursos] Concurso Saúde RJ: assinado contrato com banca e edital com 287 vagas já pode sair** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-assinado-contrato-com-banca-e-edital-com-287-vagas-ja-pode-sair-142754) |
 | 2026-05-19 | **[Radar/News] Ordem vai propor ao Governo compromisso estratégico pela medicina geral familiar** | [Acessar Edital](https://www.cmjornal.pt/sociedade/detalhe/ordem-vai-propor-ao-governo-compromisso-estrategico-pela-medicina-geral-familiar) |
 | 2026-05-18 | **[Radar/News] Saiba o estado de saúde do ex-líder religioso preso por estupros no DF** | [Acessar Edital](https://www.metropoles.com/distrito-federal/na-mira/saiba-o-estado-de-saude-do-ex-lider-religioso-preso-por-estupros-no-df) |
