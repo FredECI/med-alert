@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 26/05/2026 às 10:48
+**Última atualização do robô:** 26/05/2026 às 19:15
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-26 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/13270745) |
 | 2026-05-24 | **[Radar/News] Prefeitura alerta para golpes com falsos agentes de saúde em São José dos Campos** | [Acessar Edital](https://g1.globo.com/sp/vale-do-paraiba-regiao/noticia/2026/05/24/prefeitura-alerta-para-golpes-com-falsos-agentes-de-saude-em-sao-jose-dos-campos.ghtml) |
 | 2026-05-22 | **[Radar/News] Liliana Campos revela história de menino com doença autoimune: “Esta é a realidade”** | [Acessar Edital](https://sic.pt/sic-caras/passadeira-vermelha/2026-05-22-video-liliana-campos-revela-historia-de-menino-com-doenca-autoimune-esta-e-a-realidade-14421d7f) |
 | 2026-05-21 | **[JC Concursos] Concurso Saúde RJ: assinado contrato com banca e edital com 287 vagas já pode sair** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-assinado-contrato-com-banca-e-edital-com-287-vagas-ja-pode-sair-142754) |
