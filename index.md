@@ -7,10 +7,12 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 26/05/2026 às 19:15
+**Última atualização do robô:** 27/05/2026 às 11:20
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-05-27 | **[Radar/News] Guru emocional, palestrante e influencer: quem é o psicoterapeuta investigado por violência sexual em Salvador** | [Acessar Edital](https://www.correio24horas.com.br/salvador/guru-emocional-palestrante-e-influencer-quem-e-o-psicoterapeuta-investigado-por-violencia-sexual-em-salvador-0526) |
+| 2026-05-27 | **[Radar/News] "Entre a doença e o conflito". OMS apela a cessar-fogo na RDCongo para conter epidemia do Ébola** | [Acessar Edital](https://www.rtp.pt/noticias/mundo/entre-a-doenca-e-o-conflito-oms-apela-a-cessar-fogo-na-rdcongo-para-conter-epidemia-do-ebola_n1743736) |
 | 2026-05-26 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/13270745) |
 | 2026-05-24 | **[Radar/News] Prefeitura alerta para golpes com falsos agentes de saúde em São José dos Campos** | [Acessar Edital](https://g1.globo.com/sp/vale-do-paraiba-regiao/noticia/2026/05/24/prefeitura-alerta-para-golpes-com-falsos-agentes-de-saude-em-sao-jose-dos-campos.ghtml) |
 | 2026-05-22 | **[Radar/News] Liliana Campos revela história de menino com doença autoimune: “Esta é a realidade”** | [Acessar Edital](https://sic.pt/sic-caras/passadeira-vermelha/2026-05-22-video-liliana-campos-revela-historia-de-menino-com-doenca-autoimune-esta-e-a-realidade-14421d7f) |
