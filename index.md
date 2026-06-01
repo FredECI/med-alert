@@ -7,10 +7,13 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 31/05/2026 às 18:51
+**Última atualização do robô:** 01/06/2026 às 13:31
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-06-01 | **[JC Concursos] Concurso Saúde RJ: publicado contrato com banca para 287 vagas; edital iminente** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-publicado-contrato-com-banca-para-287-vagas-edital-iminente-143034) |
+| 2026-06-01 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-processo-seletivo-com-39-vagas-de-nivel-superior) |
+| 2026-06-01 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-processo-seletivo-com-nove-vagas) |
 | 2026-05-28 | **[Radar/News] O assistente médico definitivo: criam pequeno robô que se transforma em até 5 ferramentas cirúrgicas** | [Acessar Edital](https://www.brasil247.com/tendencias/2026/05/28/o-assistente-medico-definitivo-criam-pequeno-robo-que-se-transforma-em-ate-5-ferramentas-cirurgicas/) |
 | 2026-05-27 | **[Radar/News] Guru emocional, palestrante e influencer: quem é o psicoterapeuta investigado por violência sexual em Salvador** | [Acessar Edital](https://www.correio24horas.com.br/salvador/guru-emocional-palestrante-e-influencer-quem-e-o-psicoterapeuta-investigado-por-violencia-sexual-em-salvador-0526) |
 | 2026-05-27 | **[Radar/News] "Entre a doença e o conflito". OMS apela a cessar-fogo na RDCongo para conter epidemia do Ébola** | [Acessar Edital](https://www.rtp.pt/noticias/mundo/entre-a-doenca-e-o-conflito-oms-apela-a-cessar-fogo-na-rdcongo-para-conter-epidemia-do-ebola_n1743736) |
