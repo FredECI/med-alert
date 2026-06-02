@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 01/06/2026 às 19:56
+**Última atualização do robô:** 02/06/2026 às 11:44
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-06-02 | **[JC Concursos] Concurso Saúde RJ: formada nova comissão para 287 vagas; edital iminente** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-formada-nova-comissao-para-287-vagas-edital-iminente-143070) |
 | 2026-06-01 | **[JC Concursos] Concurso Saúde RJ: publicado contrato com banca para 287 vagas; edital iminente** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-publicado-contrato-com-banca-para-287-vagas-edital-iminente-143034) |
 | 2026-06-01 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-processo-seletivo-com-39-vagas-de-nivel-superior) |
 | 2026-06-01 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-processo-seletivo-com-nove-vagas) |
