@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 08/06/2026 às 19:19
+**Última atualização do robô:** 09/06/2026 às 10:38
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-06-09 | **[Radar/News] Café da manhã: aliado da saúde, mas sem regras fixas** | [Acessar Edital](https://www.a12.com/radio/noticias/cafe-da-manha-aliado-da-saude-mas-sem-regras-fixas) |
 | 2026-06-08 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-vagas-para-agente-de-regulacao-e-enfermeiro-regulador) |
 | 2026-06-08 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S.A.** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-processos-seletivos-para-enfermeiros-e-tecnicos-de-enfermagem) |
 | 2026-06-05 | **[Radar/News] Adulto filmado observando nove cães atacando criança sem intervir, no Paraná, é o tutor dos animais, diz polícia** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/06/05/adulto-filmado-observando-nove-caes-atacando-crianca-sem-intervir-no-parana-e-o-tutor-dos-animais-diz-policia.ghtml) |
