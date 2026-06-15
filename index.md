@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 14/06/2026 às 19:02
+**Última atualização do robô:** 15/06/2026 às 13:13
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-06-15 | **[JC Concursos] 15/06/2026 - 11:27Concurso da Prefeitura de Volta Redonda RJ: edital abre 355 vagas na saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-da-prefeitura-de-volta-redonda-rj-edital-abre-355-vagas-na-saude-143301) |
 | 2026-06-09 | **[Radar/News] Café da manhã: aliado da saúde, mas sem regras fixas** | [Acessar Edital](https://www.a12.com/radio/noticias/cafe-da-manha-aliado-da-saude-mas-sem-regras-fixas) |
 | 2026-06-08 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-vagas-para-agente-de-regulacao-e-enfermeiro-regulador) |
 | 2026-06-08 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S.A.** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-processos-seletivos-para-enfermeiros-e-tecnicos-de-enfermagem) |
