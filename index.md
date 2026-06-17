@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 16/06/2026 às 19:48
+**Última atualização do robô:** 17/06/2026 às 11:23
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-06-17 | **[Pref. Macaé] 11h08 - Concurso Saúde: consulta aos locais de prova é liberada** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-saude-consulta-aos-locais-de-prova-e-liberada) |
 | 2026-06-15 | **[Radar/News] Edital que previa fim de atendimento a pacientes de convênio no Hospital Regional de Taubaté é suspenso** | [Acessar Edital](https://g1.globo.com/sp/vale-do-paraiba-regiao/noticia/2026/06/15/edital-que-previa-fim-de-atendimento-a-pacientes-de-convenio-no-hospital-regional-de-taubate-e-suspenso.ghtml) |
 | 2026-06-15 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-processo-seletivo-para-assistente-administrativo-e-auxiliar-de-suprimentos) |
 | 2026-06-15 | **Prefeitura de Volta Redonda - Secretaria Municipal de Saúde** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/prefeitura-de-volta-redonda-rj-abre-concurso-publico-para-enfermeiro-e-tecnico-em-enfermagem) |
