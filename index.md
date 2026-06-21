@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 21/06/2026 às 10:01
+**Última atualização do robô:** 21/06/2026 às 19:08
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-06-21 | **[Pref. Macaé] 14h22 - Concurso Público Saúde: Provas são aplicadas neste domingo (21)** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-publico-saude-provas-sao-aplicadas-neste-domingo-21) |
 | 2026-06-18 | **[JC Concursos] 18/06/2026 - 10:21Processo seletivo de Lages (SC) abre 16 vagas para cargos na área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/processo-seletivo-de-lages-sc-abre-16-vagas-para-cargos-na-area-da-saude-143376) |
 | 2026-06-17 | **[Pref. Macaé] 11h08 - Concurso Saúde: consulta aos locais de prova é liberada** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-saude-consulta-aos-locais-de-prova-e-liberada) |
 | 2026-06-15 | **[Radar/News] Edital que previa fim de atendimento a pacientes de convênio no Hospital Regional de Taubaté é suspenso** | [Acessar Edital](https://g1.globo.com/sp/vale-do-paraiba-regiao/noticia/2026/06/15/edital-que-previa-fim-de-atendimento-a-pacientes-de-convenio-no-hospital-regional-de-taubate-e-suspenso.ghtml) |
