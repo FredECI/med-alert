@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 23/06/2026 às 19:07
+**Última atualização do robô:** 24/06/2026 às 10:12
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-06-24 | **[Radar/News] Confirmado primeiro caso de Ébola em França, anuncia Ministério da Saúde** | [Acessar Edital](https://pt.euronews.com/my-europe/2026/06/24/confirmado-primeiro-caso-de-ebola-em-franca-anuncia-ministerio-da-saude) |
 | 2026-06-23 | **[JC Concursos] 23/06/2026 - 10:14Concurso da Prefeitura de Piratininga (SP): edital abre vagas para área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-prefeitura-piratininga-sp-edital-abre-vagas-para-area-da-saude-143476) |
 | 2026-06-22 | **[Pref. Macaé] 14h27 - Concurso Saúde: gabarito preliminar da prova objetiva é divulgado** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-saude-gabarito-preliminar-da-prova-objetiva-e-divulgado) |
 | 2026-06-21 | **[Pref. Macaé] 14h22 - Concurso Público Saúde: Provas são aplicadas neste domingo (21)** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-publico-saude-provas-sao-aplicadas-neste-domingo-21) |
