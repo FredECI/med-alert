@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 29/06/2026 às 19:04
+**Última atualização do robô:** 30/06/2026 às 10:04
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-06-30 | **[Radar/News] Venezuela: OMS preocupada com surtos de doenças** | [Acessar Edital](https://www.noticiasaominuto.com/mundo/3013620/venezuela-oms-preocupada-com-surtos-de-doencas) |
 | 2026-06-29 | **[JC Concursos] 29/06/2026 - 13:21Concurso da Prefeitura de Volta Redonda RJ abre inscrições para 355 vagas na saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-da-prefeitura-de-volta-redonda-rj-abre-inscricoes-143637) |
 | 2026-06-24 | **[Radar/News] Confirmado primeiro caso de Ébola em França, anuncia Ministério da Saúde** | [Acessar Edital](https://pt.euronews.com/my-europe/2026/06/24/confirmado-primeiro-caso-de-ebola-em-franca-anuncia-ministerio-da-saude) |
 | 2026-06-23 | **[JC Concursos] 23/06/2026 - 10:14Concurso da Prefeitura de Piratininga (SP): edital abre vagas para área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-prefeitura-piratininga-sp-edital-abre-vagas-para-area-da-saude-143476) |
