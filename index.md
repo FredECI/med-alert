@@ -7,10 +7,13 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 22/07/2026 às 09:22
+**Última atualização do robô:** 22/07/2026 às 18:57
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-07-22 | **[Pref. Macaé] 10h06 - Concurso Saúde: gabarito definitivo e resultado preliminar das provas objetivas disponíveis** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-saude-gabarito-definitivo-e-resultado-preliminar-das-provas-objetivas-disponiveis) |
+| 2026-07-22 | **[JC Concursos] Concurso Saúde RJ: edital para 287 vagas deve ser publicado no decorrer dos próximos dias** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-edital-para-287-vagas-deve-ser-publicado-no-decorrer-dos-proximos-dias-144196) |
+| 2026-07-22 | **Prefeitura de Casimiro de Abreu** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/prefeitura-de-casimiro-de-abreu-rj-abre-selecao-para-agentes-de-saude-e-de-endemias) |
 | 2026-07-22 | **[JC Concursos] 22/07/2026 - 07:33Concurso do MP SP: publicado edital para analista na área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-do-mp-sp-publicado-edital-para-analista-na-area-da-saude-144189) |
 | 2026-07-03 | **[JC Concursos] 03/07/2026 - 08:25Concurso CRM MA: definida banca para nova seleção de níveis médio e superior** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-crm-ma-definida-banca-para-nova-selecao-de-niveis-medio-e-superior-143758) |
 | 2026-06-30 | **[Radar/News] Venezuela: OMS preocupada com surtos de doenças** | [Acessar Edital](https://www.noticiasaominuto.com/mundo/3013620/venezuela-oms-preocupada-com-surtos-de-doencas) |
