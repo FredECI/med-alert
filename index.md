@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 21/07/2026 às 18:55
+**Última atualização do robô:** 22/07/2026 às 09:22
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-07-22 | **[JC Concursos] 22/07/2026 - 07:33Concurso do MP SP: publicado edital para analista na área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-do-mp-sp-publicado-edital-para-analista-na-area-da-saude-144189) |
 | 2026-07-03 | **[JC Concursos] 03/07/2026 - 08:25Concurso CRM MA: definida banca para nova seleção de níveis médio e superior** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-crm-ma-definida-banca-para-nova-selecao-de-niveis-medio-e-superior-143758) |
 | 2026-06-30 | **[Radar/News] Venezuela: OMS preocupada com surtos de doenças** | [Acessar Edital](https://www.noticiasaominuto.com/mundo/3013620/venezuela-oms-preocupada-com-surtos-de-doencas) |
 | 2026-06-29 | **[JC Concursos] 29/06/2026 - 13:21Concurso da Prefeitura de Volta Redonda RJ abre inscrições para 355 vagas na saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-da-prefeitura-de-volta-redonda-rj-abre-inscricoes-143637) |
