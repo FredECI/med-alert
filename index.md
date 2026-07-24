@@ -7,10 +7,11 @@ title: MedAlert RJ
 
 Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
 
-**Última atualização do robô:** 24/07/2026 às 09:13
+**Última atualização do robô:** 24/07/2026 às 18:56
 
 | Data de Descoberta | Título do Processo Seletivo | Link Oficial |
 | :--- | :--- | :--- |
+| 2026-07-24 | **[Radar/News] Por trás de obras e serviços do seu bairro existe um processo que Eduardo Campos Sigilião ajuda a explicar** | [Acessar Edital](https://oglobo.globo.com/patrocinado/saftec/noticia/2026/07/24/por-tras-de-obras-e-servicos-do-seu-bairro-existe-um-processo-que-eduardo-campos-sigiliao-ajuda-a-explicar-1.ghtml) |
 | 2026-07-22 | **[Pref. Macaé] 10h06 - Concurso Saúde: gabarito definitivo e resultado preliminar das provas objetivas disponíveis** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-saude-gabarito-definitivo-e-resultado-preliminar-das-provas-objetivas-disponiveis) |
 | 2026-07-22 | **[JC Concursos] Concurso Saúde RJ: edital para 287 vagas deve ser publicado no decorrer dos próximos dias** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-edital-para-287-vagas-deve-ser-publicado-no-decorrer-dos-proximos-dias-144196) |
 | 2026-07-22 | **Prefeitura de Casimiro de Abreu** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/prefeitura-de-casimiro-de-abreu-rj-abre-selecao-para-agentes-de-saude-e-de-endemias) |
