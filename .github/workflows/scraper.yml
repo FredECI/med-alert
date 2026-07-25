@@ -8,9 +8,21 @@ on:
     - cron: '0 11,21 * * *'
   workflow_dispatch: # Adiciona um botão no GitHub para você rodar manualmente quando quiser
 
+# Evita duas execuções escrevendo/commitando ao mesmo tempo (ex: um
+# workflow_dispatch manual disparado enquanto o cron agendado ainda está
+# rodando) — em vez de cancelar a que já está rodando (o que arriscaria
+# deixar inserts no banco/envios de Telegram pela metade), a nova espera.
+concurrency:
+  group: scraper-run
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
 jobs:
   scrape-and-notify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - name: Checkout do Repositório
@@ -20,11 +32,12 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
+        cache: 'pip'
 
     - name: Instalar Dependências
       run: |
         python -m pip install --upgrade pip
-        pip install cloudscraper beautifulsoup4 lxml
+        pip install -r requirements.txt
 
     - name: Executar o Bot
       env:

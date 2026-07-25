@@ -1,7 +1,7 @@
 """Scrapers de portais de emprego (JC Concursos, Trabalha Brasil, PandaPé/Unimed)."""
 import logging
 import time
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from bs4 import BeautifulSoup
 
@@ -12,47 +12,33 @@ from medalert.timeutil import today_str
 
 class JCConcursosScraper(BaseScraper):
     """Scraper para o portal JC Concursos, buscando na página geral do RJ."""
+    url = "https://jcconcursos.com.br/concursos/rj"
 
-    def __init__(self):
-        super().__init__()
-        self.url = "https://jcconcursos.com.br/concursos/rj"
+    def _find_candidates(self, soup: BeautifulSoup):
+        return soup.find_all("a", href=True)
 
-    def scrape(self) -> List[Dict[str, str]]:
-        html_content = self.fetch_html(self.url)
-        if not html_content:
-            return []
+    def _parse_candidate(self, candidate) -> Optional[Dict[str, str]]:
+        title = candidate.text.strip()
+        link_href = candidate.get("href")
 
-        soup = BeautifulSoup(html_content, "html.parser")
-        found_jobs = []
+        if "/concursos/" not in link_href and "/noticia/" not in link_href:
+            return None
+        if len(title) < 15:  # Evita capturar menus curtos
+            return None
+        if not self.is_relevant(title):
+            return None
 
-        cards = soup.find_all("a", href=True)
-
-        for card in cards:
-            title = card.text.strip()
-            link_href = card.get("href")
-
-            if "/concursos/" not in link_href and "/noticia/" not in link_href:
-                continue
-
-            if len(title) < 15:  # Evita capturar menus curtos
-                continue
-
-            if self.is_relevant(title):
-                full_link = link_href if link_href.startswith("http") else f"https://jcconcursos.com.br{link_href}"
-
-                found_jobs.append({
-                    "title": f"[JC Concursos] {title}",
-                    "link": full_link,
-                    "pub_date": today_str(),
-                })
-
-        unique_jobs = {job["link"]: job for job in found_jobs}.values()
-        logging.info(f"[JCConcursos] Found {len(unique_jobs)} relevant medical jobs.")
-        return list(unique_jobs)
+        full_link = link_href if link_href.startswith("http") else f"https://jcconcursos.com.br{link_href}"
+        return {"title": f"[JC Concursos] {title}", "link": full_link, "pub_date": today_str()}
 
 
 class TrabalhaBrasilScraper(BaseScraper):
-    """Scraper paramétrico para o Trabalha Brasil, iterando sobre múltiplas cidades."""
+    """Scraper paramétrico para o Trabalha Brasil, iterando sobre múltiplas cidades.
+
+    Fica de fora do template method _find_candidates/_parse_candidate porque o
+    formato real é diferente: várias URLs (uma por cidade) numa mesma
+    execução, com uma pausa de cortesia entre elas — não uma única página.
+    """
 
     def __init__(self, cities: List[str]):
         super().__init__()
@@ -75,9 +61,7 @@ class TrabalhaBrasilScraper(BaseScraper):
             soup = BeautifulSoup(html_content, "html.parser")
 
             # Busca todos os links da página que possuam '/medico/' na URL (padrão das vagas deles)
-            all_links = soup.find_all("a", href=True)
-
-            for link in all_links:
+            for link in soup.find_all("a", href=True):
                 link_href = link.get("href", "")
                 title = link.text.strip()
 
@@ -106,45 +90,27 @@ class TrabalhaBrasilScraper(BaseScraper):
             time.sleep(2)
 
         unique_jobs = {job["link"]: job for job in found_jobs}.values()
-        logging.info(f"[TrabalhaBrasil] Found {len(unique_jobs)} relevant medical jobs.")
+        logging.info(f"[{self.label}] Found {len(unique_jobs)} relevant medical jobs.")
         return list(unique_jobs)
 
 
 class PandaPeUnimedScraper(BaseScraper):
     """Scraper para o portal InfoJobs/PandaPé da Unimed Costa do Sol."""
+    url = "https://unimedcostadosol.pandape.infojobs.com.br"
 
-    def __init__(self):
-        super().__init__()
-        self.url = "https://unimedcostadosol.pandape.infojobs.com.br"
-
-    def scrape(self) -> List[Dict[str, str]]:
-        html_content = self.fetch_html(self.url)
-        if not html_content:
-            return []
-
-        soup = BeautifulSoup(html_content, "html.parser")
-        found_jobs = []
-
+    def _find_candidates(self, soup: BeautifulSoup):
         # PandaPé geralmente agrupa vagas em links com a classe 'job-link' ou dentro de listas '<li>'
-        job_links = soup.find_all("a", href=True)
+        return soup.find_all("a", href=True)
 
-        for link in job_links:
-            link_href = link.get("href", "")
-            title = link.text.strip()
+    def _parse_candidate(self, candidate) -> Optional[Dict[str, str]]:
+        link_href = candidate.get("href", "")
+        title = candidate.text.strip()
 
-            # Filtro para ignorar o menu do site e pegar apenas páginas de detalhe de vaga (/Detail/)
-            if "/Detail/" not in link_href and "vaga" not in link_href.lower():
-                continue
+        # Filtro para ignorar o menu do site e pegar apenas páginas de detalhe de vaga (/Detail/)
+        if "/Detail/" not in link_href and "vaga" not in link_href.lower():
+            return None
+        if not self.is_relevant(title):
+            return None
 
-            if self.is_relevant(title):
-                full_link = link_href if link_href.startswith("http") else f"{self.url}{link_href}"
-
-                found_jobs.append({
-                    "title": f"[Unimed Costa do Sol] {title}",
-                    "link": full_link,
-                    "pub_date": today_str(),
-                })
-
-        unique_jobs = {job["link"]: job for job in found_jobs}.values()
-        logging.info(f"[PandaPeUnimed] Found {len(unique_jobs)} relevant medical jobs.")
-        return list(unique_jobs)
+        full_link = link_href if link_href.startswith("http") else f"{self.url}{link_href}"
+        return {"title": f"[Unimed Costa do Sol] {title}", "link": full_link, "pub_date": today_str()}
