@@ -1,0 +1,18 @@
+<h1>🩺 MedAlert: Radar de Oportunidades</h1>
+
+<p>Painel atualizado automaticamente com editais e processos seletivos, com foco especial em Macaé, capital e regiões próximas do Rio de Janeiro.</p>
+
+<p>
+  <strong>Última verificação do robô:</strong> {{ site.data.robot_status.last_run_at | default: "ainda não disponível" }}
+  {% if site.data.robot_status.scrapers_failed and site.data.robot_status.scrapers_failed.size > 0 %}
+    — ⚠️ {{ site.data.robot_status.scrapers_failed.size }} de {{ site.data.robot_status.scrapers_total }} fontes com problema nesta rodada ({{ site.data.robot_status.scrapers_failed | join: ", " }})
+  {% elsif site.data.robot_status.scrapers_total %}
+    — ✅ todas as {{ site.data.robot_status.scrapers_total }} fontes funcionando
+  {% endif %}
+</p>
+
+<p><a href="{{ '/vagas_abertas.csv' | relative_url }}">Baixar lista completa como planilha (CSV)</a></p>
+
+<p>
+  <input type="search" id="job-search" placeholder="Buscar por título, cidade ou fonte..." style="width: 100%; max-width: 28rem; padding: 0.5rem;">
+</p>

@@ -1,0 +1,8 @@
+<tr>
+  <td>{{ include.job.discovered_at }}</td>
+  <td>
+    {% if include.job.source and include.job.source != "" %}<span class="job-source">[{{ include.job.source }}]</span> {% endif %}<strong>{{ include.job.title }}</strong>
+    {% if include.job.last_seen_at %}<br><small>Visto pela última vez em {{ include.job.last_seen_at }}</small>{% endif %}
+  </td>
+  <td><a href="{{ include.job.link }}" aria-label="Acessar edital: {{ include.job.title }}">Acessar Edital</a></td>
+</tr>

@@ -3,117 +3,19 @@ layout: default
 title: MedAlert RJ
 ---
 
-# 🩺 MedAlert: Radar de Oportunidades
+{% include header.html %}
 
-Painel atualizado automaticamente com editais e processos seletivos abertos, com foco especial em Macaé, capital e regiões próximas.
+<table id="jobs-table">
+  <thead>
+    <tr>
+      <th>Data de Descoberta</th>
+      <th>Título do Processo Seletivo</th>
+      <th>Link Oficial</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for job in site.data.jobs %}{% include job_row.html job=job %}{% endfor %}
+  </tbody>
+</table>
 
-**Última atualização do robô:** 25/07/2026 às 08:56
-
-| Data de Descoberta | Título do Processo Seletivo | Link Oficial |
-| :--- | :--- | :--- |
-| 2026-07-25 | **[PCI RJ] SESAU - AL retifica concurso para especialistas e assistentes em saúde** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/sesau-al-retifica-concurso-para-especialistas-e-assistentes-em-saude) |
-| 2026-07-24 | **[Radar/News] Por trás de obras e serviços do seu bairro existe um processo que Eduardo Campos Sigilião ajuda a explicar** | [Acessar Edital](https://oglobo.globo.com/patrocinado/saftec/noticia/2026/07/24/por-tras-de-obras-e-servicos-do-seu-bairro-existe-um-processo-que-eduardo-campos-sigiliao-ajuda-a-explicar-1.ghtml) |
-| 2026-07-22 | **[Pref. Macaé] 10h06 - Concurso Saúde: gabarito definitivo e resultado preliminar das provas objetivas disponíveis** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-saude-gabarito-definitivo-e-resultado-preliminar-das-provas-objetivas-disponiveis) |
-| 2026-07-22 | **[JC Concursos] Concurso Saúde RJ: edital para 287 vagas deve ser publicado no decorrer dos próximos dias** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-edital-para-287-vagas-deve-ser-publicado-no-decorrer-dos-proximos-dias-144196) |
-| 2026-07-22 | **Prefeitura de Casimiro de Abreu** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/prefeitura-de-casimiro-de-abreu-rj-abre-selecao-para-agentes-de-saude-e-de-endemias) |
-| 2026-07-22 | **[JC Concursos] 22/07/2026 - 07:33Concurso do MP SP: publicado edital para analista na área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-do-mp-sp-publicado-edital-para-analista-na-area-da-saude-144189) |
-| 2026-07-03 | **[JC Concursos] 03/07/2026 - 08:25Concurso CRM MA: definida banca para nova seleção de níveis médio e superior** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-crm-ma-definida-banca-para-nova-selecao-de-niveis-medio-e-superior-143758) |
-| 2026-06-30 | **[Radar/News] Venezuela: OMS preocupada com surtos de doenças** | [Acessar Edital](https://www.noticiasaominuto.com/mundo/3013620/venezuela-oms-preocupada-com-surtos-de-doencas) |
-| 2026-06-29 | **[JC Concursos] 29/06/2026 - 13:21Concurso da Prefeitura de Volta Redonda RJ abre inscrições para 355 vagas na saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-da-prefeitura-de-volta-redonda-rj-abre-inscricoes-143637) |
-| 2026-06-24 | **[Radar/News] Confirmado primeiro caso de Ébola em França, anuncia Ministério da Saúde** | [Acessar Edital](https://pt.euronews.com/my-europe/2026/06/24/confirmado-primeiro-caso-de-ebola-em-franca-anuncia-ministerio-da-saude) |
-| 2026-06-23 | **[JC Concursos] 23/06/2026 - 10:14Concurso da Prefeitura de Piratininga (SP): edital abre vagas para área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-prefeitura-piratininga-sp-edital-abre-vagas-para-area-da-saude-143476) |
-| 2026-06-22 | **[Pref. Macaé] 14h27 - Concurso Saúde: gabarito preliminar da prova objetiva é divulgado** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-saude-gabarito-preliminar-da-prova-objetiva-e-divulgado) |
-| 2026-06-21 | **[Pref. Macaé] 14h22 - Concurso Público Saúde: Provas são aplicadas neste domingo (21)** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-publico-saude-provas-sao-aplicadas-neste-domingo-21) |
-| 2026-06-18 | **[JC Concursos] 18/06/2026 - 10:21Processo seletivo de Lages (SC) abre 16 vagas para cargos na área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/processo-seletivo-de-lages-sc-abre-16-vagas-para-cargos-na-area-da-saude-143376) |
-| 2026-06-17 | **[Pref. Macaé] 11h08 - Concurso Saúde: consulta aos locais de prova é liberada** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/concurso-saude-consulta-aos-locais-de-prova-e-liberada) |
-| 2026-06-15 | **[Radar/News] Edital que previa fim de atendimento a pacientes de convênio no Hospital Regional de Taubaté é suspenso** | [Acessar Edital](https://g1.globo.com/sp/vale-do-paraiba-regiao/noticia/2026/06/15/edital-que-previa-fim-de-atendimento-a-pacientes-de-convenio-no-hospital-regional-de-taubate-e-suspenso.ghtml) |
-| 2026-06-15 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-processo-seletivo-para-assistente-administrativo-e-auxiliar-de-suprimentos) |
-| 2026-06-15 | **Prefeitura de Volta Redonda - Secretaria Municipal de Saúde** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/prefeitura-de-volta-redonda-rj-abre-concurso-publico-para-enfermeiro-e-tecnico-em-enfermagem) |
-| 2026-06-15 | **[JC Concursos] 15/06/2026 - 11:27Concurso da Prefeitura de Volta Redonda RJ: edital abre 355 vagas na saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-da-prefeitura-de-volta-redonda-rj-edital-abre-355-vagas-na-saude-143301) |
-| 2026-06-09 | **[Radar/News] Café da manhã: aliado da saúde, mas sem regras fixas** | [Acessar Edital](https://www.a12.com/radio/noticias/cafe-da-manha-aliado-da-saude-mas-sem-regras-fixas) |
-| 2026-06-08 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-vagas-para-agente-de-regulacao-e-enfermeiro-regulador) |
-| 2026-06-08 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S.A.** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-processos-seletivos-para-enfermeiros-e-tecnicos-de-enfermagem) |
-| 2026-06-05 | **[Radar/News] Adulto filmado observando nove cães atacando criança sem intervir, no Paraná, é o tutor dos animais, diz polícia** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/06/05/adulto-filmado-observando-nove-caes-atacando-crianca-sem-intervir-no-parana-e-o-tutor-dos-animais-diz-policia.ghtml) |
-| 2026-06-02 | **[JC Concursos] Concurso Saúde RJ: formada nova comissão para 287 vagas; edital iminente** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-formada-nova-comissao-para-287-vagas-edital-iminente-143070) |
-| 2026-06-01 | **[JC Concursos] Concurso Saúde RJ: publicado contrato com banca para 287 vagas; edital iminente** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-publicado-contrato-com-banca-para-287-vagas-edital-iminente-143034) |
-| 2026-06-01 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-processo-seletivo-com-39-vagas-de-nivel-superior) |
-| 2026-06-01 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-anuncia-processo-seletivo-com-nove-vagas) |
-| 2026-05-28 | **[Radar/News] O assistente médico definitivo: criam pequeno robô que se transforma em até 5 ferramentas cirúrgicas** | [Acessar Edital](https://www.brasil247.com/tendencias/2026/05/28/o-assistente-medico-definitivo-criam-pequeno-robo-que-se-transforma-em-ate-5-ferramentas-cirurgicas/) |
-| 2026-05-27 | **[Radar/News] Guru emocional, palestrante e influencer: quem é o psicoterapeuta investigado por violência sexual em Salvador** | [Acessar Edital](https://www.correio24horas.com.br/salvador/guru-emocional-palestrante-e-influencer-quem-e-o-psicoterapeuta-investigado-por-violencia-sexual-em-salvador-0526) |
-| 2026-05-27 | **[Radar/News] "Entre a doença e o conflito". OMS apela a cessar-fogo na RDCongo para conter epidemia do Ébola** | [Acessar Edital](https://www.rtp.pt/noticias/mundo/entre-a-doenca-e-o-conflito-oms-apela-a-cessar-fogo-na-rdcongo-para-conter-epidemia-do-ebola_n1743736) |
-| 2026-05-26 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/13270745) |
-| 2026-05-24 | **[Radar/News] Prefeitura alerta para golpes com falsos agentes de saúde em São José dos Campos** | [Acessar Edital](https://g1.globo.com/sp/vale-do-paraiba-regiao/noticia/2026/05/24/prefeitura-alerta-para-golpes-com-falsos-agentes-de-saude-em-sao-jose-dos-campos.ghtml) |
-| 2026-05-22 | **[Radar/News] Liliana Campos revela história de menino com doença autoimune: “Esta é a realidade”** | [Acessar Edital](https://sic.pt/sic-caras/passadeira-vermelha/2026-05-22-video-liliana-campos-revela-historia-de-menino-com-doenca-autoimune-esta-e-a-realidade-14421d7f) |
-| 2026-05-21 | **[JC Concursos] Concurso Saúde RJ: assinado contrato com banca e edital com 287 vagas já pode sair** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-assinado-contrato-com-banca-e-edital-com-287-vagas-ja-pode-sair-142754) |
-| 2026-05-19 | **[Radar/News] Ordem vai propor ao Governo compromisso estratégico pela medicina geral familiar** | [Acessar Edital](https://www.cmjornal.pt/sociedade/detalhe/ordem-vai-propor-ao-governo-compromisso-estrategico-pela-medicina-geral-familiar) |
-| 2026-05-18 | **[Radar/News] Saiba o estado de saúde do ex-líder religioso preso por estupros no DF** | [Acessar Edital](https://www.metropoles.com/distrito-federal/na-mira/saiba-o-estado-de-saude-do-ex-lider-religioso-preso-por-estupros-no-df) |
-| 2026-05-18 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-processos-seletivos-para-medicos-com-salarios-de-ate-26-5-mil) |
-| 2026-05-17 | **[Radar/News] Menino de 10 anos é internado em estado grave após atropelamento por ônibus do transporte público de São José dos Campos (SP) neste sábado (16)** | [Acessar Edital](https://diariodotransporte.com.br/2026/05/16/menino-de-10-anos-e-internado-em-estado-grave-apos-atropelamento-por-onibus-do-transporte-publico-de-sao-jose-dos-campos-sp-neste-sabado-16/) |
-| 2026-05-14 | **[Radar/News] Estudante de medicina chama UBS de ‘lugar de c*’ e prefeito aciona Justiça por injúria** | [Acessar Edital](https://ndmais.com.br/justica/estudante-de-medicina-debocha-ubs-prefeito-aciona-justica/) |
-| 2026-05-13 | **SMS - Prefeitura do Rio de Janeiro** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/prefeitura-do-rio-de-janeiro-rj-abre-processo-seletivo-com-vagas-para-medicos) |
-| 2026-05-13 | **RIOSAÚDE - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-editais-de-processo-seletivo-para-medicos-de-diversas-areas) |
-| 2026-05-13 | **[JC Concursos] 13/05/2026 - 09:03SEST SENAT abre vagas para cargos administrativos e na área da saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/empregos/sest-senat-abre-vagas-para-cargos-administrativos-e-na-area-da-saude-142540) |
-| 2026-05-12 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-processos-seletivos-com-vagas-para-diferentes-cargos) |
-| 2026-05-11 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/13270645) |
-| 2026-05-09 | **[Radar/News] PCP indica Bernardino Soares para pacto para a saúde, mas critica** | [Acessar Edital](https://www.noticiasaominuto.com/politica/2987002/pcp-indica-bernardino-soares-para-pacto-para-a-saude-mas-critica) |
-| 2026-05-08 | **RioSaúde - Empresa Pública de Saúde do Rio de Janeiro S/A** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/riosaude-rj-abre-tres-processos-seletivos-com-vagas-para-diversos-cargos) |
-| 2026-05-08 | **[Radar/News] Justiça manda soltar ginecologista de 81 anos acusado de estupro por paciente em trabalho de parto, no Paraná** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/05/08/justica-manda-soltar-ginecologista-de-81-anos-acusado-de-estupro-por-paciente-em-trabalho-de-parto-no-parana.ghtml) |
-| 2026-05-07 | **[Radar/News] Ginecologista de 81 anos é preso acusado de estuprar paciente em trabalho de parto, no Paraná; médico já foi denunciado por 4 mulheres** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/05/07/ginecologista-de-81-anos-e-preso-acusado-de-estuprar-paciente-em-trabalho-de-parto-no-parana-medico-ja-foi-denunciado-por-4-mulheres.ghtml) |
-| 2026-05-05 | **[Radar/News] Últimos dias: ES tem 60 vagas na saúde com salários de até R$ 10,5 mil** | [Acessar Edital](https://www.folhavitoria.com.br/trabalho/concursos/ultimos-dias-es-tem-60-vagas-na-saude-com-salarios-de-ate-r-105-mil/) |
-| 2026-05-05 | **[Radar/News] PSD aceita repto de Seguro na Saúde mas traça linha vermelha** | [Acessar Edital](https://observador.pt/especiais/psd-aceita-desafio-de-seguro-na-saude-mas-traca-linha-vermelha-o-governo-e-que-governa/) |
-| 2026-05-04 | **[Radar/News] Mariana Vieira da Silva vai representar o PS no Pacto Estratégico para a Saúde** | [Acessar Edital](https://sicnoticias.pt/pais/politica/2026-05-04-video-mariana-vieira-da-silva-vai-representar-o-ps-no-pacto-estrategico-para-a-saude-dbb93738) |
-| 2026-05-04 | **[Radar/News] A opção Dark Mode permite-lhe poupar até 30% de bateria.** | [Acessar Edital](https://observador.pt/programas/explicador/pacto-saude-desde-que-nao-sirva-para-proteger-o-governo/) |
-| 2026-05-03 | **[Radar/News] A “Capital do Boi Gordo” que nasceu no gado hoje é um polo de saúde, educação e qualidade de vida no interior paulista** | [Acessar Edital](https://www.correiobraziliense.com.br/cbradar/a-capital-do-boi-gordo-que-nasceu-no-gado-hoje-e-um-polo-de-saude-educacao-e-qualidade-de-vida-no-interior-paulista/) |
-| 2026-04-30 | **[Radar/News] Endrick diz que futebol não é agradável e quer futuro do filho longe dos campos: 'Espero que se torne advogado, médico...'** | [Acessar Edital](https://www.espn.com.br/futebol/frances/artigo/_/id/16648301/endrick-diz-futebol-nao-e-agradavel-quer-futuro-filho-longe-campos-espero-que-se-torne-advogado-medico) |
-| 2026-04-29 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/10117733) |
-| 2026-04-29 | **[JC Concursos] 29/04/2026 - 06:56Concurso Saúde RJ: edital para 287 vagas está previsto para ser publicado até junho** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-saude-rj-edital-para-287-deve-ser-publicado-ate-junho-142194) |
-| 2026-04-27 | **[Radar/News] Ordem dos Médicos elogia escolha de Campos Fernandes como coordenador pacto para a saúde** | [Acessar Edital](https://www.sapo.pt/artigo/ordem-dos-medicos-elogia-escolha-de-campos-fernandes-como-coordenar-pacto-para-a-saude-69ecbd5a6502b3e81c7681fe) |
-| 2026-04-24 | **[Radar/News] Ordem elogia escolha de Campos Fernandes como coordenar pacto para a saúde** | [Acessar Edital](https://www.noticiasaominuto.com/pais/2979087/ordem-elogia-escolha-de-campos-fernandes-como-coordenar-pacto-para-a-saude) |
-| 2026-04-24 | **[Radar/News] Nomeação de Adalberto Campos Fernandes. "O problema é que a saúde é uma questão da competência da AR, vamos ver como reagem os partidos"** | [Acessar Edital](https://www.msn.com/pt-pt/noticias/other/nomea%C3%A7%C3%A3o-de-adalberto-campos-fernandes-o-problema-%C3%A9-que-a-sa%C3%BAde-%C3%A9-uma-quest%C3%A3o-da-compet%C3%AAncia-da-ar-vamos-ver-como-reagem-os-partidos/vi-AA21EG7Q?ocid=BingNewsVerp) |
-| 2026-04-23 | **[JC Concursos] 23/04/2026 - 06:35Concurso CRM MA: nova seleção em breve para níveis médio e superior** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-crm-ma-nova-selecao-em-breve-para-niveis-medio-e-superior-142053) |
-| 2026-04-21 | **[Radar/News] 'Preciso vigiar constantemente meus filhos': ratos, pulgas e parasitas proliferam em campos de deslocados em Gaza** | [Acessar Edital](https://oglobo.globo.com/mundo/noticia/2026/04/21/preciso-vigiar-constantemente-meus-filhos-ratos-pulgas-e-parasitas-proliferam-em-campos-de-deslocados-em-gaza.ghtml) |
-| 2026-04-20 | **[Pref. Macaé] 15h53 - Prazo para inscrição em concurso da Saúde com 191 vagas termina no dia 30** | [Acessar Edital](https://www.macae.rj.gov.br/noticias/leitura/noticia/prazo-para-inscricao-em-concurso-da-saude-com-191-vagas-termina-no-dia-30) |
-| 2026-04-18 | **[Radar/News] A revolução da saúde feminina: o crescimento das FemTechs e a personalização do cuidado com fertilidade, menopausa e hormônios** | [Acessar Edital](https://www.msn.com/pt-br/saude/medicina/a-revolu%C3%A7%C3%A3o-da-sa%C3%BAde-feminina-o-crescimento-das-femtechs-e-a-personaliza%C3%A7%C3%A3o-do-cuidado-com-fertilidade-menopausa-e-horm%C3%B4nios/ar-AA21bejj?ocid=BingNewsVerp) |
-| 2026-04-17 | **[Radar/News] Mais mulheres denunciam médico ginecologista de 81 anos por abusos sexuais em atendimentos, no Paraná: 'Não falaram antes por medo'** | [Acessar Edital](https://g1.globo.com/pr/campos-gerais-sul/noticia/2026/04/17/mais-mulheres-denunciam-medico-ginecologista-de-81-anos-por-abusos-sexuais-em-atendimentos-no-parana-nao-falaram-antes-por-medo.ghtml) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-cabo-frio-rj/medico/5009470) |
-| 2026-04-16 | **[Trabalha Brasil - Campos Dos Goytacazes] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-bom-jesus-do-norte-es/medico/5018635) |
-| 2026-04-16 | **[Trabalha Brasil - Campos Dos Goytacazes] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-cambuci-rj/medico/4090009) |
-| 2026-04-16 | **[Trabalha Brasil - Campos Dos Goytacazes] 2 Vagas de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-campos-dos-goytacazes-rj/medico/4355909) |
-| 2026-04-16 | **[Trabalha Brasil - Campos Dos Goytacazes] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-campos-dos-goytacazes-rj/medico/9072477) |
-| 2026-04-16 | **[Trabalha Brasil - Campos Dos Goytacazes] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-campos-dos-goytacazes-rj/medico/9084353) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-das-ostras-rj/medico/10877184) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-das-ostras-rj/medico/11749807) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-das-ostras-rj/medico/6560141) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/5168603) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/5998428) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/6051138) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/6062848) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/7818622) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/10223384) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/12271397) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/12271586) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/12923404) |
-| 2026-04-16 | **[Trabalha Brasil - Rio De Janeiro] 3 Vagas de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-rio-de-janeiro-rj/medico/6182395) |
-| 2026-04-16 | **[Trabalha Brasil - Macae] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/10500553) |
-| 2026-04-16 | **[Trabalha Brasil - Macae] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/10503056) |
-| 2026-04-16 | **[Trabalha Brasil - Macae] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/10503057) |
-| 2026-04-16 | **[Trabalha Brasil - Rio Das Ostras] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/10522342) |
-| 2026-04-16 | **[Trabalha Brasil - Rio Das Ostras] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/10522343) |
-| 2026-04-16 | **[Trabalha Brasil - Rio Das Ostras] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/10522933) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/10622998) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/10933707) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/11579034) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/11689743) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/13100960) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/5931017) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/11579053) |
-| 2026-04-16 | **[Trabalha Brasil - Cabo Frio] Vaga de Médico ...** | [Acessar Edital](https://www.trabalhabrasil.com.br/vagas-de-emprego-em-macae-rj/medico/12894409) |
-| 2026-04-16 | **[Radar/News] 'O corpo e o cérebro estão conectados mais do que se imagina', diz neurocirurgião e pesquisador** | [Acessar Edital](https://oglobo.globo.com/saude/noticia/2026/04/16/o-corpo-e-o-cerebro-estao-conectados-mais-do-que-se-imagina-diz-neurocirurgiao-e-pesquisador.ghtml) |
-| 2026-04-16 | **[JC Concursos] Concurso da Saúde RJ: autorizada contratação de banca para edital com 287 vagas** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-da-saude-rj-autorizada-contratacao-de-banca-141879) |
-| 2026-04-16 | **[JC Concursos] Concurso Prefeitura Saquarema RJ: novo edital em pauta para área de saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-prefeitura-saquarema-rj-novo-edital-em-pauta-para-area-de-saude-103031) |
-| 2026-04-16 | **[JC Concursos] Concurso Prefeitura Campos de Goytacazes RJ: formada comissão para a área de saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-prefeitura-campos-de-goytacazes-rj-formada-comissao-para-a-area-de-saude-118866) |
-| 2026-04-16 | **[JC Concursos] Concurso PME RJ: publicado contrato com banca organizadora para área de saúde; edital já pode sair** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-pme-rj-publicado-contrato-com-banca-organizadora-para-area-de-saude-edital-ja-pode-sair-99006) |
-| 2026-04-16 | **[JC Concursos] Concurso Ministério da Saúde: publicada autorização para 1.786 vagas de níveis médio e superior** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-ministerio-da-saude-publicada-autorizacao-93910) |
-| 2026-04-16 | **[JC Concursos] Concurso Fundação Saúde RJ: aumenta a oferta de vagas para novo edital** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-fundacao-saude-rj-aumenta-oferta-de-vagas-para-novo-edital-87166) |
-| 2026-04-16 | **[JC Concursos] Concurso Bombeiros RJ: nova seleção em pauta para a área de saúde** | [Acessar Edital](https://jcconcursos.com.br/noticia/concursos/concurso-bombeiros-rj-nova-selecao-em-pauta-para-a-area-de-saude-141116) |
-| 2026-04-16 | **FeSaúde - Fundação Estatal de Saúde de Niterói** | [Acessar Edital](https://www.pciconcursos.com.br/noticias/fesaude-de-niteroi-rj-abre-processo-seletivo-para-agentes-comunitarios-de-saude) |
+<script src="{{ '/assets/js/search.js' | relative_url }}"></script>

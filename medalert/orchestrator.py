@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from medalert.config import TARGET_CITIES, load_telegram_bot_token, load_telegram_chat_ids
 from medalert.notify import TelegramNotifier
-from medalert.report import ReportGenerator
+from medalert.report import ReportGenerator, write_robot_status
 from medalert.scrapers.base import BaseScraper
 from medalert.scrapers.macae import MacaeGovScraper
 from medalert.scrapers.news import BingNewsScraper, G1Scraper, GoogleNewsScraper
@@ -55,7 +55,8 @@ def run(
 
     new_jobs_count = 0
     messages_sent = 0
-    scraper_failures: List[str] = []
+    scraper_failures: List[str] = []  # "Classe: erro" — detalhe para o alerta do Telegram
+    failed_labels: List[str] = []  # só o nome da fonte — para o painel público de saúde
 
     # Loop de execução blindado
     for scraper in scrapers:
@@ -93,20 +94,24 @@ def run(
             nome_scraper = scraper.__class__.__name__
             logging.error(f"❌ Erro crítico ao executar {nome_scraper}: {e}. Pulando para o próximo.")
             scraper_failures.append(f"{nome_scraper}: {e}")
+            failed_labels.append(scraper.label)
             continue
 
     logging.info(f"Execution finished. {new_jobs_count} new jobs added. {messages_sent} Telegram alerts sent.")
 
-    # Só regenera os relatórios quando há algo novo de verdade — gerar sempre,
-    # mesmo sem vagas novas, fazia o index.md mudar todo run só pelo timestamp
-    # (generate_markdown reescrevia a hora atual), o que anulava o guard de
-    # commit do workflow ("só commita se algo mudou").
+    # Só regenera CSV/jobs.json quando há vaga nova de verdade — gerar sempre
+    # (mesmo sem novidade) fazia o index.md mudar todo run só por um timestamp
+    # cosmético, o que anulava o guard de commit do workflow ("só commita se
+    # algo mudou"). O status do robô abaixo é diferente: "rodou e está
+    # saudável" é informação nova mesmo sem vaga nova, por isso é sempre escrito.
     if new_jobs_count > 0:
         reporter = ReportGenerator(db_manager=db)
         reporter.generate_csv()
-        reporter.generate_markdown()
+        reporter.generate_jobs_data()
     else:
-        logging.info("Nenhuma vaga nova — relatórios não foram regenerados nesta rodada.")
+        logging.info("Nenhuma vaga nova — CSV e jobs.json não foram regenerados nesta rodada.")
+
+    write_robot_status(scrapers_total=len(scrapers), failed_labels=failed_labels)
 
     db.close()
 
