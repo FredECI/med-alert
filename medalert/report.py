@@ -73,8 +73,17 @@ class ReportGenerator:
         """
         jobs = self.fetch_jobs()
         payload = []
+        seen_signatures = set()
 
         for job in jobs:
+            # Mesmo edital vindo de duas fontes tem links diferentes e por isso
+            # vira duas linhas no banco; no site mostramos só uma. Vagas sem
+            # assinatura confiável (dedup_key None) nunca são agrupadas.
+            if job.dedup_key:
+                if job.dedup_key in seen_signatures:
+                    continue
+                seen_signatures.add(job.dedup_key)
+
             source, rest = split_source_and_title(job.title)
             payload.append({
                 "title": sanitize_title(rest),

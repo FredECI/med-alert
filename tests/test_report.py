@@ -75,6 +75,35 @@ def test_generate_jobs_data_creates_missing_data_directory(tmp_path, db):
     assert out_path.exists()
 
 
+def test_generate_jobs_data_collapses_the_same_edital_from_two_sources(tmp_path, db):
+    """As duas linhas continuam no banco (nada é perdido), mas o site mostra
+    uma só — senão o mesmo processo seletivo aparece duplicado na tabela."""
+    db.insert_job("[IBAM] Municipio de Cabo Frio - Ed. 07/2026", "https://ibam.example/7", "2026-07-01")
+    db.insert_job("[Cabo Frio] Edital 007/2026 - saúde", "https://cabofrio.example/7", "2026-07-02")
+
+    reporter = ReportGenerator(db_manager=db)
+    out_path = tmp_path / "_data" / "jobs.json"
+    reporter.generate_jobs_data(filename=str(out_path))
+
+    payload = json.loads(out_path.read_text(encoding="utf-8"))
+    assert len(payload) == 1
+    assert len(db.fetch_all_jobs()) == 2
+
+
+def test_generate_jobs_data_keeps_jobs_without_a_confident_signature(tmp_path, db):
+    """Vagas sem assinatura (dedup_key None) nunca podem ser agrupadas entre
+    si — seriam vagas distintas escondidas por engano."""
+    db.insert_job("[G1] Concurso de saúde no interior", "https://g1.example/a", "2026-07-01")
+    db.insert_job("[PCI] Outro concurso de saúde", "https://pci.example/b", "2026-07-02")
+
+    reporter = ReportGenerator(db_manager=db)
+    out_path = tmp_path / "_data" / "jobs.json"
+    reporter.generate_jobs_data(filename=str(out_path))
+
+    payload = json.loads(out_path.read_text(encoding="utf-8"))
+    assert len(payload) == 2
+
+
 def test_write_robot_status_reports_counts_and_failed_labels(tmp_path):
     out_path = tmp_path / "_data" / "robot_status.json"
     write_robot_status(scrapers_total=10, failed_labels=["BingNewsScraper"], filename=str(out_path))

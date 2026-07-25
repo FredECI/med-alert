@@ -14,26 +14,51 @@ KEYWORDS = [
 STATE_FILTERS = [
     "rj", "rio de janeiro", "macaé", "macae",
     "região dos lagos", "regiao dos lagos", "rio das ostras",
-    "campos", "campos dos goytacazes", "carapebus",
+    # "campos" sozinho NÃO entra aqui: é palavra comum em português
+    # ("campos de atuação") e ainda casaria com cidades de outros estados
+    # (ex: "Campos do Jordão/SP"), vazando vaga de fora do RJ — a mesma
+    # classe de bug do vazamento do Espírito Santo no Trabalha Brasil.
+    # Na prática nada se perde: as fontes que citam a cidade quase sempre
+    # trazem junto "RJ" ou o nome completo, que continuam na lista.
+    "campos dos goytacazes", "carapebus",
     "quissamã", "quissama", "cabo frio", "búzios", "buzios",
     "são joão da barra", "sao joao da barra", "casimiro",
     "saquarema", "araruama", "arraial do cabo",
 ]
 
-# Termos que indicam que o texto é REALMENTE sobre uma oportunidade de
-# trabalho (concurso/processo seletivo/vaga), não só que ele menciona saúde
-# de passagem. Fontes de notícia geral (Google News, Bing News, portais de
-# cidade) precisam bater nisso ALÉM de is_relevant() — sem essa segunda
-# trava, matéria de saúde sem nenhuma vaga real (ex: um texto institucional
-# ou patrocinado que só cita "saúde") passa pelo filtro de palavra-chave.
-JOB_SIGNAL_TERMS = [
-    "concurso", "concurso público", "concurso publico",
-    "processo seletivo", "seleção pública", "selecao publica",
-    "edital", "vaga", "vagas",
-    "inscrição", "inscricao", "inscrições", "inscricoes",
+# Um texto só é considerado "oportunidade de trabalho" se tiver linguagem de
+# contratação — não basta mencionar saúde. Mas nem todo termo tem a mesma
+# força probatória, por isso a lista é dividida:
+#
+# FORTES: praticamente só aparecem em contexto de contratação pública.
+STRONG_JOB_TERMS = [
+    "concurso", "concursos", "concurso público", "concurso publico",
+    "processo seletivo", "processos seletivos",
+    "seleção pública", "selecao publica",
+    "edital", "editais",
     "contratação", "contratacao",
     "convocação", "convocacao",
     "banco de currículos", "banco de curriculos",
+    "trabalhe conosco",
+]
+
+# FRACOS: aparecem tanto em vaga real quanto em evento — "vagas limitadas"
+# numa palestra, "inscrições abertas" num congresso. Só valem quando o texto
+# não é sobre um evento/formação.
+WEAK_JOB_TERMS = [
+    "vaga", "vagas",
+    "inscrição", "inscricao", "inscrições", "inscricoes",
+]
+
+# Marcadores de evento/capacitação. Um fórum de saúde que "recebe inscrições"
+# não é vaga de emprego — caso real que passou pelo filtro antigo e apareceu
+# como vaga vinda do portal de notícias de Cabo Frio.
+EVENT_TERMS = [
+    "fórum", "forum", "congresso", "congressos",
+    "palestra", "palestras", "curso", "cursos",
+    "capacitação", "capacitacao", "treinamento", "treinamentos",
+    "seminário", "seminario", "simpósio", "simposio",
+    "workshop", "workshops", "oficina", "oficinas", "webinar", "webinars",
 ]
 
 
@@ -47,11 +72,25 @@ def is_relevant(text: str, keywords: Iterable[str] = KEYWORDS) -> bool:
     return any(_contains_word(text_lower, keyword) for keyword in keywords)
 
 
-def has_job_signal(text: str, terms: Iterable[str] = JOB_SIGNAL_TERMS) -> bool:
-    """True se o texto tiver alguma palavra que indique concurso/vaga real,
-    não só o assunto saúde em geral."""
+def has_job_signal(text: str) -> bool:
+    """True se o texto indicar uma contratação real, não só o assunto saúde.
+
+    Um termo forte ("concurso", "edital", "processo seletivo") basta sozinho.
+    Um termo fraco ("vaga", "inscrições") só conta se o texto não for sobre
+    evento/curso — senão, coisas como "Fórum de Saúde recebe inscrições" ou
+    "Palestra tem vagas limitadas" entram como se fossem oportunidade de
+    emprego. Note que a checagem é por palavra inteira, então "curso" não
+    casa dentro de "concurso".
+    """
     text_lower = text.lower()
-    return any(_contains_word(text_lower, term) for term in terms)
+
+    if any(_contains_word(text_lower, term) for term in STRONG_JOB_TERMS):
+        return True
+
+    if any(_contains_word(text_lower, term) for term in EVENT_TERMS):
+        return False
+
+    return any(_contains_word(text_lower, term) for term in WEAK_JOB_TERMS)
 
 
 def is_in_target_state(text: str, state_filters: Iterable[str] = STATE_FILTERS) -> bool:

@@ -90,6 +90,31 @@ class ConcursosNoBrasilScraper(BaseScraper):
 class DomRjScraper(BaseScraper):
     """Busca por palavra-chave no Diário Oficial do Município do Rio de Janeiro.
 
+    ⚠️ DESATIVADO — não está em build_scrapers(). A implementação funciona
+    (o endpoint abaixo responde normalmente), mas a FONTE não serve ao
+    propósito do projeto. Medições feitas na janela de 7 dias:
+
+        "saúde"                   -> 214 resultados
+        "processo seletivo"       -> 403 resultados
+        "concurso público médico" -> 285 resultados
+        "edital médico"           -> 208 resultados
+
+    A busca é OR-based, então estreitar o termo aumenta o ruído em vez de
+    reduzir. Pior: cada resultado é um FRAGMENTO DE PÁGINA, não uma vaga —
+    numa amostragem, uma única edição (id 14879) casou em 27 páginas
+    consecutivas, ou seja, um mesmo edital vira dezenas de "vagas" distintas,
+    cada uma com título cortado no meio de uma frase ("Carteira de
+    Identidade; • CPF; • C..."). Nenhum ajuste de filtro resolve isso, porque
+    o problema é a granularidade da fonte, não a relevância do conteúdo.
+
+    A cobertura de concursos da capital já é atendida com títulos utilizáveis
+    por RioSaudeScraper, PCI RJ, JCConcursosScraper e ConcursosNoBrasilScraper.
+
+    Mantido no código (e testado) porque o endpoint abaixo foi obtido por
+    engenharia reversa e continua válido: se algum dia o DOM-RJ expuser uma
+    listagem por edital — em vez de busca full-text por página — dá para
+    reaproveitar toda a mecânica de request.
+
     A home tem um formulário Angular ("Busca por Palavra") que dá POST em
     /buscanova com um token — mas esse POST só devolve o shell estático da
     SPA; os resultados de verdade são buscados depois, client-side, via JS.

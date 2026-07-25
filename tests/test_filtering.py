@@ -49,3 +49,43 @@ def test_has_job_signal_rejects_health_mention_with_no_hiring_language():
     """Caso real: uma matéria patrocinada mencionando 'saúde' de passagem
     não deveria virar 'vaga nova' só porque is_relevant() bate no assunto."""
     assert has_job_signal("Por trás de obras e serviços da área de saúde do seu bairro") is False
+
+
+def test_is_in_target_state_rejects_bare_campos_as_common_word():
+    """'campos' solto era palavra comum demais e ainda casava com cidade de
+    outro estado — mesmo tipo de vazamento do caso Espírito Santo."""
+    assert is_in_target_state("Concurso para técnico em campos de atuação diversos") is False
+    assert is_in_target_state("Vaga de médico em Campos do Jordão SP") is False
+
+
+def test_is_in_target_state_still_matches_campos_dos_goytacazes():
+    assert is_in_target_state("Prefeitura de Campos dos Goytacazes abre concurso") is True
+
+
+def test_is_in_target_state_matches_campos_city_when_uf_is_present():
+    """Fontes que citam a cidade quase sempre trazem a UF junto (ex: o IBAM
+    lista 'Municipio de Campos/RJ'), então o 'rj' cobre o caso real."""
+    assert is_in_target_state("Municipio de Campos/RJ - Edital 01/2026") is True
+
+
+def test_has_job_signal_rejects_event_registrations():
+    """Termos fracos ('inscrições', 'vagas') aparecem em evento/curso tanto
+    quanto em contratação. O primeiro caso é real: veio do portal de notícias
+    de Cabo Frio num teste ao vivo e entrou como se fosse vaga."""
+    assert has_job_signal("3º Fórum de Saúde do Homem recebe inscrições de profissionais") is False
+    assert has_job_signal("Congresso de Medicina abre inscrições para participantes") is False
+    assert has_job_signal("Palestra sobre saúde mental tem vagas limitadas") is False
+    assert has_job_signal("Curso de capacitação para agentes de saúde abre inscrições") is False
+
+
+def test_has_job_signal_keeps_weak_term_when_there_is_no_event_context():
+    """Sem contexto de evento, 'vagas' continua valendo como sinal — é assim
+    que notícia tipo 'Prefeitura abre 50 vagas para médicos' é capturada."""
+    assert has_job_signal("Prefeitura abre 50 vagas para médicos na rede municipal") is True
+
+
+def test_has_job_signal_strong_term_wins_over_event_term():
+    """'Concurso ... do curso técnico' tem termo de evento, mas o termo forte
+    manda. Também garante que 'curso' não casa dentro de 'concurso'."""
+    assert has_job_signal("Concurso público para professor do curso técnico de enfermagem") is True
+    assert has_job_signal("Edital de processo seletivo inclui curso de formação") is True
