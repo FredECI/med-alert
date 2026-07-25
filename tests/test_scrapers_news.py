@@ -23,6 +23,18 @@ def test_google_news_scraper_drops_unrelated_article(stub_html):
     assert not any("Show de música" in job["title"] for job in jobs)
 
 
+def test_google_news_scraper_drops_health_mention_without_job_signal(stub_html):
+    """Regressão real: uma matéria patrocinada/institucional mencionando
+    'área de saúde' de passagem (sem falar de concurso/vaga/edital) apareceu
+    como 'vaga' no site em produção antes desse filtro existir."""
+    scraper = GoogleNewsScraper()
+    stub_html(scraper, load_fixture("google_news.html"))
+
+    jobs = scraper.scrape()
+
+    assert not any("Eduardo" in job["title"] for job in jobs)
+
+
 def test_g1_scraper_requires_both_state_and_relevance(stub_html):
     scraper = G1Scraper()
     stub_html(scraper, load_fixture("g1_concursos.html"))

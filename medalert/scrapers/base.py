@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from medalert.filtering import is_in_target_state, is_relevant
+from medalert.filtering import has_job_signal, is_in_target_state, is_relevant
 
 _RETRY = Retry(
     total=2,  # até 2 novas tentativas (3 no total) só para falhas transitórias
@@ -59,6 +59,9 @@ class BaseScraper:
 
     def is_in_target_state(self, text: str) -> bool:
         return is_in_target_state(text)
+
+    def has_job_signal(self, text: str) -> bool:
+        return has_job_signal(text)
 
     def scrape(self) -> List[Dict[str, str]]:
         """Template method: busca self.url, itera candidatos via

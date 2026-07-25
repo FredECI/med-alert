@@ -1,5 +1,5 @@
-"""Testes de relevância e filtro regional — cobre a regressão do bug de substring solta."""
-from medalert.filtering import is_in_target_state, is_relevant
+"""Testes de relevância, filtro regional e sinal de vaga real."""
+from medalert.filtering import has_job_signal, is_in_target_state, is_relevant
 
 
 def test_is_relevant_matches_whole_word_keyword():
@@ -34,3 +34,18 @@ def test_is_in_target_state_matches_rj_inside_url_slug():
 
 def test_is_in_target_state_rejects_other_state_slug():
     assert is_in_target_state("vagas-de-emprego-em-bom-jesus-do-norte-es/medico/123") is False
+
+
+def test_has_job_signal_matches_concurso():
+    assert has_job_signal("Prefeitura abre concurso para área de saúde") is True
+
+
+def test_has_job_signal_matches_processo_seletivo_but_not_bare_processo():
+    assert has_job_signal("Publicado o edital do processo seletivo simplificado") is True
+    assert has_job_signal("Existe um processo que ajuda a explicar a obra") is False
+
+
+def test_has_job_signal_rejects_health_mention_with_no_hiring_language():
+    """Caso real: uma matéria patrocinada mencionando 'saúde' de passagem
+    não deveria virar 'vaga nova' só porque is_relevant() bate no assunto."""
+    assert has_job_signal("Por trás de obras e serviços da área de saúde do seu bairro") is False

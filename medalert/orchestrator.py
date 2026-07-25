@@ -5,8 +5,18 @@ from typing import List, Optional
 from medalert.config import TARGET_CITIES, load_telegram_bot_token, load_telegram_chat_ids
 from medalert.notify import TelegramNotifier
 from medalert.report import ReportGenerator, write_robot_status
+from medalert.scrapers.aggregators import ConcursosNoBrasilScraper, DomRjScraper, InfoJobsScraper
 from medalert.scrapers.base import BaseScraper
+from medalert.scrapers.health_institutions import FiotecScraper, IbamScraper, RioSaudeScraper
 from medalert.scrapers.macae import MacaeGovScraper
+from medalert.scrapers.municipal_gov import (
+    AraruamaGovScraper,
+    CaboFrioSaudeScraper,
+    CasimiroDeAbreuGovScraper,
+    RioDasOstrasConcursoScraper,
+    RioDasOstrasNoticiasScraper,
+    SaquaremaGovScraper,
+)
 from medalert.scrapers.news import BingNewsScraper, G1Scraper, GoogleNewsScraper
 from medalert.scrapers.pci import build_pci_scrapers
 from medalert.scrapers.portals import JCConcursosScraper, PandaPeUnimedScraper, TrabalhaBrasilScraper
@@ -29,6 +39,21 @@ def build_scrapers() -> List[BaseScraper]:
         TrabalhaBrasilScraper(cities=TARGET_CITIES),
         PandaPeUnimedScraper(),
         MacaeGovScraper(),
+        # Fase 4 — instituições de saúde
+        RioSaudeScraper(),
+        FiotecScraper(),
+        IbamScraper(),
+        # Fase 4 — prefeituras/portais municipais
+        AraruamaGovScraper(),
+        CaboFrioSaudeScraper(),
+        RioDasOstrasNoticiasScraper(),
+        RioDasOstrasConcursoScraper(),
+        SaquaremaGovScraper(),
+        CasimiroDeAbreuGovScraper(),
+        # Fase 4 — agregadores e diário oficial
+        InfoJobsScraper(),
+        ConcursosNoBrasilScraper(),
+        DomRjScraper(),
     ]
 
 

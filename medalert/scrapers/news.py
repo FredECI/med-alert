@@ -29,10 +29,12 @@ class GoogleNewsScraper(BaseScraper):
         raw_link = link_element.get("href", "")
         link_href = f"https://news.google.com{raw_link[1:]}" if raw_link.startswith("./") else raw_link
 
-        # Como a própria URL de busca já é filtrada, aqui somos um pouco mais
-        # flexíveis, mas ainda garantimos que tenha a ver com a área médica.
+        # A URL de busca já é filtrada, mas isso sozinho deixava passar
+        # matéria que só menciona saúde de passagem (ex: conteúdo
+        # institucional/patrocinado) sem ser realmente sobre uma vaga —
+        # por isso exigimos também um termo de concurso/processo seletivo.
         article_text = candidate.text.strip()
-        if not self.is_relevant(article_text):
+        if not (self.is_relevant(article_text) and self.has_job_signal(article_text)):
             return None
 
         return {"title": f"[Notícia/Radar] {title}", "link": link_href, "pub_date": today_str()}
@@ -51,7 +53,7 @@ class G1Scraper(BaseScraper):
         link_href = candidate.get("href", "")
 
         # Precisamos verificar o título da notícia para saber se é do nosso interesse
-        if not (self.is_in_target_state(title) and self.is_relevant(title)):
+        if not (self.is_in_target_state(title) and self.is_relevant(title) and self.has_job_signal(title)):
             return None
 
         return {"title": f"[G1] {title}", "link": link_href, "pub_date": today_str()}
@@ -79,7 +81,7 @@ class BingNewsScraper(BaseScraper):
         snippet = snippet_element.text.strip() if snippet_element else ""
         full_text = f"{title} {snippet}"
 
-        if not self.is_relevant(full_text):
+        if not (self.is_relevant(full_text) and self.has_job_signal(full_text)):
             return None
 
         return {"title": f"[Radar/News] {title}", "link": link_href, "pub_date": today_str()}
