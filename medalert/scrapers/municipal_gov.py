@@ -12,6 +12,7 @@ from typing import Dict, Optional
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
+from medalert.taxonomy import NORTE_FLUMINENSE, NOTICIA, REGIAO_DOS_LAGOS
 from medalert.textutils import sanitize_title
 from medalert.timeutil import today_str
 
@@ -23,6 +24,7 @@ class AraruamaGovScraper(BaseScraper):
     Araruama. Cobre todas as carreiras (educação, guarda, etc), não só saúde — por
     isso ainda filtramos por is_relevant(). has_job_signal() é dispensável: a própria
     categoria da página já garante que todo item é sobre concurso/edital."""
+    region = REGIAO_DOS_LAGOS
     url = "https://www.araruama.rj.gov.br/publicacoes/atos-oficiais-concurso-publico"
 
     def _find_candidates(self, soup: BeautifulSoup):
@@ -62,6 +64,8 @@ class CaboFrioSaudeScraper(BaseScraper):
     find_all("a", href=True) dos outros — precisa localizar os cards e decodificar
     o JSON do atributo.
     """
+    job_type = NOTICIA
+    region = REGIAO_DOS_LAGOS
     url = "https://noticias.cabofrio.rj.gov.br/category/saude/"
 
     def _find_candidates(self, soup: BeautifulSoup):
@@ -93,6 +97,8 @@ class RioDasOstrasNoticiasScraper(BaseScraper):
     """Feed geral de notícias de Rio das Ostras (não é escopado a concurso), então
     precisa tanto de has_job_signal() quanto de is_relevant() para não deixar passar
     notícia institucional de saúde sem vaga real."""
+    job_type = NOTICIA
+    region = NORTE_FLUMINENSE
     url = "https://www.riodasostras.rj.gov.br/noticias/"
 
     def _find_candidates(self, soup: BeautifulSoup):
@@ -121,6 +127,7 @@ class RioDasOstrasConcursoScraper(BaseScraper):
     na lista, o título deve mencionar isso para ser capturado. Alguns cards da
     página (ex: "2ª Prova Prática") não têm link algum — ficam de fora naturalmente
     por não bater no find_all("a", href=True)."""
+    region = NORTE_FLUMINENSE
     url = "https://www.riodasostras.rj.gov.br/concursopublico/"
 
     def _find_candidates(self, soup: BeautifulSoup):
@@ -147,6 +154,7 @@ class SaquaremaGovScraper(BaseScraper):
     """Categoria 'Concurso Público' do site institucional de Saquarema — pré-escopada
     a concurso pela própria prefeitura, mas cobre todas as carreiras (educação,
     guarda-vidas etc), então ainda filtramos por is_relevant()."""
+    region = REGIAO_DOS_LAGOS
     url = "https://www.saquarema.rj.gov.br/category/concurso-publico/"
 
     def _find_candidates(self, soup: BeautifulSoup):
@@ -177,6 +185,7 @@ class CasimiroDeAbreuGovScraper(BaseScraper):
     tabela — não são <tr> e não têm o botão de link, então o parser baseado em
     linhas de tabela simplesmente não os enxerga como candidatos, sem precisar de
     tratamento especial para não quebrar."""
+    region = NORTE_FLUMINENSE
     url = "https://transparencia.casimirodeabreu.rj.gov.br/concursopublico.php"
 
     def _find_candidates(self, soup: BeautifulSoup):

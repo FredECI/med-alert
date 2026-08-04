@@ -4,6 +4,7 @@ from typing import Dict, Optional
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
+from medalert.taxonomy import NOTICIA
 from medalert.timeutil import today_str
 
 
@@ -12,6 +13,7 @@ class GoogleNewsScraper(BaseScraper):
     Scraper focado no Google News, buscando por termos específicos.
     Isso engloba Folha Dirigida, Estratégia Concursos, Sanar, etc.
     """
+    job_type = NOTICIA
     # A URL já traz a busca "concurso medico" filtrada para os últimos 7 dias (when:7d)
     url = "https://news.google.com/search?q=concurso%20medico%20rj%20OR%20rio%20de%20janeiro%20OR%20macae%20when%3A7d&hl=pt-BR&gl=BR&ceid=BR%3Apt-419"
 
@@ -42,6 +44,7 @@ class GoogleNewsScraper(BaseScraper):
 
 class G1Scraper(BaseScraper):
     """Scraper focado na editoria de concursos do G1 (Nacional e Sudeste)."""
+    job_type = NOTICIA
     url = "https://g1.globo.com/trabalho-e-carreira/concursos/"
 
     def _find_candidates(self, soup: BeautifulSoup):
@@ -61,6 +64,7 @@ class G1Scraper(BaseScraper):
 
 class BingNewsScraper(BaseScraper):
     """Busca em blogs médicos, portais de prefeituras e jornais locais através do Bing News."""
+    job_type = NOTICIA
     # Query já foca nas cidades-alvo e na carreira (últimos 7 dias)
     url = "https://www.bing.com/news/search?q=concurso+medico+rio+de+janeiro+OR+macae+OR+campos&qft=interval%3d%227%22"
 

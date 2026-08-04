@@ -1,5 +1,6 @@
 """Utilitários de limpeza de texto compartilhados pelos scrapers e pelo gerador de relatórios."""
 import re
+import unicodedata
 from typing import Tuple
 from urllib.parse import urlparse
 
@@ -29,6 +30,16 @@ _SOURCE_BY_DOMAIN = {
     "saquarema.rj.gov.br": "Saquarema",
     "casimirodeabreu.rj.gov.br": "Casimiro de Abreu",
 }
+
+
+def strip_accents(text: str) -> str:
+    """Remove acentos para o casamento não depender de 'macaé' vs 'macae'.
+
+    Resolve na origem a duplicação manual de variantes acentuadas que as
+    listas de filtro ainda carregam.
+    """
+    decomposed = unicodedata.normalize("NFD", str(text))
+    return "".join(char for char in decomposed if unicodedata.category(char) != "Mn")
 
 
 def sanitize_title(raw_title) -> str:

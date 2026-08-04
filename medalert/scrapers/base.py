@@ -10,6 +10,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from medalert.filtering import has_job_signal, is_in_target_state, is_relevant
+from medalert.taxonomy import CONCURSO
 
 _RETRY = Retry(
     total=2,  # até 2 novas tentativas (3 no total) só para falhas transitórias
@@ -25,6 +26,19 @@ class BaseScraper:
     #: que itera várias URLs por cidade) sobrescrevem scrape() por completo e
     #: ignoram este atributo.
     url: str = ""
+
+    #: Natureza da fonte. O orquestrador usa isso como ponto de partida para
+    #: classificar cada vaga (ver medalert/taxonomy.py) e é o que permite ao
+    #: assinante filtrar por tipo. Declarado aqui, na classe, para não ter
+    #: que mexer no código de parsing de 25 scrapers.
+    job_type: str = CONCURSO
+
+    #: Região conhecida da fonte, quando ela é geograficamente específica
+    #: (o portal de uma prefeitura só publica vaga daquela cidade). Serve de
+    #: fallback: a região é deduzida do título primeiro, e isto entra quando o
+    #: texto não nomeia a cidade — caso comum, porque o título costuma trazer
+    #: o nome da instituição, não do município. None = sempre deduzir do texto.
+    region: Optional[str] = None
 
     def __init__(self):
         # Cloudscraper já gerencia os headers e simula um navegador real automaticamente

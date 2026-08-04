@@ -6,6 +6,7 @@ from typing import Dict, List, Optional
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
+from medalert.taxonomy import NOTICIA, RESIDENCIA
 from medalert.textutils import sanitize_title
 from medalert.timeutil import now_brt, today_str
 
@@ -30,6 +31,7 @@ class MedGrupoScraper(BaseScraper):
     A fonte é exclusivamente médica e o filtro de estado já é aplicado pelo
     próprio site, então não reaplicamos is_relevant()/is_in_target_state().
     """
+    job_type = RESIDENCIA
 
     url = "https://concursos.medgrupo.com.br/"
 
@@ -107,6 +109,7 @@ class EstrategiaSaudeScraper(BaseScraper):
     palavra-chave médica descartaria títulos legítimos e enxutos como
     "Concurso SES RJ", que não repetem "saúde" no nome.
     """
+    job_type = NOTICIA
 
     url = "https://www.estrategiaconcursos.com.br/blog/concursos-area-da-saude/"
 

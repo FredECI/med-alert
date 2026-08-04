@@ -7,7 +7,7 @@ from medalert.dedup import build_signature
 from medalert.models import Job
 from medalert.timeutil import now_brt
 
-_JOB_COLUMNS = "job_title, link, publication_date, last_seen_at, dedup_key"
+_JOB_COLUMNS = "job_title, link, publication_date, last_seen_at, dedup_key, job_type, region"
 
 _CREATE_JOBS_TABLE = """
     CREATE TABLE IF NOT EXISTS jobs (
@@ -15,7 +15,24 @@ _CREATE_JOBS_TABLE = """
         job_title TEXT NOT NULL,
         link TEXT UNIQUE NOT NULL,
         publication_date TEXT,
-        is_sent BOOLEAN DEFAULT 0
+        last_seen_at TEXT,
+        dedup_key TEXT,
+        job_type TEXT,
+        region TEXT
+    )
+"""
+
+# Uma linha por (vaga, destinatário). Substitui o antigo booleano `is_sent`,
+# que não sobrevive à personalização: com filtro por assinante, "enviada"
+# deixa de ser propriedade da vaga e passa a depender do par — a mesma vaga
+# foi entregue a quem assina Macaé e não a quem assina só a capital.
+_CREATE_DELIVERIES_TABLE = """
+    CREATE TABLE IF NOT EXISTS deliveries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        job_link TEXT NOT NULL,
+        chat_id TEXT NOT NULL,
+        sent_at TEXT NOT NULL,
+        UNIQUE(job_link, chat_id)
     )
 """
 
@@ -30,6 +47,7 @@ class DatabaseManager:
     def _create_tables(self) -> None:
         with self.conn:
             self.conn.execute(_CREATE_JOBS_TABLE)
+            self.conn.execute(_CREATE_DELIVERIES_TABLE)
 
     def _migrate_schema(self) -> None:
         """Adiciona colunas novas em bancos já existentes.
@@ -50,22 +68,47 @@ class DatabaseManager:
             # nos bancos que já existem (removê-la exigiria reescrever a tabela).
             if "dedup_key" not in existing_columns:
                 self.conn.execute("ALTER TABLE jobs ADD COLUMN dedup_key TEXT")
+            if "job_type" not in existing_columns:
+                self.conn.execute("ALTER TABLE jobs ADD COLUMN job_type TEXT")
+            if "region" not in existing_columns:
+                self.conn.execute("ALTER TABLE jobs ADD COLUMN region TEXT")
 
-    def insert_job(self, title: str, link: str, pub_date: str) -> bool:
+    def insert_job(
+        self,
+        title: str,
+        link: str,
+        pub_date: str,
+        job_type: Optional[str] = None,
+        region: Optional[str] = None,
+    ) -> bool:
         """Insere uma vaga nova. Retorna False (via UNIQUE(link)) se o link já existir."""
         query = (
-            "INSERT INTO jobs (job_title, link, publication_date, last_seen_at, dedup_key) "
-            "VALUES (?, ?, ?, ?, ?)"
+            "INSERT INTO jobs "
+            "(job_title, link, publication_date, last_seen_at, dedup_key, job_type, region) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)"
         )
         try:
             with self.conn:
                 self.conn.execute(
                     query,
-                    (title, link, pub_date, now_brt().isoformat(), build_signature(title)),
+                    (
+                        title, link, pub_date, now_brt().isoformat(),
+                        build_signature(title), job_type, region,
+                    ),
                 )
             return True
         except sqlite3.IntegrityError:
             return False
+
+    def count_jobs(self) -> int:
+        """Usado para detectar banco recém-criado (ver modo bootstrap)."""
+        return self.conn.execute("SELECT COUNT(*) FROM jobs").fetchone()[0]
+
+    def count_deliveries(self) -> int:
+        return self.conn.execute("SELECT COUNT(*) FROM deliveries").fetchone()[0]
+
+    def fetch_all_links(self) -> List[str]:
+        return [row[0] for row in self.conn.execute("SELECT link FROM jobs")]
 
     def find_duplicate_link(self, link: str) -> Optional[str]:
         """Link de OUTRA vaga que compartilha a mesma assinatura de conteúdo.
@@ -99,11 +142,21 @@ class DatabaseManager:
         with self.conn:
             self.conn.execute(query, (now_brt().isoformat(), link))
 
-    def mark_as_sent(self, link: str) -> None:
-        """Marks a job as successfully sent to Telegram."""
-        query = "UPDATE jobs SET is_sent = 1 WHERE link = ?"
+    def record_delivery(self, job_link: str, chat_id: str) -> None:
+        """Registra que uma vaga foi entregue a um destinatário específico."""
+        query = "INSERT OR IGNORE INTO deliveries (job_link, chat_id, sent_at) VALUES (?, ?, ?)"
         with self.conn:
-            self.conn.execute(query, (link,))
+            self.conn.execute(query, (job_link, str(chat_id), now_brt().isoformat()))
+
+    def record_deliveries_for_all(self, job_link: str, chat_ids: List[str]) -> None:
+        """Resolve a vaga para todos os destinatários de uma vez, sem enviar.
+
+        Usado quando a vaga não deve gerar alerta nenhum — no bootstrap do
+        banco e nas duplicatas entre fontes —, para que ela também não volte
+        pela fila de reenvio depois.
+        """
+        for chat_id in chat_ids:
+            self.record_delivery(job_link, chat_id)
 
     def fetch_all_jobs(self) -> List[Job]:
         """Retorna todas as vagas já vistas, da mais recente para a mais antiga.
@@ -117,27 +170,49 @@ class DatabaseManager:
             rows = self.conn.execute(query).fetchall()
         return [self._row_to_job(row) for row in rows]
 
-    def fetch_pending_notifications(self, max_age_days: int = 7, limit: int = 10) -> List[Job]:
-        """Vagas salvas cuja notificação nunca chegou a ser enviada.
+    def fetch_undelivered(
+        self,
+        chat_id: str,
+        max_age_days: int = 7,
+        limit: int = 10,
+        regions: Optional[List[str]] = None,
+        job_types: Optional[List[str]] = None,
+    ) -> List[Job]:
+        """Vagas que ainda não foram entregues a ESTE destinatário.
 
-        Existe porque `is_sent` era gravado e nunca lido: se o Telegram
-        falhasse depois do INSERT, o alerta era perdido para sempre — o link
-        já estava no banco, então nas rodadas seguintes a vaga era tratada
-        como "já conhecida" e nunca mais gerava notificação.
+        Cobre dois casos com a mesma consulta: a falha transitória do Telegram
+        (a vaga entrou no banco mas o envio não completou) e o excedente do
+        teto por rodada, que fica pendente de propósito para sair aos poucos.
 
-        Os dois limites são proteções contra enxurrada: `max_age_days` evita
-        ressuscitar vaga velha (um alerta de algo descoberto há meses só
-        confunde), e `limit` evita despejar centenas de mensagens de uma vez
-        caso o envio fique quebrado por muito tempo.
+        Os limites protegem contra enxurrada: `max_age_days` evita ressuscitar
+        vaga velha, e `limit` evita despejar centenas de mensagens de uma vez
+        se o envio ficar quebrado por muito tempo.
+
+        `regions`/`job_types` são as preferências do assinante. Vazias, nada é
+        filtrado — é assim que funciona enquanto as preferências não existem.
         """
         cutoff = (now_brt().date() - timedelta(days=max_age_days)).isoformat()
+        params: List = [str(chat_id), cutoff]
+        clauses = [
+            "NOT EXISTS (SELECT 1 FROM deliveries d "
+            "WHERE d.job_link = jobs.link AND d.chat_id = ?)",
+            "publication_date >= ?",
+        ]
+
+        if regions:
+            clauses.append(f"region IN ({','.join('?' * len(regions))})")
+            params.extend(regions)
+        if job_types:
+            clauses.append(f"job_type IN ({','.join('?' * len(job_types))})")
+            params.extend(job_types)
+
+        params.append(limit)
         query = (
-            f"SELECT {_JOB_COLUMNS} FROM jobs "
-            "WHERE is_sent = 0 AND publication_date >= ? "
+            f"SELECT {_JOB_COLUMNS} FROM jobs WHERE {' AND '.join(clauses)} "
             "ORDER BY publication_date DESC, id DESC LIMIT ?"
         )
         with self.conn:
-            rows = self.conn.execute(query, (cutoff, limit)).fetchall()
+            rows = self.conn.execute(query, params).fetchall()
         return [self._row_to_job(row) for row in rows]
 
     @staticmethod
@@ -148,6 +223,8 @@ class DatabaseManager:
             discovered_at=row[2],
             last_seen_at=row[3],
             dedup_key=row[4],
+            job_type=row[5],
+            region=row[6],
         )
 
     def close(self) -> None:

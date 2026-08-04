@@ -67,34 +67,70 @@ def test_find_duplicate_link_returns_none_without_a_confident_signature(db):
     assert db.find_duplicate_link("https://saquarema.example/b") is None
 
 
-def test_fetch_pending_notifications_returns_unsent_jobs(db):
+def test_fetch_undelivered_returns_jobs_not_yet_sent_to_that_chat(db):
     db.insert_job("Vaga pendente", "https://example.com/pendente", _recent_date())
 
-    pending = db.fetch_pending_notifications()
+    pending = db.fetch_undelivered("111")
 
     assert [job.link for job in pending] == ["https://example.com/pendente"]
 
 
-def test_fetch_pending_notifications_skips_already_sent(db):
+def test_fetch_undelivered_skips_what_was_already_delivered(db):
     db.insert_job("Vaga enviada", "https://example.com/enviada", _recent_date())
-    db.mark_as_sent("https://example.com/enviada")
+    db.record_delivery("https://example.com/enviada", "111")
 
-    assert db.fetch_pending_notifications() == []
+    assert db.fetch_undelivered("111") == []
 
 
-def test_fetch_pending_notifications_ignores_old_jobs(db):
+def test_delivery_is_tracked_per_recipient(db):
+    """O ponto central da mudança: com filtro por assinante, "enviada" deixa
+    de ser propriedade da vaga e passa a depender do par vaga-destinatário."""
+    db.insert_job("Vaga", "https://example.com/v", _recent_date())
+    db.record_delivery("https://example.com/v", "111")
+
+    assert db.fetch_undelivered("111") == []
+    assert len(db.fetch_undelivered("222")) == 1
+
+
+def test_fetch_undelivered_ignores_old_jobs(db):
     """Proteção contra ressuscitar alerta antigo: se o envio ficou quebrado
     por muito tempo, notificar uma vaga de meses atrás só confunde."""
     db.insert_job("Vaga antiga", "https://example.com/antiga", "2020-01-01")
 
-    assert db.fetch_pending_notifications(max_age_days=7) == []
+    assert db.fetch_undelivered("111", max_age_days=7) == []
 
 
-def test_fetch_pending_notifications_respects_the_limit(db):
+def test_fetch_undelivered_respects_the_limit(db):
     for index in range(5):
         db.insert_job(f"Vaga {index}", f"https://example.com/{index}", _recent_date())
 
-    assert len(db.fetch_pending_notifications(limit=2)) == 2
+    assert len(db.fetch_undelivered("111", limit=2)) == 2
+
+
+def test_fetch_undelivered_filters_by_subscriber_preferences(db):
+    """Base da personalização: a mesma consulta que alimenta a fila de envio
+    já sabe respeitar região e tipo escolhidos pelo assinante."""
+    db.insert_job("A", "https://example.com/a", _recent_date(),
+                  job_type="concurso", region="norte_fluminense")
+    db.insert_job("B", "https://example.com/b", _recent_date(),
+                  job_type="noticia", region="norte_fluminense")
+    db.insert_job("C", "https://example.com/c", _recent_date(),
+                  job_type="concurso", region="capital_metropolitana")
+
+    apenas_concurso_norte = db.fetch_undelivered(
+        "111", regions=["norte_fluminense"], job_types=["concurso"]
+    )
+
+    assert [job.link for job in apenas_concurso_norte] == ["https://example.com/a"]
+
+
+def test_fetch_undelivered_without_preferences_returns_everything(db):
+    db.insert_job("A", "https://example.com/a", _recent_date(),
+                  job_type="concurso", region="norte_fluminense")
+    db.insert_job("B", "https://example.com/b", _recent_date(),
+                  job_type="noticia", region="capital_metropolitana")
+
+    assert len(db.fetch_undelivered("111")) == 2
 
 
 def test_migration_adds_columns_to_pre_existing_database(tmp_path):

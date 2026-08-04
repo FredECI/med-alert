@@ -13,6 +13,7 @@ from urllib.parse import quote
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
+from medalert.taxonomy import CAPITAL_METROPOLITANA, EMPREGO, NOTICIA
 from medalert.textutils import sanitize_title
 from medalert.timeutil import now_brt, today_str
 
@@ -28,6 +29,8 @@ class InfoJobsScraper(BaseScraper):
     são vagas para médicos. Reaplicamos is_relevant() (que casa por palavra
     inteira) sobre o título de cada vaga como filtro defensivo.
     """
+    job_type = EMPREGO
+    region = CAPITAL_METROPOLITANA
 
     url = "https://www.infojobs.com.br/vagas-de-medico-em-rio-janeiro,-rj.aspx"
 
@@ -62,6 +65,7 @@ class ConcursosNoBrasilScraper(BaseScraper):
     se trata (ex: "...abre 355 vagas na Saúde") fica no atributo title do
     próprio link, então o filtro roda sobre ele.
     """
+    job_type = NOTICIA
 
     url = "https://concursosnobrasil.com/concursos/rj/"
 
@@ -143,6 +147,7 @@ class DomRjScraper(BaseScraper):
     de LOOKBACK_DAYS dias é buscada a cada execução — suficiente para um
     robô que roda diariamente e já deduplica por link.
     """
+    job_type = NOTICIA
 
     SEARCH_TERM = "saúde"
     LOOKBACK_DAYS = 7

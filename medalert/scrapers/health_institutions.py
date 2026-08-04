@@ -16,6 +16,7 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
+from medalert.taxonomy import CAPITAL_METROPOLITANA, PROCESSO_SELETIVO
 from medalert.textutils import sanitize_title
 from medalert.timeutil import now_brt, today_str
 
@@ -52,6 +53,8 @@ class RioSaudeScraper(BaseScraper):
     por "Edital NNN/2026 (...)" dentro de `div.entry-content`, contendo o(s)
     cargo(s) e um link para o PDF do edital ("Acesse o edital").
     """
+    job_type = PROCESSO_SELETIVO
+    region = CAPITAL_METROPOLITANA
     url = "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
 
     def _find_candidates(self, soup: BeautifulSoup):
@@ -91,6 +94,7 @@ class FiotecScraper(BaseScraper):
     aceitamos o item se ele bate em is_relevant() (palavra médica/saúde) OU
     menciona um dos institutos/hospitais federais atendidos no Rio.
     """
+    job_type = PROCESSO_SELETIVO
     url = "https://www.fiotec.fiocruz.br/pt/vagas-projetos/todas"
 
     def _find_candidates(self, soup: BeautifulSoup):
@@ -131,6 +135,8 @@ class RioSaudePssScraper(BaseScraper):
     * A página guarda todo o histórico, incluindo 2025. Só editais do ano
       corrente entram: os anteriores já se encerraram e só poluiriam o radar.
     """
+    job_type = PROCESSO_SELETIVO
+    region = CAPITAL_METROPOLITANA
 
     url = "https://pss.riosaude.rio.br"
 

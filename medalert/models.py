@@ -12,3 +12,7 @@ class Job:
     #: Assinatura de conteúdo (ver medalert/dedup.py). None quando não há
     #: confiança suficiente para dizer que duas vagas são a mesma.
     dedup_key: Optional[str] = None
+    #: Dimensões de personalização (ver medalert/taxonomy.py) — é por elas
+    #: que o assinante escolhe o que quer receber.
+    job_type: Optional[str] = None
+    region: Optional[str] = None

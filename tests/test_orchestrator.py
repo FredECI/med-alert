@@ -15,6 +15,7 @@ import pytest
 
 from medalert.orchestrator import MAX_NEW_NOTIFICATIONS_PER_RUN, run
 from medalert.scrapers.base import BaseScraper
+from medalert.storage import DatabaseManager
 from medalert.timeutil import now_brt
 
 
@@ -26,6 +27,18 @@ def _today() -> str:
 @pytest.fixture(autouse=True)
 def _isolate_cwd(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
+
+
+@pytest.fixture(autouse=True)
+def _sistema_ja_rodou(db):
+    """Tira o banco do estado "vazio".
+
+    Banco vazio aciona o modo bootstrap, que popula sem notificar — o que
+    mascararia todos os testes de notificacao. Uma vaga semente representa
+    o estado real: um sistema que ja rodou antes.
+    """
+    db.insert_job("[Semente] execucao anterior", "https://example.com/semente", "2020-01-01")
+    db.record_delivery("https://example.com/semente", "123")
 
 
 class _FailingScraper(BaseScraper):
@@ -56,13 +69,16 @@ class _KnownJobScraper(BaseScraper):
 
 
 class _FakeNotifier:
-    def __init__(self):
-        self.chat_ids = ["123"]
+    def __init__(self, chat_ids=None):
+        self.chat_ids = chat_ids if chat_ids is not None else ["123"]
         self.sent = []
 
+    def send_to(self, chat_id, text):
+        self.sent.append((chat_id, text))
+        return True
+
     def send_message(self, text):
-        self.sent.append(text)
-        return 1
+        return sum(1 for chat_id in self.chat_ids if self.send_to(chat_id, text))
 
 
 def test_run_returns_zero_when_no_scrapers_fail(db):
@@ -90,8 +106,9 @@ def test_run_returns_nonzero_and_alerts_when_all_scrapers_fail(db):
 
     assert exit_code == 1
     assert len(notifier.sent) == 1
-    assert "falha total" in notifier.sent[0].lower()
-    assert "site fora do ar" in notifier.sent[0]
+    _, texto = notifier.sent[0]
+    assert "falha total" in texto.lower()
+    assert "site fora do ar" in texto
 
 
 def test_run_does_not_alert_when_scrapers_list_is_empty(db):
@@ -136,12 +153,15 @@ class _FlakyNotifier:
         self.remaining_failures = failures
         self.sent = []
 
-    def send_message(self, text):
+    def send_to(self, chat_id, text):
         if self.remaining_failures > 0:
             self.remaining_failures -= 1
-            return 0
-        self.sent.append(text)
-        return 1
+            return False
+        self.sent.append((chat_id, text))
+        return True
+
+    def send_message(self, text):
+        return sum(1 for chat_id in self.chat_ids if self.send_to(chat_id, text))
 
 
 class _NewJobScraper(BaseScraper):
@@ -169,7 +189,7 @@ def test_failed_notification_is_retried_on_the_next_run(db):
     run(scrapers=[scraper], db=db, notifier=notifier)
 
     assert len(notifier.sent) == 1
-    assert "Vaga importante" in notifier.sent[0]
+    assert "Vaga importante" in notifier.sent[0][1]
 
 
 def test_successful_notification_is_not_sent_twice(db):
@@ -197,7 +217,8 @@ def test_same_edital_from_two_sources_alerts_only_once(db):
     run(scrapers=[ibam, prefeitura], db=db, notifier=notifier)
 
     assert len(notifier.sent) == 1
-    assert len(db.fetch_all_jobs()) == 2  # as duas continuam registradas
+    # as duas continuam registradas (+ a vaga semente do fixture)
+    assert len(db.fetch_all_jobs()) == 3
 
 
 def test_suppressed_duplicate_does_not_enter_the_retry_queue(db):
@@ -236,7 +257,8 @@ def test_new_job_alerts_are_capped_per_run(db):
     run(scrapers=[_ManyJobsScraper(40)], db=db, notifier=notifier)
 
     assert len(notifier.sent) == MAX_NEW_NOTIFICATIONS_PER_RUN
-    assert len(db.fetch_all_jobs()) == 40  # nada se perde: todas entram no site
+    # nada se perde: todas entram no site (+ a vaga semente do fixture)
+    assert len(db.fetch_all_jobs()) == 41
 
 
 def test_capped_alerts_are_delivered_by_later_runs(db):
@@ -253,6 +275,96 @@ def test_capped_alerts_are_delivered_by_later_runs(db):
     assert len(notifier.sent) > enviados_na_primeira
 
 
+def test_bootstrap_run_populates_without_notifying(tmp_path):
+    """Banco zerado significa que TODO o acervo seria 'novo'. Sem isso, um
+    reset deliberado viraria dias de alertas irrelevantes pingando pelo teto."""
+    vazio = DatabaseManager(db_name=str(tmp_path / "vazio.db"))
+    notifier = _FakeNotifier()
+    try:
+        run(scrapers=[_ManyJobsScraper(30)], db=vazio, notifier=notifier)
+
+        assert notifier.sent == []
+        assert len(vazio.fetch_all_jobs()) == 30  # tudo salvo e visível no site
+    finally:
+        vazio.close()
+
+
+def test_jobs_found_after_the_bootstrap_run_do_alert(tmp_path):
+    """O silêncio vale só para a rodada de bootstrap: o que aparecer depois
+    é novidade de verdade e precisa notificar."""
+    banco = DatabaseManager(db_name=str(tmp_path / "b.db"))
+    notifier = _FakeNotifier()
+    try:
+        run(scrapers=[_ManyJobsScraper(3)], db=banco, notifier=notifier)
+        assert notifier.sent == []
+
+        run(scrapers=[_NewJobScraper("[T] Vaga posterior", "https://example.com/dep")],
+            db=banco, notifier=notifier)
+
+        assert len(notifier.sent) == 1
+        assert "Vaga posterior" in notifier.sent[0][1]
+    finally:
+        banco.close()
+
+
+def test_classification_is_persisted_with_each_job(db):
+    """Sem região e tipo gravados não há o que filtrar depois."""
+    scraper = _NewJobScraper("[Pref. Macaé] Concurso para médico", "https://example.com/macae")
+    scraper.job_type = "concurso"
+
+    run(scrapers=[scraper], db=db, notifier=_FakeNotifier())
+
+    vaga = next(j for j in db.fetch_all_jobs() if "macae" in j.link)
+    assert vaga.region == "norte_fluminense"
+    assert vaga.job_type == "concurso"
+
+
+def test_source_region_fills_in_when_the_title_has_no_city(db):
+    """O título costuma trazer o nome da instituição, não o do município.
+    Quando a fonte é de uma cidade específica, ela responde o que o texto
+    não disse — sem isso a vaga cairia em 'Estadual/Nacional' e sumiria do
+    filtro de quem assina só a sua região."""
+    scraper = _NewJobScraper("[RioSaúde] Edital 003/2026", "https://example.com/rs")
+    scraper.region = "capital_metropolitana"
+
+    run(scrapers=[scraper], db=db, notifier=_FakeNotifier())
+
+    vaga = next(j for j in db.fetch_all_jobs() if j.link.endswith("/rs"))
+    assert vaga.region == "capital_metropolitana"
+
+
+def test_city_in_the_title_wins_over_the_source_default(db):
+    """O texto é mais específico que o padrão da fonte quando ele existe."""
+    scraper = _NewJobScraper("[Fonte] Concurso em Saquarema", "https://example.com/sq")
+    scraper.region = "capital_metropolitana"
+
+    run(scrapers=[scraper], db=db, notifier=_FakeNotifier())
+
+    vaga = next(j for j in db.fetch_all_jobs() if j.link.endswith("/sq"))
+    assert vaga.region == "regiao_dos_lagos"
+
+
+def test_legacy_database_is_not_resent_when_deliveries_table_appears(tmp_path):
+    """Quem atualizar o código sem zerar o banco não pode receber o histórico
+    inteiro de novo: ao estrear a tabela de entregas, o acervo existente é
+    marcado como já entregue."""
+    caminho = str(tmp_path / "legado.db")
+    antigo = DatabaseManager(db_name=caminho)
+    for i in range(5):
+        antigo.insert_job(f"Vaga antiga {i}", f"https://example.com/a{i}", _today())
+    antigo.conn.execute("DELETE FROM deliveries")  # simula banco anterior à tabela
+    antigo.conn.commit()
+    antigo.close()
+
+    banco = DatabaseManager(db_name=caminho)
+    notifier = _FakeNotifier()
+    try:
+        run(scrapers=[], db=banco, notifier=notifier)
+        assert notifier.sent == []
+    finally:
+        banco.close()
+
+
 def test_run_refreshes_last_seen_shown_on_the_site_for_known_jobs(db):
     """Regressão do descompasso banco↔site: uma vaga já conhecida é
     reencontrada, o banco atualiza last_seen_at e o jobs.json publicado
@@ -264,5 +376,5 @@ def test_run_refreshes_last_seen_shown_on_the_site_for_known_jobs(db):
     with open("_data/jobs.json", encoding="utf-8") as f:
         payload = json.load(f)
 
-    assert len(payload) == 1
-    assert payload[0]["last_seen_at"] is not None
+    conhecida = next(j for j in payload if "conhecida" in j["link"])
+    assert conhecida["last_seen_at"] is not None

@@ -15,6 +15,7 @@ from typing import List, Optional
 
 from medalert.models import Job
 from medalert.storage import DatabaseManager
+from medalert.taxonomy import job_type_label, region_label
 from medalert.textutils import infer_source_from_link, sanitize_title, split_source_and_title
 from medalert.timeutil import now_brt
 
@@ -91,6 +92,12 @@ class ReportGenerator:
                 "link": job.link,
                 "discovered_at": job.discovered_at,
                 "last_seen_at": _format_display_timestamp(job.last_seen_at),
+                # Mesmas dimensões pelas quais o assinante filtra no Telegram —
+                # publicadas aqui para o site poder oferecer o mesmo recorte.
+                "job_type": job.job_type,
+                "job_type_label": job_type_label(job.job_type),
+                "region": job.region,
+                "region_label": region_label(job.region),
             })
 
         _write_json(filename, payload)

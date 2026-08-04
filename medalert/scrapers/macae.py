@@ -4,11 +4,13 @@ from typing import Dict, Optional
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
+from medalert.taxonomy import NORTE_FLUMINENSE
 from medalert.timeutil import today_str
 
 
 class MacaeGovScraper(BaseScraper):
     """Scraper institucional para o diário de notícias da Prefeitura de Macaé."""
+    region = NORTE_FLUMINENSE
     url = "https://www.macae.rj.gov.br/noticias"
 
     def _find_candidates(self, soup: BeautifulSoup):

@@ -13,8 +13,9 @@ vaga que na verdade era diferente faz o usuário perder a oportunidade, que é
 justamente o que o projeto existe para evitar.
 """
 import re
-import unicodedata
 from typing import Optional
+
+from medalert.textutils import strip_accents
 
 # Só nomes de MUNICÍPIO entram aqui. Marcadores estaduais/regionais ("rj",
 # "rio de janeiro", "região dos lagos") ficam de fora de propósito: são
@@ -51,23 +52,13 @@ _EDITAL_MARKER_RE = re.compile(
 _MARKER_LOOKBEHIND = 40
 
 
-def _strip_accents(text: str) -> str:
-    """Remove acentos para o casamento não depender de 'macaé' vs 'macae'.
-
-    Resolve na origem a duplicação manual de variantes acentuadas que o
-    restante das listas de filtro ainda carrega.
-    """
-    decomposed = unicodedata.normalize("NFD", text)
-    return "".join(char for char in decomposed if unicodedata.category(char) != "Mn")
-
-
 def build_signature(title: str) -> Optional[str]:
     """Devolve uma chave estável do tipo 'casimiro|1/2026', ou None.
 
     None significa "não tenho confiança suficiente para afirmar que duas
     vagas são a mesma" — e nesse caso nada é deduplicado.
     """
-    normalized = _strip_accents(str(title)).lower()
+    normalized = strip_accents(title).lower()
 
     numero = _find_edital_number(normalized)
     if not numero:

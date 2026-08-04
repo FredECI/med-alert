@@ -6,12 +6,14 @@ from typing import Dict, List, Optional
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
+from medalert.taxonomy import EMPREGO, NOTICIA, REGIAO_DOS_LAGOS
 from medalert.textutils import sanitize_title
 from medalert.timeutil import today_str
 
 
 class JCConcursosScraper(BaseScraper):
     """Scraper para o portal JC Concursos, buscando na página geral do RJ."""
+    job_type = NOTICIA
     url = "https://jcconcursos.com.br/concursos/rj"
 
     def _find_candidates(self, soup: BeautifulSoup):
@@ -39,6 +41,7 @@ class TrabalhaBrasilScraper(BaseScraper):
     formato real é diferente: várias URLs (uma por cidade) numa mesma
     execução, com uma pausa de cortesia entre elas — não uma única página.
     """
+    job_type = EMPREGO
 
     def __init__(self, cities: List[str]):
         super().__init__()
@@ -96,6 +99,8 @@ class TrabalhaBrasilScraper(BaseScraper):
 
 class PandaPeUnimedScraper(BaseScraper):
     """Scraper para o portal InfoJobs/PandaPé da Unimed Costa do Sol."""
+    job_type = EMPREGO
+    region = REGIAO_DOS_LAGOS
     url = "https://unimedcostadosol.pandape.infojobs.com.br"
 
     def _find_candidates(self, soup: BeautifulSoup):

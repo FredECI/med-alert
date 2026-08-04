@@ -1,6 +1,6 @@
 """Orquestração da execução: roda todos os scrapers, persiste, notifica e gera relatórios."""
 import logging
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from medalert.config import TARGET_CITIES, load_telegram_bot_token, load_telegram_chat_ids
 from medalert.notify import TelegramNotifier
@@ -31,6 +31,7 @@ from medalert.scrapers.news import BingNewsScraper, G1Scraper, GoogleNewsScraper
 from medalert.scrapers.pci import build_pci_scrapers
 from medalert.scrapers.portals import JCConcursosScraper, PandaPeUnimedScraper, TrabalhaBrasilScraper
 from medalert.storage import DatabaseManager
+from medalert.taxonomy import ESTADUAL_NACIONAL, classify_job_type, classify_region
 
 logging.basicConfig(
     level=logging.INFO,
@@ -77,15 +78,15 @@ def build_scrapers() -> List[BaseScraper]:
     ]
 
 
-#: Teto de alertas de vaga NOVA por execução.
+#: Teto de alertas de vaga NOVA por execução, POR DESTINATÁRIO.
 #:
 #: Num dia normal aparecem de zero a poucas vagas, então este limite nunca é
 #: atingido. Ele existe para o caso de acúmulo: ao ligar uma fonte nova, todo
 #: o acervo dela entra de uma vez (ao acrescentar o MedGrupo, foram 66 vagas
 #: numa rodada só) — e 66 mensagens seguidas atropelariam o usuário e o
-#: rate limit do Telegram. O excedente fica com is_sent = 0 e é enviado aos
-#: poucos pelas rodadas seguintes, pela mesma fila de reenvio que cobre falha
-#: transitória. Nada se perde: no site as vagas aparecem todas de imediato.
+#: rate limit do Telegram. O excedente fica sem registro de entrega e sai aos
+#: poucos nas rodadas seguintes, pela mesma fila que cobre falha transitória.
+#: Nada se perde: no site as vagas aparecem todas de imediato.
 MAX_NEW_NOTIFICATIONS_PER_RUN = 15
 
 
@@ -98,26 +99,56 @@ def _build_job_message(title: str, pub_date: str, link: str) -> str:
     )
 
 
-def _retry_pending_notifications(db: DatabaseManager, notifier: TelegramNotifier) -> int:
-    """Reenvia alertas de vagas que ficaram com is_sent = 0.
+def _resolve_region(title: str, scraper_region: Optional[str]) -> str:
+    """Região da vaga: o texto manda, a fonte cobre o que ele não disser.
 
-    Cobre a falha transitória do Telegram (rede, rate limit, indisponibilidade):
-    antes disso a vaga entrava no banco, o envio falhava e o alerta era perdido
-    de vez, porque nas rodadas seguintes o link já existia e a vaga deixava de
-    ser "nova". Duplicatas entre fontes são puladas aqui também — elas são
-    marcadas como enviadas justamente para não entrarem nesta fila.
+    Deduzir só do título erra muito na prática, porque o título costuma trazer
+    o nome da instituição e não o do município ("ASSOCIAÇÃO FLUMINENSE DE
+    ASSISTÊNCIA..."). Quando a fonte é geograficamente específica — o portal
+    de uma prefeitura — ela sabe a resposta que faltou.
     """
-    pending = db.fetch_pending_notifications()
-    if not pending:
-        return 0
+    do_texto = classify_region(title)
+    if do_texto == ESTADUAL_NACIONAL and scraper_region:
+        return scraper_region
+    return do_texto
 
-    logging.info(f"↻ {len(pending)} notificação(ões) pendente(s) de execuções anteriores.")
+
+def _backfill_legacy_deliveries(db: DatabaseManager, chat_ids: List[str]) -> None:
+    """Marca o acervo pré-existente como já entregue, uma única vez.
+
+    Protege quem atualiza o código SEM zerar o banco: sem isso, ao estrear a
+    tabela de entregas nenhuma vaga teria registro e a fila de reenvio trataria
+    todo o histórico recente como não enviado, disparando uma enxurrada de
+    alertas repetidos.
+    """
+    if db.count_deliveries() > 0 or db.count_jobs() == 0:
+        return
+
+    links = db.fetch_all_links()
+    logging.info(f"↩ Estreando a tabela de entregas: marcando {len(links)} vaga(s) já existentes como entregues.")
+    for link in links:
+        db.record_deliveries_for_all(link, chat_ids)
+
+
+def _deliver_pending(db: DatabaseManager, notifier: TelegramNotifier) -> int:
+    """Envia, para cada destinatário, o que ainda não foi entregue a ele.
+
+    Cobre a falha transitória do Telegram e o excedente do teto por rodada.
+    Fica no começo da execução de propósito: se o envio falhou agora há pouco,
+    tentar de novo na mesma rodada falharia igual — o que se quer recuperar é
+    a falha da rodada anterior.
+    """
     messages_sent = 0
-    for job in pending:
-        sends = notifier.send_message(_build_job_message(job.title, job.discovered_at, job.link))
-        if sends > 0:
-            db.mark_as_sent(job.link)
-            messages_sent += sends
+    for chat_id in notifier.chat_ids:
+        pending = db.fetch_undelivered(chat_id, limit=MAX_NEW_NOTIFICATIONS_PER_RUN)
+        if not pending:
+            continue
+
+        logging.info(f"↻ {len(pending)} pendência(s) para o chat {chat_id}.")
+        for job in pending:
+            if notifier.send_to(chat_id, _build_job_message(job.title, job.discovered_at, job.link)):
+                db.record_delivery(job.link, chat_id)
+                messages_sent += 1
 
     return messages_sent
 
@@ -147,15 +178,20 @@ def run(
     logging.info(f"Starting MedAlert RJ Scraper Engine... (Broadcasting to {len(notifier.chat_ids)} chats)")
 
     new_jobs_count = 0
-    new_notifications = 0  # alertas de vaga nova já enviados nesta rodada (ver teto acima)
     scraper_failures: List[str] = []  # "Classe: erro" — detalhe para o alerta do Telegram
     failed_labels: List[str] = []  # só o nome da fonte — para o painel público de saúde
+    # Alertas de vaga nova já enviados nesta rodada, por destinatário.
+    sent_per_chat: Dict[str, int] = {chat_id: 0 for chat_id in notifier.chat_ids}
 
-    # Reenvia o que ficou para trás em execuções anteriores ANTES de raspar.
-    # Fica no começo de propósito: se o envio falhou agora há pouco, tentar
-    # de novo na mesma rodada provavelmente falharia igual — o que se quer
-    # recuperar é a falha transitória da rodada passada.
-    messages_sent = _retry_pending_notifications(db, notifier)
+    # Banco vazio significa primeira execução (ou reset deliberado): o acervo
+    # inteiro seria "novo" e viraria dias de alertas irrelevantes. Nesse caso
+    # a rodada apenas popula, sem notificar ninguém.
+    bootstrap = db.count_jobs() == 0
+    if bootstrap:
+        logging.info("🌱 Banco vazio: rodada de bootstrap — vagas serão salvas SEM notificar.")
+
+    _backfill_legacy_deliveries(db, notifier.chat_ids)
+    messages_sent = _deliver_pending(db, notifier)
 
     # Loop de execução blindado
     for scraper in scrapers:
@@ -167,32 +203,37 @@ def run(
                     title=job["title"],
                     link=job["link"],
                     pub_date=job["pub_date"],
+                    job_type=classify_job_type(job["title"], scraper.job_type),
+                    region=_resolve_region(job["title"], scraper.region),
                 )
 
                 if is_new:
                     new_jobs_count += 1
                     logging.info(f"🆕 NEW JOB SAVED: {job['title']}")
 
+                    if bootstrap:
+                        db.record_deliveries_for_all(job["link"], notifier.chat_ids)
+                        continue
+
                     # O mesmo edital costuma aparecer em duas fontes (ex: IBAM
                     # e o portal da prefeitura) com links diferentes, então o
                     # UNIQUE(link) não pega. A vaga fica registrada, mas o
                     # alerta é suprimido para não notificar duas vezes.
-                    duplicate_of = db.find_duplicate_link(job["link"])
-                    if duplicate_of:
+                    if db.find_duplicate_link(job["link"]):
                         logging.info(f"🔁 Duplicata de outra fonte, alerta suprimido: {job['title']}")
-                        db.mark_as_sent(job["link"])
+                        db.record_deliveries_for_all(job["link"], notifier.chat_ids)
                         continue
 
-                    if new_notifications >= MAX_NEW_NOTIFICATIONS_PER_RUN:
-                        # Fica pendente de propósito: a fila de reenvio manda
-                        # nas próximas rodadas, sem atropelar o usuário agora.
-                        continue
-
-                    sends = notifier.send_message(_build_job_message(job["title"], job["pub_date"], job["link"]))
-                    if sends > 0:
-                        db.mark_as_sent(job["link"])
-                        messages_sent += sends
-                        new_notifications += 1
+                    message = _build_job_message(job["title"], job["pub_date"], job["link"])
+                    for chat_id in notifier.chat_ids:
+                        if sent_per_chat[chat_id] >= MAX_NEW_NOTIFICATIONS_PER_RUN:
+                            # Fica pendente de propósito: sai nas próximas
+                            # rodadas, sem atropelar o destinatário agora.
+                            continue
+                        if notifier.send_to(chat_id, message):
+                            db.record_delivery(job["link"], chat_id)
+                            messages_sent += 1
+                            sent_per_chat[chat_id] += 1
                 else:
                     # Vaga já conhecida: registra que ela ainda está sendo encontrada.
                     db.touch_last_seen(job["link"])
