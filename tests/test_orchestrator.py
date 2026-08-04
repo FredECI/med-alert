@@ -13,7 +13,7 @@ import os
 
 import pytest
 
-from medalert.orchestrator import run
+from medalert.orchestrator import MAX_NEW_NOTIFICATIONS_PER_RUN, run
 from medalert.scrapers.base import BaseScraper
 from medalert.timeutil import now_brt
 
@@ -211,6 +211,46 @@ def test_suppressed_duplicate_does_not_enter_the_retry_queue(db):
     run(scrapers=[], db=db, notifier=notifier)
 
     assert len(notifier.sent) == 1
+
+
+class _ManyJobsScraper(BaseScraper):
+    """Simula ligar uma fonte nova: todo o acervo dela entra de uma vez."""
+    url = "https://example.com/many"
+
+    def __init__(self, quantidade):
+        super().__init__()
+        self.quantidade = quantidade
+
+    def scrape(self):
+        return [
+            {"title": f"[T] Vaga {i}", "link": f"https://example.com/v{i}", "pub_date": _today()}
+            for i in range(self.quantidade)
+        ]
+
+
+def test_new_job_alerts_are_capped_per_run(db):
+    """Ao acrescentar o MedGrupo entraram 66 vagas numa rodada só — mandar
+    tudo de uma vez atropelaria o usuário e o rate limit do Telegram."""
+    notifier = _FakeNotifier()
+
+    run(scrapers=[_ManyJobsScraper(40)], db=db, notifier=notifier)
+
+    assert len(notifier.sent) == MAX_NEW_NOTIFICATIONS_PER_RUN
+    assert len(db.fetch_all_jobs()) == 40  # nada se perde: todas entram no site
+
+
+def test_capped_alerts_are_delivered_by_later_runs(db):
+    """O excedente fica pendente e sai aos poucos pela fila de reenvio."""
+    notifier = _FakeNotifier()
+    scraper = _ManyJobsScraper(20)
+
+    run(scrapers=[scraper], db=db, notifier=notifier)
+    enviados_na_primeira = len(notifier.sent)
+
+    run(scrapers=[scraper], db=db, notifier=notifier)
+
+    assert enviados_na_primeira == MAX_NEW_NOTIFICATIONS_PER_RUN
+    assert len(notifier.sent) > enviados_na_primeira
 
 
 def test_run_refreshes_last_seen_shown_on_the_site_for_known_jobs(db):

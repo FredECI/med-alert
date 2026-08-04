@@ -3,7 +3,8 @@ import re
 from typing import Iterable
 
 KEYWORDS = [
-    "médico", "medico", "clínico geral", "clinico geral",
+    "médico", "medico", "médica", "medica",
+    "clínico geral", "clinico geral",
     "saúde da família", "saude da familia", "crm",
     "esf", "psf", "ubs", "upa", "plantão", "plantao",
     "medicina", "pronto socorro", "pronto atendimento",
@@ -62,13 +63,43 @@ EVENT_TERMS = [
 ]
 
 
+# Medicina veterinária compartilha quase todo o vocabulário com a humana
+# ("médico veterinário", "medicina veterinária"), então bate em KEYWORDS sem
+# ser o que o radar procura. A remoção é feita por SUBTRAÇÃO em vez de
+# rejeição: o trecho veterinário é apagado do texto e a relevância é
+# reavaliada no que sobrou. Isso importa porque concurso municipal costuma
+# listar vários cargos de uma vez — "Médico Clínico Geral e Médico
+# Veterinário" continua sendo uma vaga de interesse, e rejeitar o anúncio
+# inteiro só porque cita veterinário perderia a vaga humana junto.
+VETERINARY_PHRASES = [
+    "médico veterinário", "medico veterinario",
+    "médica veterinária", "medica veterinaria",
+    "medicina veterinária", "medicina veterinaria",
+    "veterinários", "veterinarios", "veterinárias", "veterinarias",
+    "veterinário", "veterinario", "veterinária", "veterinaria",
+    "crmv",
+]
+
+# Frases maiores saem primeiro para que "médico veterinário" seja removido
+# por inteiro, em vez de sobrar um "médico" órfão depois de tirar só o
+# adjetivo — o que faria a vaga voltar a parecer relevante.
+_VETERINARY_PHRASES_LONGEST_FIRST = sorted(VETERINARY_PHRASES, key=len, reverse=True)
+
+
 def _contains_word(text_lower: str, phrase: str) -> bool:
     pattern = r"\b" + re.escape(phrase) + r"\b"
     return re.search(pattern, text_lower) is not None
 
 
+def strip_veterinary(text_lower: str) -> str:
+    """Remove do texto os trechos que se referem a medicina veterinária."""
+    for phrase in _VETERINARY_PHRASES_LONGEST_FIRST:
+        text_lower = re.sub(r"\b" + re.escape(phrase) + r"\b", " ", text_lower)
+    return text_lower
+
+
 def is_relevant(text: str, keywords: Iterable[str] = KEYWORDS) -> bool:
-    text_lower = text.lower()
+    text_lower = strip_veterinary(text.lower())
     return any(_contains_word(text_lower, keyword) for keyword in keywords)
 
 

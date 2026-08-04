@@ -7,15 +7,17 @@ neles — ver docstring de cada classe para o raciocínio específico. O IBAM,
 por outro lado, lista concursos de qualquer área em qualquer estado do
 país, então precisa dos dois filtros (estado-alvo E área de saúde).
 """
+import logging
 import re
-from typing import Dict, Optional
+from collections import OrderedDict
+from typing import Dict, List, Optional
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
 from medalert.textutils import sanitize_title
-from medalert.timeutil import today_str
+from medalert.timeutil import now_brt, today_str
 
 # Editais da RioSaúde/hospitais municipais sempre abrem o parágrafo com
 # "Edital NNN/2026 (...)" — usamos \b para não confundir com o cabeçalho
@@ -80,13 +82,16 @@ class FiotecScraper(BaseScraper):
     contratação para hospitais/institutos federais no Rio: INTO, INCA, INC,
     Hospital Federal da Lagoa).
 
-    A URL já é escopada para a seção "Chamadas Públicas", mas a Fiotec
-    também presta esse serviço para projetos não hospitalares de outros
-    estados (ex: bolsista da Conab em MG) — por isso mantemos um filtro:
+    Usamos a listagem "todas" em vez de apenas "chamadas-publicas": ela é um
+    superconjunto e inclui também os processos seletivos simplificados, que
+    ficavam de fora antes.
+
+    Como a Fiotec presta esse serviço para projetos não hospitalares de
+    outros estados (ex: bolsista da Conab em MG), mantemos um filtro:
     aceitamos o item se ele bate em is_relevant() (palavra médica/saúde) OU
     menciona um dos institutos/hospitais federais atendidos no Rio.
     """
-    url = "https://www.fiotec.fiocruz.br/pt/vagas-projetos/todas/chamadas-publicas"
+    url = "https://www.fiotec.fiocruz.br/pt/vagas-projetos/todas"
 
     def _find_candidates(self, soup: BeautifulSoup):
         return soup.select("div.list-blog-item-titulo h2 a")
@@ -104,6 +109,89 @@ class FiotecScraper(BaseScraper):
         return {
             "title": f"[Fiotec] {sanitize_title(title)}",
             "link": full_link,
+            "pub_date": today_str(),
+        }
+
+
+class RioSaudePssScraper(BaseScraper):
+    """Portal de Processos Seletivos Simplificados da RioSaúde.
+
+    O site é uma SPA React: o HTML servido é só `<div id="root">`, então não
+    há o que raspar nele. Os dados, porém, estão embutidos no próprio bundle
+    JavaScript como uma lista de objetos literais
+    ({edital, cargo, arquivoEdital, unidades, ...}) — é isso que este scraper
+    lê. O nome do bundle carrega um hash que muda a cada deploy, por isso ele
+    é descoberto a partir do HTML em vez de ficar fixo no código.
+
+    Duas decisões de recorte:
+
+    * Um edital abre dezenas de cargos (o 003/2026 sozinho tem 23 cargos
+      médicos). Notificar cargo a cargo viraria uma enxurrada, então
+      agrupamos por edital e resumimos as especialidades numa entrada só.
+    * A página guarda todo o histórico, incluindo 2025. Só editais do ano
+      corrente entram: os anteriores já se encerraram e só poluiriam o radar.
+    """
+
+    url = "https://pss.riosaude.rio.br"
+
+    #: Cada objeto no bundle descreve um cargo dentro de um edital.
+    _RECORD_RE = re.compile(
+        r'\{edital:"(?P<edital>[^"]*)",cargo:"(?P<cargo>[^"]*)".*?arquivoEdital:"(?P<arquivo>[^"]*)"'
+    )
+    _BUNDLE_RE = re.compile(r'src="(?P<path>/assets/index-[^"]+\.js)"')
+
+    #: Quantas especialidades aparecem no título antes de virar "(+N)".
+    _MAX_CARGOS_NO_TITULO = 3
+
+    def scrape(self) -> List[Dict[str, str]]:
+        page = self.fetch_html(self.url)
+        if not page:
+            return []
+
+        bundle_match = self._BUNDLE_RE.search(page)
+        if not bundle_match:
+            logging.error(f"[{self.label}] Não encontrei o bundle JS na página — layout mudou?")
+            return []
+
+        bundle = self.fetch_html(f"{self.url}{bundle_match.group('path')}")
+        if not bundle:
+            return []
+
+        ano_corrente = str(now_brt().year)
+        por_edital: "OrderedDict[tuple, List[str]]" = OrderedDict()
+
+        for record in self._RECORD_RE.finditer(bundle):
+            edital = record.group("edital")
+            cargo = sanitize_title(record.group("cargo"))
+            if not edital.endswith(f"/{ano_corrente}") or not self.is_relevant(cargo):
+                continue
+            por_edital.setdefault((edital, record.group("arquivo")), []).append(cargo)
+
+        found_jobs = [
+            self._build_job(edital, arquivo, cargos)
+            for (edital, arquivo), cargos in por_edital.items()
+        ]
+
+        unique_jobs = {job["link"]: job for job in found_jobs}.values()
+        logging.info(f"[{self.label}] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
+
+    def _build_job(self, edital: str, arquivo: str, cargos: List[str]) -> Dict[str, str]:
+        mostrados = cargos[:self._MAX_CARGOS_NO_TITULO]
+        resumo = ", ".join(mostrados)
+        restantes = len(cargos) - len(mostrados)
+        if restantes > 0:
+            resumo += f" (+{restantes})"
+
+        # O PDF do edital fica na raiz do site (testado: /001-2026.pdf
+        # devolve application/pdf, enquanto outros caminhos caem no HTML
+        # da SPA). Sem arquivo, o link cai para a home — ainda único por
+        # causa do fragmento com o número do edital.
+        link = f"{self.url}/{arquivo}" if arquivo else f"{self.url}/#{edital.replace('/', '-')}"
+
+        return {
+            "title": f"[RioSaúde PSS] Edital {edital} — {resumo}",
+            "link": link,
             "pub_date": today_str(),
         }
 

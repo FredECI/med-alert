@@ -22,13 +22,13 @@ permissions:
 jobs:
   scrape-and-notify:
     runs-on: ubuntu-latest
-    # Uma rodada saudável leva ~2 min. O teto precisa cobrir o pior caso:
-    # com ~25 URLs, 3 tentativas cada (15s de timeout + backoff), uma queda
-    # generalizada das fontes chega a ~21 min. Com o teto antigo de 15 min o
-    # job era morto ANTES do `git push` — perdendo as inserções no banco
-    # depois de já ter enviado os alertas no Telegram, o que fazia as mesmas
-    # vagas serem redescobertas e notificadas de novo na rodada seguinte.
-    timeout-minutes: 25
+    # Uma rodada saudável leva ~30s (medido com as 25 fontes). O teto precisa
+    # cobrir o pior caso: são ~30 URLs (algumas fontes varrem várias páginas),
+    # 3 tentativas cada com 15s de timeout mais backoff, o que numa queda
+    # generalizada passa de 25 min. Com um teto curto o job seria morto ANTES
+    # do `git push` — perdendo as inserções no banco depois de já ter enviado
+    # os alertas, o que faria as mesmas vagas serem notificadas de novo.
+    timeout-minutes: 30
 
     steps:
     - name: Checkout do Repositório

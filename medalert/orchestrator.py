@@ -7,7 +7,17 @@ from medalert.notify import TelegramNotifier
 from medalert.report import ReportGenerator, write_robot_status
 from medalert.scrapers.aggregators import ConcursosNoBrasilScraper, InfoJobsScraper
 from medalert.scrapers.base import BaseScraper
-from medalert.scrapers.health_institutions import FiotecScraper, IbamScraper, RioSaudeScraper
+from medalert.scrapers.health_institutions import (
+    FiotecScraper,
+    IbamScraper,
+    RioSaudePssScraper,
+    RioSaudeScraper,
+)
+from medalert.scrapers.medical_portals import (
+    EstrategiaSaudeScraper,
+    FgvConcursosScraper,
+    MedGrupoScraper,
+)
 from medalert.scrapers.macae import MacaeGovScraper
 from medalert.scrapers.municipal_gov import (
     AraruamaGovScraper,
@@ -41,8 +51,13 @@ def build_scrapers() -> List[BaseScraper]:
         MacaeGovScraper(),
         # Fase 4 — instituições de saúde
         RioSaudeScraper(),
+        RioSaudePssScraper(),
         FiotecScraper(),
         IbamScraper(),
+        # Fase 5 — portais médicos e bancas
+        MedGrupoScraper(),
+        EstrategiaSaudeScraper(),
+        FgvConcursosScraper(),
         # Fase 4 — prefeituras/portais municipais
         AraruamaGovScraper(),
         CaboFrioSaudeScraper(),
@@ -60,6 +75,18 @@ def build_scrapers() -> List[BaseScraper]:
         # Mantido no código para poder ser reaproveitado se um dia houver um
         # endpoint por edital em vez de busca full-text.
     ]
+
+
+#: Teto de alertas de vaga NOVA por execução.
+#:
+#: Num dia normal aparecem de zero a poucas vagas, então este limite nunca é
+#: atingido. Ele existe para o caso de acúmulo: ao ligar uma fonte nova, todo
+#: o acervo dela entra de uma vez (ao acrescentar o MedGrupo, foram 66 vagas
+#: numa rodada só) — e 66 mensagens seguidas atropelariam o usuário e o
+#: rate limit do Telegram. O excedente fica com is_sent = 0 e é enviado aos
+#: poucos pelas rodadas seguintes, pela mesma fila de reenvio que cobre falha
+#: transitória. Nada se perde: no site as vagas aparecem todas de imediato.
+MAX_NEW_NOTIFICATIONS_PER_RUN = 15
 
 
 def _build_job_message(title: str, pub_date: str, link: str) -> str:
@@ -120,6 +147,7 @@ def run(
     logging.info(f"Starting MedAlert RJ Scraper Engine... (Broadcasting to {len(notifier.chat_ids)} chats)")
 
     new_jobs_count = 0
+    new_notifications = 0  # alertas de vaga nova já enviados nesta rodada (ver teto acima)
     scraper_failures: List[str] = []  # "Classe: erro" — detalhe para o alerta do Telegram
     failed_labels: List[str] = []  # só o nome da fonte — para o painel público de saúde
 
@@ -155,10 +183,16 @@ def run(
                         db.mark_as_sent(job["link"])
                         continue
 
+                    if new_notifications >= MAX_NEW_NOTIFICATIONS_PER_RUN:
+                        # Fica pendente de propósito: a fila de reenvio manda
+                        # nas próximas rodadas, sem atropelar o usuário agora.
+                        continue
+
                     sends = notifier.send_message(_build_job_message(job["title"], job["pub_date"], job["link"]))
                     if sends > 0:
                         db.mark_as_sent(job["link"])
                         messages_sent += sends
+                        new_notifications += 1
                 else:
                     # Vaga já conhecida: registra que ela ainda está sendo encontrada.
                     db.touch_last_seen(job["link"])

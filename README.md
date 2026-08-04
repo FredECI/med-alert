@@ -1,6 +1,6 @@
 # MedAlert RJ
 
-Radar automático de processos seletivos e concursos na área da saúde, com foco em Macaé, capital e Região dos Lagos (RJ). Roda sem supervisão via GitHub Actions (`.github/workflows/scraper.yml`), 2x ao dia: raspa 22 fontes, deduplica contra um banco SQLite, notifica novidades no Telegram e publica um site estático (Jekyll/GitHub Pages) com todas as vagas já descobertas.
+Radar automático de processos seletivos e concursos na área da saúde, com foco em Macaé, capital e Região dos Lagos (RJ). Roda sem supervisão via GitHub Actions (`.github/workflows/scraper.yml`), 2x ao dia: raspa 25 fontes, deduplica contra um banco SQLite, notifica novidades no Telegram e publica um site estático (Jekyll/GitHub Pages) com todas as vagas já descobertas.
 
 ## Estrutura
 
@@ -31,6 +31,11 @@ pré-filtrada (ver a docstring de cada scraper para o critério aplicado):
   "abre inscrições"? Termos fortes (`concurso`, `edital`, `processo seletivo`)
   valem sozinhos; termos fracos (`vaga`, `inscrições`) só contam fora de
   contexto de evento.
+
+Medicina veterinária é descartada por **subtração**: o trecho veterinário é
+apagado do texto e a relevância reavaliada no que sobrou. Assim "Médico
+Veterinário" sai do radar, mas um concurso que abre vagas para "Médico
+Clínico Geral e Médico Veterinário" continua entrando pela vaga humana.
 
 ## Rodando localmente
 

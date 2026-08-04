@@ -84,6 +84,29 @@ def test_has_job_signal_keeps_weak_term_when_there_is_no_event_context():
     assert has_job_signal("Prefeitura abre 50 vagas para médicos na rede municipal") is True
 
 
+def test_veterinary_only_vacancies_are_not_relevant():
+    """Medicina veterinária usa quase o mesmo vocabulário da humana, então
+    batia em 'médico'/'medicina' sem ser o que o radar procura."""
+    assert is_relevant("Vaga de Médico Veterinário") is False
+    assert is_relevant("Concurso para Medicina Veterinária") is False
+    assert is_relevant("Processo seletivo - Médica Veterinária") is False
+    assert is_relevant("Contratação de veterinário para o setor de zoonoses") is False
+
+
+def test_mixed_postings_with_human_and_veterinary_roles_are_kept():
+    """Concurso municipal costuma listar vários cargos de uma vez. Rejeitar o
+    anúncio inteiro só porque cita veterinário perderia a vaga humana junto —
+    por isso o trecho veterinário é subtraído e a relevância reavaliada."""
+    assert is_relevant("Concurso para Médico Clínico Geral e Médico Veterinário") is True
+    assert is_relevant("Edital: Médico Plantonista, Enfermeiro e Veterinário") is True
+
+
+def test_veterinary_council_acronym_does_not_count_as_medical():
+    """CRMV é o conselho da veterinária; CRM (humana) segue valendo."""
+    assert is_relevant("Exige registro no CRMV do estado") is False
+    assert is_relevant("Exige registro no CRM do estado") is True
+
+
 def test_has_job_signal_strong_term_wins_over_event_term():
     """'Concurso ... do curso técnico' tem termo de evento, mas o termo forte
     manda. Também garante que 'curso' não casa dentro de 'concurso'."""

@@ -1,0 +1,192 @@
+"""Portais de concursos médicos e bancas: MedGrupo, Estratégia (Saúde) e FGV."""
+import json
+import logging
+from typing import Dict, List, Optional
+
+from bs4 import BeautifulSoup
+
+from medalert.scrapers.base import BaseScraper
+from medalert.textutils import sanitize_title
+from medalert.timeutil import now_brt, today_str
+
+#: Código do estado do Rio de Janeiro no filtro do MedGrupo (lido do
+#: checkbox "Rio de Janeiro" em #lstEstados).
+_MEDGRUPO_RJ = "1"
+_MEDGRUPO_FILTER_URL = "https://concursos.medgrupo.com.br/Home/Filtrar"
+
+
+class MedGrupoScraper(BaseScraper):
+    """Plantão de Concursos do MedGrupo — concursos e residências médicas.
+
+    A listagem não vem no HTML da página: ela é carregada por AJAX. O
+    formulário faz `POST Home/Filtrar` com um corpo JSON
+    {estados, especialidades, tipos, ano} e recebe de volta um FRAGMENTO DE
+    HTML (não JSON), que é injetado na página. Por isso este scraper
+    sobrescreve scrape(): o template method da base só sabe fazer GET.
+
+    Detalhe descoberto testando: `ano` é obrigatório — mandar null devolve
+    500 ("null entry for parameter 'ano' of non-nullable type Int32").
+
+    A fonte é exclusivamente médica e o filtro de estado já é aplicado pelo
+    próprio site, então não reaplicamos is_relevant()/is_in_target_state().
+    """
+
+    url = "https://concursos.medgrupo.com.br/"
+
+    def scrape(self) -> List[Dict[str, str]]:
+        payload = json.dumps({
+            "estados": [_MEDGRUPO_RJ],
+            "especialidades": None,
+            "tipos": None,
+            "ano": now_brt().year,
+        })
+        try:
+            response = self.scraper.post(
+                _MEDGRUPO_FILTER_URL,
+                data=payload,
+                headers={
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                timeout=25,
+            )
+            response.raise_for_status()
+        except Exception as e:
+            logging.error(f"Failed to fetch {_MEDGRUPO_FILTER_URL}. Error: {e}")
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+        found_jobs = [
+            job for job in (self._parse_candidate(row) for row in soup.find_all("tr")) if job is not None
+        ]
+
+        unique_jobs = {job["link"]: job for job in found_jobs}.values()
+        logging.info(f"[{self.label}] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
+
+    def _parse_candidate(self, candidate) -> Optional[Dict[str, str]]:
+        instituicao_tag = candidate.select_one("a.concurso-relacao")
+        if not instituicao_tag:
+            return None
+
+        # O texto visível é a sigla ("AFAMCI"); o nome por extenso fica no
+        # tooltip, que é bem mais informativo no alerta do Telegram.
+        nome = sanitize_title(
+            instituicao_tag.get("data-original-title") or instituicao_tag.get_text()
+        )
+        if not nome:
+            return None
+
+        link = self._extract_edital_link(candidate)
+        if not link:
+            return None
+
+        return {"title": f"[MedGrupo] {nome}", "link": link, "pub_date": today_str()}
+
+    @staticmethod
+    def _extract_edital_link(row) -> Optional[str]:
+        """O link do edital não é um href da linha: ele vem dentro de um
+        pedaço de HTML escapado no atributo data-original-title (o tooltip
+        que lista os arquivos do edital)."""
+        for tag in row.select("[data-original-title]"):
+            tooltip = tag.get("data-original-title") or ""
+            if "href" not in tooltip:
+                continue
+            inner = BeautifulSoup(tooltip, "html.parser").find("a", href=True)
+            if inner:
+                return inner["href"]
+        return None
+
+
+class EstrategiaSaudeScraper(BaseScraper):
+    """Painel "Concursos Saúde" do blog do Estratégia Concursos.
+
+    A página inteira já é da área da saúde, mas tem alcance NACIONAL: cada
+    concurso é um `h3` com link para a matéria específica. Por isso aqui o
+    filtro necessário é o geográfico, e não o de relevância médica — exigir
+    palavra-chave médica descartaria títulos legítimos e enxutos como
+    "Concurso SES RJ", que não repetem "saúde" no nome.
+    """
+
+    url = "https://www.estrategiaconcursos.com.br/blog/concursos-area-da-saude/"
+
+    def _find_candidates(self, soup: BeautifulSoup):
+        return soup.select("h3 a[href]")
+
+    def _parse_candidate(self, candidate) -> Optional[Dict[str, str]]:
+        title = sanitize_title(candidate.get_text())
+        link = candidate.get("href", "")
+        if not title or not link:
+            return None
+
+        if not self.is_in_target_state(title):
+            return None
+
+        return {"title": f"[Estratégia Saúde] {title}", "link": link, "pub_date": today_str()}
+
+
+class FgvConcursosScraper(BaseScraper):
+    """Concursos organizados pela FGV.
+
+    Lista nacional e de todas as áreas (de tribunais a secretarias de saúde),
+    então exige relevância médica. A listagem é PAGINADA (`?page=N`) e o item
+    mais importante para nós não está na primeira página — o concurso da
+    EBSERH aparece só na segunda.
+
+    Sobre o recorte geográfico: o normal é exigir que o título cite o RJ, mas
+    alguns empregadores nacionais da saúde contratam para unidades no Rio sem
+    dizer isso no nome do certame. A EBSERH é o caso claro — administra os
+    hospitais universitários federais, incluindo os do Rio —, então esses
+    empregadores entram por uma lista curta e explícita em vez de afrouxar o
+    filtro geográfico para todo mundo.
+    """
+
+    url = "https://conhecimento.fgv.br/concursos"
+
+    #: Empregadores nacionais da saúde que contratam para unidades no Rio.
+    NATIONAL_HEALTH_EMPLOYERS = ["ebserh", "ministério da saúde", "ministerio da saude", "fiocruz"]
+
+    #: Páginas varridas por execução. A listagem mistura certames em
+    #: andamento e encerrados sem ordenação útil para nós — a EBSERH está na
+    #: 2ª página e o concurso de Saúde da PMERJ mais adiante, daí varrer 5.
+    PAGES = 5
+
+    def scrape(self) -> List[Dict[str, str]]:
+        found_jobs: List[Dict[str, str]] = []
+
+        for page in range(self.PAGES):
+            page_url = self.url if page == 0 else f"{self.url}?page={page}"
+            html = self.fetch_html(page_url)
+            if not html:
+                continue
+
+            soup = BeautifulSoup(html, "html.parser")
+            found_jobs.extend(
+                job
+                for job in (self._parse_candidate(c) for c in self._find_candidates(soup))
+                if job is not None
+            )
+
+        unique_jobs = {job["link"]: job for job in found_jobs}.values()
+        logging.info(f"[{self.label}] Found {len(unique_jobs)} relevant medical jobs.")
+        return list(unique_jobs)
+
+    def _find_candidates(self, soup: BeautifulSoup):
+        return soup.select('a[href^="/concursos/"]')
+
+    def _parse_candidate(self, candidate) -> Optional[Dict[str, str]]:
+        title = sanitize_title(candidate.get_text())
+        href = candidate.get("href", "")
+        if not title or not href:
+            return None
+
+        if not self.is_relevant(title):
+            return None
+
+        title_lower = title.lower()
+        national_health = any(emp in title_lower for emp in self.NATIONAL_HEALTH_EMPLOYERS)
+        if not (self.is_in_target_state(title) or national_health):
+            return None
+
+        full_link = href if href.startswith("http") else f"https://conhecimento.fgv.br{href}"
+        return {"title": f"[FGV] {title}", "link": full_link, "pub_date": today_str()}
