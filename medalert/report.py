@@ -15,7 +15,7 @@ from typing import List, Optional
 
 from medalert.models import Job
 from medalert.storage import DatabaseManager
-from medalert.textutils import sanitize_title, split_source_and_title
+from medalert.textutils import infer_source_from_link, sanitize_title, split_source_and_title
 from medalert.timeutil import now_brt
 
 CSV_HEADER = ["Data de Captura", "Título do Processo Seletivo", "Link de Acesso"]
@@ -87,7 +87,7 @@ class ReportGenerator:
             source, rest = split_source_and_title(job.title)
             payload.append({
                 "title": sanitize_title(rest),
-                "source": sanitize_title(source),
+                "source": sanitize_title(source) or infer_source_from_link(job.link),
                 "link": job.link,
                 "discovered_at": job.discovered_at,
                 "last_seen_at": _format_display_timestamp(job.last_seen_at),

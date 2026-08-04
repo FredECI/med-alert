@@ -18,4 +18,6 @@ title: MedAlert RJ
   </tbody>
 </table>
 
+<p><button type="button" id="show-all-jobs" hidden></button></p>
+
 <script src="{{ '/assets/js/search.js' | relative_url }}"></script>

@@ -75,6 +75,40 @@ def test_generate_jobs_data_creates_missing_data_directory(tmp_path, db):
     assert out_path.exists()
 
 
+def test_generate_jobs_data_infers_source_for_legacy_untagged_titles(tmp_path, db):
+    """Vagas anteriores à padronização do prefixo "[Fonte]" (~46% do histórico)
+    apareciam no site sem identificação nenhuma — o domínio do link resolve
+    sem precisar reescrever o banco."""
+    db.insert_job(
+        "Prefeitura de Casimiro de Abreu",
+        "https://www.pciconcursos.com.br/noticias/prefeitura-abre-processo",
+        "2026-04-16",
+    )
+
+    reporter = ReportGenerator(db_manager=db)
+    out_path = tmp_path / "_data" / "jobs.json"
+    reporter.generate_jobs_data(filename=str(out_path))
+
+    payload = json.loads(out_path.read_text(encoding="utf-8"))
+    assert payload[0]["source"] == "PCI"
+    assert payload[0]["title"] == "Prefeitura de Casimiro de Abreu"
+
+
+def test_explicit_source_prefix_wins_over_domain_inference(tmp_path, db):
+    db.insert_job(
+        "[PCI RJ] Concurso da Fundação Saúde",
+        "https://www.pciconcursos.com.br/noticias/outro",
+        "2026-07-20",
+    )
+
+    reporter = ReportGenerator(db_manager=db)
+    out_path = tmp_path / "_data" / "jobs.json"
+    reporter.generate_jobs_data(filename=str(out_path))
+
+    payload = json.loads(out_path.read_text(encoding="utf-8"))
+    assert payload[0]["source"] == "PCI RJ"
+
+
 def test_generate_jobs_data_collapses_the_same_edital_from_two_sources(tmp_path, db):
     """As duas linhas continuam no banco (nada é perdido), mas o site mostra
     uma só — senão o mesmo processo seletivo aparece duplicado na tabela."""

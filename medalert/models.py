@@ -9,7 +9,6 @@ class Job:
     link: str
     discovered_at: str
     last_seen_at: Optional[str] = None
-    is_active: bool = True
     #: Assinatura de conteúdo (ver medalert/dedup.py). None quando não há
     #: confiança suficiente para dizer que duas vagas são a mesma.
     dedup_key: Optional[str] = None

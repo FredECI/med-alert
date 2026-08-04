@@ -26,11 +26,18 @@ _EDITAL_PARAGRAPH_RE = re.compile(r"^\s*edital\b", re.IGNORECASE)
 # todos hospitalares. Muitos títulos de vaga hospitalar (ex: "Banco de
 # currículos | Diversos cargos - INC/RJ") não têm nenhuma palavra-chave
 # médica literal, só o nome da instituição — por isso, além de is_relevant(),
-# aceitamos também o nome de institutos/hospitais federais conhecidos que a
-# Fiotec atende no Rio.
-_FIOTEC_HEALTH_INSTITUTION_RE = re.compile(
-    r"\b(into|inca|inc|hospital)\b", re.IGNORECASE
-)
+# aceitamos também o nome de institutos/hospitais federais atendidos no Rio.
+#
+# Os acrônimos são casados com CAIXA SENSÍVEL de propósito: em minúsculas,
+# "inc" apareceria dentro de razão social estrangeira ("... Inc.") e "into" é
+# palavra comum em inglês, o que abriria brecha para falso positivo. Como
+# acrônimo institucional eles sempre vêm em maiúsculas no título.
+_FIOTEC_ACRONYM_RE = re.compile(r"\b(INTO|INCA|INC)\b")
+_FIOTEC_HOSPITAL_RE = re.compile(r"\bhospital\b", re.IGNORECASE)
+
+
+def _is_fiotec_health_institution(title: str) -> bool:
+    return bool(_FIOTEC_ACRONYM_RE.search(title) or _FIOTEC_HOSPITAL_RE.search(title))
 
 
 class RioSaudeScraper(BaseScraper):
@@ -90,7 +97,7 @@ class FiotecScraper(BaseScraper):
         if not title or not link_href:
             return None
 
-        if not (self.is_relevant(title) or _FIOTEC_HEALTH_INSTITUTION_RE.search(title)):
+        if not (self.is_relevant(title) or _is_fiotec_health_institution(title)):
             return None
 
         full_link = urljoin(self.url, link_href)

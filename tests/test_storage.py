@@ -43,7 +43,6 @@ def test_fetch_all_jobs_returns_every_row_regardless_of_age(db):
 
     jobs = db.fetch_all_jobs()
     assert len(jobs) == 2
-    assert all(job.is_active for job in jobs)
 
 
 def test_find_duplicate_link_matches_same_edital_from_another_source(db):

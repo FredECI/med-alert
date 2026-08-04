@@ -7,7 +7,7 @@ from medalert.dedup import build_signature
 from medalert.models import Job
 from medalert.timeutil import now_brt
 
-_JOB_COLUMNS = "job_title, link, publication_date, last_seen_at, is_active, dedup_key"
+_JOB_COLUMNS = "job_title, link, publication_date, last_seen_at, dedup_key"
 
 _CREATE_JOBS_TABLE = """
     CREATE TABLE IF NOT EXISTS jobs (
@@ -42,8 +42,12 @@ class DatabaseManager:
         with self.conn:
             if "last_seen_at" not in existing_columns:
                 self.conn.execute("ALTER TABLE jobs ADD COLUMN last_seen_at TEXT")
-            if "is_active" not in existing_columns:
-                self.conn.execute("ALTER TABLE jobs ADD COLUMN is_active INTEGER DEFAULT 1")
+            # Nota: bancos antigos têm uma coluna `is_active` que nunca chegou
+            # a ser usada — era um placeholder para esconder vagas expiradas
+            # automaticamente, recurso que foi deliberadamente descartado em
+            # favor de apenas exibir "visto pela última vez em X". Ela não é
+            # recriada aqui e nenhum código a lê; fica só como resíduo inofensivo
+            # nos bancos que já existem (removê-la exigiria reescrever a tabela).
             if "dedup_key" not in existing_columns:
                 self.conn.execute("ALTER TABLE jobs ADD COLUMN dedup_key TEXT")
 
@@ -86,9 +90,10 @@ class DatabaseManager:
     def touch_last_seen(self, link: str) -> None:
         """Marca que uma vaga já conhecida foi encontrada de novo nesta rodada.
 
-        Não altera is_active — nesta fase o dado só é registrado, nunca usado
-        para esconder algo automaticamente (isso fica para uma fase futura,
-        depois de acumular histórico real de last_seen_at).
+        O dado só é registrado e exibido ("visto pela última vez em X"), nunca
+        usado para esconder vaga automaticamente: como nenhum scraper lê a data
+        real de encerramento, qualquer inferência de "expirou" arriscaria
+        sumir com vaga que ainda está aberta.
         """
         query = "UPDATE jobs SET last_seen_at = ? WHERE link = ?"
         with self.conn:
@@ -142,8 +147,7 @@ class DatabaseManager:
             link=row[1],
             discovered_at=row[2],
             last_seen_at=row[3],
-            is_active=bool(row[4]) if row[4] is not None else True,
-            dedup_key=row[5],
+            dedup_key=row[4],
         )
 
     def close(self) -> None:
