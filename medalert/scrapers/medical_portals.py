@@ -83,7 +83,12 @@ class MedGrupoScraper(BaseScraper):
         if not link:
             return None
 
-        return {"title": f"[MedGrupo] {nome}", "link": link, "pub_date": today_str()}
+        return {
+            "title": f"[MedGrupo] {nome}",
+            "link": link,
+            "source_url": self.url,
+            "pub_date": today_str(),
+        }
 
     @staticmethod
     def _extract_edital_link(row) -> Optional[str]:

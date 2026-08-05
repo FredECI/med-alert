@@ -1,8 +1,31 @@
-<tr>
+<tr class="job-row{% if include.job.job_type == 'noticia' %} job-row--noticia{% endif %}"
+    data-region="{{ include.job.region }}"
+    data-type="{{ include.job.job_type }}">
   <td>{{ include.job.discovered_at }}</td>
   <td>
-    {% if include.job.source and include.job.source != "" %}<span class="job-source">[{{ include.job.source }}]</span> {% endif %}<strong>{{ include.job.title }}</strong>
-    {% if include.job.last_seen_at %}<br><small>Visto pela última vez em {{ include.job.last_seen_at }}</small>{% endif %}
+    <span class="badge badge--region">{{ include.job.region_label }}</span>
+    <span class="badge badge--type badge--{{ include.job.job_type }}">{{ include.job.job_type_label }}</span>
+    {% if include.job.source and include.job.source != "" %}<span class="badge badge--source">{{ include.job.source }}</span>{% endif %}
+    <div class="job-title"><strong>{{ include.job.title }}</strong></div>
+    {% if include.job.job_type == 'noticia' %}
+      <small class="job-note">Notícia sobre um processo — não é uma vaga confirmada.</small><br>
+    {% endif %}
+    {% if include.job.last_seen_at %}<small>Visto pela última vez em {{ include.job.last_seen_at }}</small>{% endif %}
   </td>
-  <td><a href="{{ include.job.link }}" aria-label="Acessar edital: {{ include.job.title }}">Acessar Edital</a></td>
+  <td>
+    {%- comment -%}
+      O rótulo acompanha o tipo: "Acessar Edital" está errado para uma
+      notícia ou para uma vaga CLT.
+    {%- endcomment -%}
+    {% case include.job.job_type %}
+      {% when 'noticia' %}{% assign acao = 'Ler notícia' %}
+      {% when 'emprego' %}{% assign acao = 'Ver vaga' %}
+      {% else %}{% assign acao = 'Acessar edital' %}
+    {% endcase %}
+    <a href="{{ include.job.link }}" aria-label="{{ acao }}: {{ include.job.title }}">{{ acao }}</a>
+    {%- if include.job.source_url %}
+      <br><a class="job-origin" href="{{ include.job.source_url }}"
+             aria-label="Página de origem: {{ include.job.title }}">Página de origem</a>
+    {%- endif %}
+  </td>
 </tr>

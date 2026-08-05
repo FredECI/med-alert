@@ -3,6 +3,7 @@ layout: default
 title: MedAlert RJ
 ---
 
+{% include styles.html %}
 {% include header.html %}
 
 <table id="jobs-table">

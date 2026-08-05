@@ -3,6 +3,11 @@ import logging
 from typing import Dict, List, Optional
 
 from medalert.config import TARGET_CITIES, load_admin_chat_id, load_telegram_bot_token
+from medalert.messages import (
+    build_failure_alert,
+    build_job_message,
+    build_job_message_from_parts,
+)
 from medalert.notify import DeliveryResult, TelegramNotifier, is_resolved
 from medalert.subscribers import Subscriber, fetch_subscribers, prune_blocked
 from medalert.report import ReportGenerator, write_robot_status
@@ -91,15 +96,6 @@ def build_scrapers() -> List[BaseScraper]:
 MAX_NEW_NOTIFICATIONS_PER_RUN = 15
 
 
-def _build_job_message(title: str, pub_date: str, link: str) -> str:
-    return (
-        f"🚨 *Nova Oportunidade/Processo Encontrado!*\n\n"
-        f"🏥 *Vaga:* {title}\n"
-        f"📅 *Data:* {pub_date}\n\n"
-        f"🔗 [Clique aqui para acessar]({link})"
-    )
-
-
 def _resolve_region(title: str, scraper_region: Optional[str]) -> str:
     """Região da vaga: o texto manda, a fonte cobre o que ele não disser.
 
@@ -163,7 +159,7 @@ def _deliver_pending(
 
         logging.info(f"↻ {len(pending)} pendência(s) para o chat {sub.chat_id}.")
         for job in pending:
-            resultado = notifier.send_to(sub.chat_id, _build_job_message(job.title, job.discovered_at, job.link))
+            resultado = notifier.send_to(sub.chat_id, build_job_message(job))
             if resultado is DeliveryResult.BLOCKED:
                 blocked.append(sub.chat_id)
                 break  # não insiste com quem bloqueou
@@ -246,6 +242,7 @@ def run(
                     pub_date=job["pub_date"],
                     job_type=classify_job_type(job["title"], scraper.job_type),
                     region=_resolve_region(job["title"], scraper.region),
+                    source_url=job.get("source_url"),
                 )
 
                 if is_new:
@@ -266,9 +263,16 @@ def run(
                         db.record_deliveries_for_all(job["link"], chat_ids)
                         continue
 
-                    message = _build_job_message(job["title"], job["pub_date"], job["link"])
                     job_region = _resolve_region(job["title"], scraper.region)
                     job_kind = classify_job_type(job["title"], scraper.job_type)
+                    message = build_job_message_from_parts(
+                        title=job["title"],
+                        discovered_at=job["pub_date"],
+                        link=job["link"],
+                        job_type=job_kind,
+                        region=job_region,
+                        source_url=job.get("source_url"),
+                    )
 
                     for sub in subscribers:
                         if not _wants(sub, job_region, job_kind):
@@ -330,14 +334,11 @@ def run(
 
     if scrapers and len(scraper_failures) == len(scrapers):
         logging.error("❌ Todos os scrapers falharam nesta execução.")
-        failure_summary = "\n".join(f"• {failure}" for failure in scraper_failures)
         # Vai só para quem mantém o robô: falha de scraper é problema de
         # operação, não notícia para quem se inscreveu para saber de vaga.
         notifier.send_admin(
             load_admin_chat_id(),
-            f"🔴 *MedAlert: falha total na execução*\n\n"
-            f"Todos os {len(scrapers)} scrapers falharam nesta rodada:\n\n"
-            f"{failure_summary}",
+            build_failure_alert(len(scrapers), scraper_failures),
         )
         return 1
 

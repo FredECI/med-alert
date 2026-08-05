@@ -133,6 +133,42 @@ def test_fetch_undelivered_without_preferences_returns_everything(db):
     assert len(db.fetch_undelivered("111")) == 2
 
 
+def test_source_url_is_dropped_when_equal_to_the_link(db):
+    """Guardar a origem quando ela é o próprio link faria a interface mostrar
+    o mesmo endereço duas vezes."""
+    db.insert_job("V", "https://example.com/p", _recent_date(), source_url="https://example.com/p")
+
+    assert db.fetch_all_jobs()[0].source_url is None
+
+
+def test_source_url_is_kept_when_it_differs(db):
+    db.insert_job("V", "https://example.com/edital.pdf", _recent_date(),
+                  source_url="https://example.com/pagina")
+
+    assert db.fetch_all_jobs()[0].source_url == "https://example.com/pagina"
+
+
+def test_existing_pdf_only_jobs_get_their_origin_backfilled(tmp_path):
+    """Sem retroagir, só as vagas novas teriam a página de origem — e as
+    antigas que mais precisam dela são justamente as que apontam direto para
+    um PDF, sem nenhum contexto ao redor."""
+    caminho = str(tmp_path / "antigo.db")
+    antigo = DatabaseManager(db_name=caminho)
+    antigo.insert_job("Residência", "https://static.medgrupo.com.br/x/edital01.pdf", "2026-01-01")
+    antigo.insert_job("Notícia", "https://g1.globo.com/uma-materia", "2026-01-01")
+    antigo.conn.execute("ALTER TABLE jobs DROP COLUMN source_url")  # simula banco anterior
+    antigo.conn.commit()
+    antigo.close()
+
+    migrado = DatabaseManager(db_name=caminho)
+    try:
+        por_link = {j.link: j.source_url for j in migrado.fetch_all_jobs()}
+        assert por_link["https://static.medgrupo.com.br/x/edital01.pdf"] == "https://concursos.medgrupo.com.br/"
+        assert por_link["https://g1.globo.com/uma-materia"] is None, "link que já é página não ganha origem"
+    finally:
+        migrado.close()
+
+
 def test_migration_adds_columns_to_pre_existing_database(tmp_path):
     """Simula um banco no formato antigo (sem last_seen_at/is_active, como o
     med_alerts.db real de produção) e garante que a migração aditiva roda sem

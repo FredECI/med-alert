@@ -11,8 +11,57 @@
   {% endif %}
 </p>
 
-<p><a href="{{ '/vagas_abertas.csv' | relative_url }}">Baixar lista completa como planilha (CSV)</a></p>
+<p>
+  📬 <strong><a href="https://t.me/MedAlertRJBot">Receba os alertas no Telegram</a></strong>
+  — escolha as regiões e os tipos de vaga que te interessam.
+  · <a href="{{ '/vagas_abertas.csv' | relative_url }}">Baixar planilha (CSV)</a>
+</p>
+
+{%- comment -%}
+  Os chips são montados a partir dos próprios dados, então uma região ou tipo
+  novo na taxonomia aparece aqui sozinho, sem precisar editar este arquivo.
+  Ficam ocultos por padrão e o JS os revela: sem JavaScript eles não fariam
+  nada, e um botão que não funciona é pior do que botão nenhum.
+{%- endcomment -%}
+<div class="filters" id="filters" hidden>
+  <div class="filters__group">
+    <span class="filters__label" id="label-regiao">Região</span>
+    <div role="group" aria-labelledby="label-regiao">
+      {% assign regioes = site.data.jobs | map: "region" | uniq | sort %}
+      {% for r in regioes %}
+        {% if r and r != "" %}
+          {% assign exemplo = site.data.jobs | where: "region", r | first %}
+          {% assign quantos = site.data.jobs | where: "region", r | size %}
+          <button type="button" class="chip" data-filter="region" data-value="{{ r }}" aria-pressed="false">
+            {{ exemplo.region_label }} <span class="chip__count">{{ quantos }}</span>
+          </button>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="filters__group">
+    <span class="filters__label" id="label-tipo">Tipo</span>
+    <div role="group" aria-labelledby="label-tipo">
+      {% assign tipos = site.data.jobs | map: "job_type" | uniq | sort %}
+      {% for t in tipos %}
+        {% if t and t != "" %}
+          {% assign exemplo = site.data.jobs | where: "job_type", t | first %}
+          {% assign quantos = site.data.jobs | where: "job_type", t | size %}
+          <button type="button" class="chip" data-filter="type" data-value="{{ t }}" aria-pressed="false">
+            {{ exemplo.job_type_label }} <span class="chip__count">{{ quantos }}</span>
+          </button>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <p><button type="button" id="clear-filters" class="chip" hidden>✕ Limpar filtros</button></p>
+</div>
 
 <p>
-  <input type="search" id="job-search" placeholder="Buscar por título, cidade ou fonte..." style="width: 100%; max-width: 28rem; padding: 0.5rem;">
+  <label for="job-search" class="filters__label">Buscar</label>
+  <input type="search" id="job-search" placeholder="Título, cidade ou fonte...">
 </p>
+
+<p class="filters__summary" id="filters-summary" aria-live="polite"></p>

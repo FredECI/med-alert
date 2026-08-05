@@ -16,3 +16,7 @@ class Job:
     #: que o assinante escolhe o que quer receber.
     job_type: Optional[str] = None
     region: Optional[str] = None
+    #: Página onde a vaga foi encontrada, quando `link` aponta direto para um
+    #: arquivo (o PDF do edital). Costuma trazer anexos, cronograma e
+    #: retificações que o PDF sozinho não tem. None quando `link` já é a página.
+    source_url: Optional[str] = None

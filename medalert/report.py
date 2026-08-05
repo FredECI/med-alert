@@ -98,6 +98,9 @@ class ReportGenerator:
                 "job_type_label": job_type_label(job.job_type),
                 "region": job.region,
                 "region_label": region_label(job.region),
+                # Página onde a vaga vive, quando `link` é o PDF do edital.
+                # Costuma ter anexos e retificações que o PDF não traz.
+                "source_url": job.source_url,
             })
 
         _write_json(filename, payload)

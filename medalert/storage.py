@@ -7,7 +7,19 @@ from medalert.dedup import build_signature
 from medalert.models import Job
 from medalert.timeutil import now_brt
 
-_JOB_COLUMNS = "job_title, link, publication_date, last_seen_at, dedup_key, job_type, region"
+_JOB_COLUMNS = (
+    "job_title, link, publication_date, last_seen_at, dedup_key, job_type, region, source_url"
+)
+
+#: Host do arquivo -> página onde a vaga vive. Usado só para retroagir o
+#: acervo anterior à coluna `source_url`; daqui em diante quem informa a
+#: origem é o próprio scraper, que sabe a resposta certa.
+_SOURCE_PAGE_BY_HOST = {
+    "static.medgrupo.com.br": "https://concursos.medgrupo.com.br/",
+    "pss.riosaude.rio.br": "https://pss.riosaude.rio.br",
+    "riosaude.prefeitura.rio": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "ibam-concursos.org.br": "https://www.ibam-concursos.org.br/default.asp",
+}
 
 _CREATE_JOBS_TABLE = """
     CREATE TABLE IF NOT EXISTS jobs (
@@ -18,7 +30,8 @@ _CREATE_JOBS_TABLE = """
         last_seen_at TEXT,
         dedup_key TEXT,
         job_type TEXT,
-        region TEXT
+        region TEXT,
+        source_url TEXT
     )
 """
 
@@ -72,6 +85,27 @@ class DatabaseManager:
                 self.conn.execute("ALTER TABLE jobs ADD COLUMN job_type TEXT")
             if "region" not in existing_columns:
                 self.conn.execute("ALTER TABLE jobs ADD COLUMN region TEXT")
+            if "source_url" not in existing_columns:
+                self.conn.execute("ALTER TABLE jobs ADD COLUMN source_url TEXT")
+                self._backfill_source_urls()
+
+    def _backfill_source_urls(self) -> None:
+        """Preenche a origem das vagas que já estavam no banco.
+
+        Sem isso, só vagas descobertas a partir de agora teriam a página de
+        origem — e as antigas que mais precisam dela são justamente as que
+        apontam direto para um PDF, sem nenhum contexto ao redor.
+
+        Só age sobre links que terminam em .pdf: quando o link já é uma
+        página, ele próprio é a origem e não há segundo endereço a mostrar.
+        """
+        for dominio, pagina in _SOURCE_PAGE_BY_HOST.items():
+            self.conn.execute(
+                "UPDATE jobs SET source_url = ? "
+                "WHERE source_url IS NULL AND lower(link) LIKE ? AND lower(link) LIKE '%.pdf' "
+                "AND link <> ?",
+                (pagina, f"%{dominio}%", pagina),
+            )
 
     def insert_job(
         self,
@@ -80,12 +114,14 @@ class DatabaseManager:
         pub_date: str,
         job_type: Optional[str] = None,
         region: Optional[str] = None,
+        source_url: Optional[str] = None,
     ) -> bool:
         """Insere uma vaga nova. Retorna False (via UNIQUE(link)) se o link já existir."""
         query = (
             "INSERT INTO jobs "
-            "(job_title, link, publication_date, last_seen_at, dedup_key, job_type, region) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?)"
+            "(job_title, link, publication_date, last_seen_at, dedup_key, "
+            "job_type, region, source_url) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         )
         try:
             with self.conn:
@@ -94,6 +130,10 @@ class DatabaseManager:
                     (
                         title, link, pub_date, now_brt().isoformat(),
                         build_signature(title), job_type, region,
+                        # Guardar a origem quando ela é o próprio link não
+                        # acrescenta nada e faria a interface mostrar o mesmo
+                        # endereço duas vezes.
+                        source_url if source_url and source_url != link else None,
                     ),
                 )
             return True
@@ -225,6 +265,7 @@ class DatabaseManager:
             dedup_key=row[4],
             job_type=row[5],
             region=row[6],
+            source_url=row[7],
         )
 
     def close(self) -> None:

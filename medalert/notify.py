@@ -36,7 +36,11 @@ class TelegramNotifier:
         payload = {
             "chat_id": chat_id,
             "text": text,
-            "parse_mode": "Markdown",
+            # HTML e não Markdown: os títulos vêm de páginas raspadas, cheios
+            # de `[`, `]` e `_`, e no Markdown do Telegram qualquer um deles
+            # desbalanceado faz a API recusar a mensagem (400) e o alerta se
+            # perde. Ver medalert/messages.py.
+            "parse_mode": "HTML",
             "disable_web_page_preview": True,
         }
         try:

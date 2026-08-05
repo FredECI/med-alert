@@ -76,6 +76,7 @@ class RioSaudeScraper(BaseScraper):
         return {
             "title": f"[RioSaúde] {sanitize_title(text)}",
             "link": full_link,
+            "source_url": self.url,
             "pub_date": today_str(),
         }
 
@@ -198,6 +199,7 @@ class RioSaudePssScraper(BaseScraper):
         return {
             "title": f"[RioSaúde PSS] Edital {edital} — {resumo}",
             "link": link,
+            "source_url": self.url,
             "pub_date": today_str(),
         }
 
@@ -238,4 +240,9 @@ class IbamScraper(BaseScraper):
         link = urljoin(self.url, doc_link_tag["href"]) if doc_link_tag else self.url
 
         title = f"{municipio} - {descricao}" if descricao else municipio
-        return {"title": f"[IBAM] {sanitize_title(title)}", "link": link, "pub_date": today_str()}
+        return {
+            "title": f"[IBAM] {sanitize_title(title)}",
+            "link": link,
+            "source_url": self.url,
+            "pub_date": today_str(),
+        }
