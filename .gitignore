@@ -4,3 +4,8 @@ __pycache__/
 venv/
 .pytest_cache/
 *.egg-info/
+
+# Worker (Cloudflare)
+node_modules/
+worker/.wrangler/
+.dev.vars

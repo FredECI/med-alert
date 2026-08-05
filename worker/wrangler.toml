@@ -1,0 +1,14 @@
+name = "medalert-bot"
+main = "src/worker.js"
+compatibility_date = "2026-01-01"
+
+# O id é preenchido pelo comando de criação do namespace (ver worker/README.md).
+[[kv_namespaces]]
+binding = "SUBSCRIBERS"
+id = "eaed03a80f6b400ea271d5ca1caa5922"
+
+# Segredos NÃO ficam aqui — este arquivo é versionado num repositório público.
+# São enviados por `wrangler secret put`:
+#   TELEGRAM_BOT_TOKEN       token do bot (o mesmo usado pelo GitHub Actions)
+#   TELEGRAM_WEBHOOK_SECRET  prova de que o update veio mesmo do Telegram
+#   SYNC_TOKEN               autoriza o robô a ler a lista de assinantes

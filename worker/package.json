@@ -1,0 +1,14 @@
+{
+  "name": "medalert-bot-worker",
+  "private": true,
+  "type": "module",
+  "description": "Worker do Cloudflare que atende o bot do Telegram do MedAlert RJ",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  }
+}

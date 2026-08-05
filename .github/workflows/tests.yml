@@ -26,3 +26,24 @@ jobs:
 
     - name: Rodar testes
       run: pytest -v
+
+  worker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do Repositório
+      uses: actions/checkout@v4
+
+    - name: Configurar o Node
+      uses: actions/setup-node@v4
+      with:
+        # Mesma versão exigida pelo wrangler (ver worker/package.json), para o
+        # CI não validar num runtime diferente do usado no deploy.
+        node-version: '22'
+
+    # O runner embutido do Node basta: a lógica testada é pura (montagem de
+    # teclado, marcação de opções), sem rede nem KV — nenhuma dependência
+    # precisa ser instalada.
+    - name: Rodar testes do Worker
+      working-directory: worker
+      run: node --test test/
