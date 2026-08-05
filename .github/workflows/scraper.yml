@@ -48,7 +48,14 @@ jobs:
     - name: Executar o Bot
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+        # Quem recebe alerta vem do Worker (Cloudflare KV), não daqui: a lista
+        # é montada pelos próprios usuários via /start no bot. O antigo
+        # TELEGRAM_CHAT_IDS não é mais lido e pode ser apagado dos Secrets.
+        MEDALERT_WORKER_URL: ${{ secrets.MEDALERT_WORKER_URL }}
+        MEDALERT_SYNC_TOKEN: ${{ secrets.MEDALERT_SYNC_TOKEN }}
+        # Só para avisos de operação (ex: falha total dos scrapers), que não
+        # devem ir para a base de assinantes.
+        TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
       run: python main.py
 
     - name: Salvar Arquivos

@@ -13,9 +13,12 @@ import os
 
 import pytest
 
+from medalert.notify import DeliveryResult
 from medalert.orchestrator import MAX_NEW_NOTIFICATIONS_PER_RUN, run
 from medalert.scrapers.base import BaseScraper
 from medalert.storage import DatabaseManager
+from medalert.subscribers import Subscriber
+from medalert.taxonomy import JOB_TYPES, REGIONS
 from medalert.timeutil import now_brt
 
 
@@ -27,6 +30,26 @@ def _today() -> str:
 @pytest.fixture(autouse=True)
 def _isolate_cwd(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
+
+
+def _assinante(chat_id="123", regions=None, job_types=None) -> Subscriber:
+    """Assinante que aceita tudo, salvo quando o teste restringe de propósito."""
+    return Subscriber(
+        chat_id=chat_id,
+        regions=list(REGIONS) if regions is None else regions,
+        job_types=list(JOB_TYPES) if job_types is None else job_types,
+    )
+
+
+@pytest.fixture(autouse=True)
+def _lista_de_assinantes(monkeypatch):
+    """Evita que os testes batam no Worker real.
+
+    Sem isso, fetch_subscribers() devolveria None (sem as variáveis de
+    ambiente) e a rodada entraria no modo "não sei quem são" — que existe para
+    proteger produção, mas mascararia todos os testes de notificação.
+    """
+    monkeypatch.setattr("medalert.orchestrator.fetch_subscribers", lambda: [_assinante()])
 
 
 @pytest.fixture(autouse=True)
@@ -69,16 +92,18 @@ class _KnownJobScraper(BaseScraper):
 
 
 class _FakeNotifier:
-    def __init__(self, chat_ids=None):
-        self.chat_ids = chat_ids if chat_ids is not None else ["123"]
+    def __init__(self, resultado=DeliveryResult.SENT):
         self.sent = []
+        self.resultado = resultado
 
     def send_to(self, chat_id, text):
-        self.sent.append((chat_id, text))
-        return True
+        if self.resultado is DeliveryResult.SENT:
+            self.sent.append((chat_id, text))
+        return self.resultado
 
-    def send_message(self, text):
-        return sum(1 for chat_id in self.chat_ids if self.send_to(chat_id, text))
+    def send_admin(self, admin_chat_id, text):
+        self.sent.append((admin_chat_id or "admin", text))
+        return True
 
 
 def test_run_returns_zero_when_no_scrapers_fail(db):
@@ -149,19 +174,19 @@ class _FlakyNotifier:
     """Falha nas primeiras N tentativas — simula indisponibilidade transitória."""
 
     def __init__(self, failures):
-        self.chat_ids = ["123"]
         self.remaining_failures = failures
         self.sent = []
 
     def send_to(self, chat_id, text):
         if self.remaining_failures > 0:
             self.remaining_failures -= 1
-            return False
+            return DeliveryResult.RETRY
         self.sent.append((chat_id, text))
-        return True
+        return DeliveryResult.SENT
 
-    def send_message(self, text):
-        return sum(1 for chat_id in self.chat_ids if self.send_to(chat_id, text))
+    def send_admin(self, admin_chat_id, text):
+        self.sent.append((admin_chat_id or "admin", text))
+        return True
 
 
 class _NewJobScraper(BaseScraper):
@@ -363,6 +388,113 @@ def test_legacy_database_is_not_resent_when_deliveries_table_appears(tmp_path):
         assert notifier.sent == []
     finally:
         banco.close()
+
+
+def test_subscriber_only_gets_what_matches_their_preferences(db):
+    """O ponto da Fase 4: cada um recebe só o recorte que escolheu."""
+    macae = _NewJobScraper("[Pref. Macaé] Concurso para médico", "https://example.com/macae")
+    macae.job_type = "concurso"
+    notifier = _FakeNotifier()
+
+    so_lagos = _assinante("999", regions=["regiao_dos_lagos"], job_types=["concurso"])
+    run(scrapers=[macae], db=db, notifier=notifier, subscribers=[so_lagos])
+
+    assert notifier.sent == [], "vaga do Norte Fluminense não é para quem assina só a Região dos Lagos"
+
+
+def test_subscriber_gets_what_they_asked_for(db):
+    macae = _NewJobScraper("[Pref. Macaé] Concurso para médico", "https://example.com/macae")
+    macae.job_type = "concurso"
+    notifier = _FakeNotifier()
+
+    quer = _assinante("999", regions=["norte_fluminense"], job_types=["concurso"])
+    run(scrapers=[macae], db=db, notifier=notifier, subscribers=[quer])
+
+    assert len(notifier.sent) == 1
+    assert notifier.sent[0][0] == "999"
+
+
+def test_each_subscriber_is_filtered_independently(db):
+    macae = _NewJobScraper("[Pref. Macaé] Concurso para médico", "https://example.com/macae")
+    macae.job_type = "concurso"
+    notifier = _FakeNotifier()
+
+    run(scrapers=[macae], db=db, notifier=notifier, subscribers=[
+        _assinante("111", regions=["norte_fluminense"], job_types=["concurso"]),
+        _assinante("222", regions=["capital_metropolitana"], job_types=["concurso"]),
+    ])
+
+    assert [chat for chat, _ in notifier.sent] == ["111"]
+
+
+def test_unmatched_job_stays_pending_so_preference_changes_can_reach_it(db):
+    """Uma vaga fora do filtro não é marcada como entregue — se a pessoa
+    ampliar as preferências depois, ela ainda chega pela fila de pendentes."""
+    macae = _NewJobScraper("[Pref. Macaé] Concurso para médico", "https://example.com/macae")
+    macae.job_type = "concurso"
+
+    restrito = _assinante("999", regions=["regiao_dos_lagos"], job_types=["concurso"])
+    run(scrapers=[macae], db=db, notifier=_FakeNotifier(), subscribers=[restrito])
+
+    ampliado = _assinante("999", regions=["regiao_dos_lagos", "norte_fluminense"], job_types=["concurso"])
+    notifier = _FakeNotifier()
+    run(scrapers=[], db=db, notifier=notifier, subscribers=[ampliado])
+
+    assert len(notifier.sent) == 1, "após ampliar o filtro, a vaga pendente é entregue"
+
+
+def test_delivery_is_skipped_when_the_subscriber_list_is_unavailable(db, monkeypatch):
+    """Se o Worker estiver fora do ar, a coleta segue mas nada é dado como
+    entregue — as vagas ficam pendentes e saem na rodada seguinte, em vez de
+    serem perdidas silenciosamente."""
+    monkeypatch.setattr("medalert.orchestrator.fetch_subscribers", lambda: None)
+    notifier = _FakeNotifier()
+
+    run(scrapers=[_NewJobScraper("[T] Vaga", "https://example.com/v")], db=db, notifier=notifier)
+
+    assert notifier.sent == []
+    assert len(db.fetch_all_jobs()) == 2  # a vaga foi salva (semente + esta)
+    assert len(db.fetch_undelivered("123")) >= 1, "continua pendente para a próxima rodada"
+
+
+def test_blocked_subscriber_is_pruned(db, monkeypatch):
+    """Quem bloqueia o bot sai da lista: insistir gastaria uma chamada de API
+    por rodada, para sempre, com alguém que nunca mais vai receber."""
+    removidos = []
+    monkeypatch.setattr("medalert.orchestrator.prune_blocked", lambda ids: removidos.extend(ids) or len(ids))
+
+    run(
+        scrapers=[_NewJobScraper("[T] Vaga", "https://example.com/v")],
+        db=db,
+        notifier=_FakeNotifier(resultado=DeliveryResult.BLOCKED),
+        subscribers=[_assinante("999")],
+    )
+
+    assert removidos == ["999"]
+
+
+def test_subscriber_wanting_nothing_is_skipped(db):
+    """Sem região ou sem tipo nenhuma vaga casaria — não vale nem consultar."""
+    notifier = _FakeNotifier()
+
+    run(scrapers=[], db=db, notifier=notifier, subscribers=[_assinante("999", regions=[])])
+
+    assert notifier.sent == []
+
+
+def test_total_failure_alert_goes_to_the_admin_not_to_subscribers(db):
+    """"Todos os scrapers falharam" é problema de operação; mandar isso para a
+    base inteira seria ruído para quem só quer saber de vaga."""
+    notifier = _FakeNotifier()
+
+    exit_code = run(
+        scrapers=[_FailingScraper()], db=db, notifier=notifier,
+        subscribers=[_assinante("111"), _assinante("222")],
+    )
+
+    assert exit_code == 1
+    assert len(notifier.sent) == 1, "um aviso só, para o admin — não um por assinante"
+    assert "falha total" in notifier.sent[0][1].lower()
 
 
 def test_run_refreshes_last_seen_shown_on_the_site_for_known_jobs(db):

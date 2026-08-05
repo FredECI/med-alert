@@ -2,8 +2,9 @@
 import logging
 from typing import Dict, List, Optional
 
-from medalert.config import TARGET_CITIES, load_telegram_bot_token, load_telegram_chat_ids
-from medalert.notify import TelegramNotifier
+from medalert.config import TARGET_CITIES, load_admin_chat_id, load_telegram_bot_token
+from medalert.notify import DeliveryResult, TelegramNotifier, is_resolved
+from medalert.subscribers import Subscriber, fetch_subscribers, prune_blocked
 from medalert.report import ReportGenerator, write_robot_status
 from medalert.scrapers.aggregators import ConcursosNoBrasilScraper, InfoJobsScraper
 from medalert.scrapers.base import BaseScraper
@@ -130,42 +131,68 @@ def _backfill_legacy_deliveries(db: DatabaseManager, chat_ids: List[str]) -> Non
         db.record_deliveries_for_all(link, chat_ids)
 
 
-def _deliver_pending(db: DatabaseManager, notifier: TelegramNotifier) -> int:
-    """Envia, para cada destinatário, o que ainda não foi entregue a ele.
+def _deliver_pending(
+    db: DatabaseManager,
+    notifier: TelegramNotifier,
+    subscribers: List[Subscriber],
+    blocked: List[str],
+) -> int:
+    """Envia a cada assinante o que ainda não foi entregue a ele.
 
     Cobre a falha transitória do Telegram e o excedente do teto por rodada.
     Fica no começo da execução de propósito: se o envio falhou agora há pouco,
     tentar de novo na mesma rodada falharia igual — o que se quer recuperar é
     a falha da rodada anterior.
+
+    A consulta já respeita as preferências do assinante, então cada um só vê
+    pendência do que ele de fato quer receber.
     """
     messages_sent = 0
-    for chat_id in notifier.chat_ids:
-        pending = db.fetch_undelivered(chat_id, limit=MAX_NEW_NOTIFICATIONS_PER_RUN)
+    for sub in subscribers:
+        if sub.wants_nothing():
+            continue
+
+        pending = db.fetch_undelivered(
+            sub.chat_id,
+            limit=MAX_NEW_NOTIFICATIONS_PER_RUN,
+            regions=sub.regions,
+            job_types=sub.job_types,
+        )
         if not pending:
             continue
 
-        logging.info(f"↻ {len(pending)} pendência(s) para o chat {chat_id}.")
+        logging.info(f"↻ {len(pending)} pendência(s) para o chat {sub.chat_id}.")
         for job in pending:
-            if notifier.send_to(chat_id, _build_job_message(job.title, job.discovered_at, job.link)):
-                db.record_delivery(job.link, chat_id)
-                messages_sent += 1
+            resultado = notifier.send_to(sub.chat_id, _build_job_message(job.title, job.discovered_at, job.link))
+            if resultado is DeliveryResult.BLOCKED:
+                blocked.append(sub.chat_id)
+                break  # não insiste com quem bloqueou
+            if is_resolved(resultado):
+                db.record_delivery(job.link, sub.chat_id)
+                if resultado is DeliveryResult.SENT:
+                    messages_sent += 1
 
     return messages_sent
+
+
+def _wants(sub: Subscriber, region: str, job_type: str) -> bool:
+    return region in sub.regions and job_type in sub.job_types
 
 
 def run(
     scrapers: Optional[List[BaseScraper]] = None,
     db: Optional[DatabaseManager] = None,
     notifier: Optional[TelegramNotifier] = None,
+    subscribers: Optional[List[Subscriber]] = None,
 ) -> int:
     """Executa uma rodada completa. Retorna 0 em sucesso (ou falha parcial),
     1 se TODOS os scrapers falharem — isso faz a execução do GitHub Actions
-    ficar vermelha em vez de sair silenciosamente com código 0, e dispara um
-    alerta no Telegram resumindo o que falhou.
+    ficar vermelha em vez de sair silenciosamente com código 0, e avisa quem
+    mantém o robô.
 
     Os parâmetros são injetáveis (todos opcionais, com os valores reais como
-    padrão) só para permitir testar o comportamento de falha total sem rede
-    nem banco de produção — main.py sempre chama run() sem argumentos.
+    padrão) só para permitir testar sem rede nem banco de produção —
+    main.py sempre chama run() sem argumentos.
     """
     scrapers = scrapers if scrapers is not None else build_scrapers()
     # Só fechamos a conexão se fomos nós que a abrimos — fechar um recurso
@@ -173,15 +200,29 @@ def run(
     owns_db = db is None
     db = db if db is not None else DatabaseManager()
     if notifier is None:
-        notifier = TelegramNotifier(bot_token=load_telegram_bot_token(), chat_ids=load_telegram_chat_ids())
+        notifier = TelegramNotifier(bot_token=load_telegram_bot_token())
+    if subscribers is None:
+        subscribers = fetch_subscribers()
 
-    logging.info(f"Starting MedAlert RJ Scraper Engine... (Broadcasting to {len(notifier.chat_ids)} chats)")
+    # None é diferente de lista vazia: vazia significa "ninguém se cadastrou"
+    # e a rodada segue normalmente; None significa "não consegui saber quem
+    # são". Nesse caso a coleta continua (o site é atualizado), mas nenhuma
+    # entrega é registrada — as vagas ficam pendentes e saem na próxima
+    # rodada, em vez de serem dadas como entregues para ninguém.
+    subscribers_unknown = subscribers is None
+    if subscribers_unknown:
+        logging.error("⚠️ Lista de assinantes indisponível: coletando sem notificar ninguém.")
+        subscribers = []
+
+    logging.info(f"Starting MedAlert RJ Scraper Engine... ({len(subscribers)} assinante(s))")
 
     new_jobs_count = 0
-    scraper_failures: List[str] = []  # "Classe: erro" — detalhe para o alerta do Telegram
+    scraper_failures: List[str] = []  # "Classe: erro" — detalhe para o aviso ao admin
     failed_labels: List[str] = []  # só o nome da fonte — para o painel público de saúde
+    blocked: List[str] = []  # quem bloqueou o bot nesta rodada
     # Alertas de vaga nova já enviados nesta rodada, por destinatário.
-    sent_per_chat: Dict[str, int] = {chat_id: 0 for chat_id in notifier.chat_ids}
+    sent_per_chat: Dict[str, int] = {sub.chat_id: 0 for sub in subscribers}
+    chat_ids = [sub.chat_id for sub in subscribers]
 
     # Banco vazio significa primeira execução (ou reset deliberado): o acervo
     # inteiro seria "novo" e viraria dias de alertas irrelevantes. Nesse caso
@@ -190,8 +231,8 @@ def run(
     if bootstrap:
         logging.info("🌱 Banco vazio: rodada de bootstrap — vagas serão salvas SEM notificar.")
 
-    _backfill_legacy_deliveries(db, notifier.chat_ids)
-    messages_sent = _deliver_pending(db, notifier)
+    _backfill_legacy_deliveries(db, chat_ids)
+    messages_sent = 0 if subscribers_unknown else _deliver_pending(db, notifier, subscribers, blocked)
 
     # Loop de execução blindado
     for scraper in scrapers:
@@ -211,8 +252,9 @@ def run(
                     new_jobs_count += 1
                     logging.info(f"🆕 NEW JOB SAVED: {job['title']}")
 
-                    if bootstrap:
-                        db.record_deliveries_for_all(job["link"], notifier.chat_ids)
+                    if bootstrap or subscribers_unknown:
+                        if bootstrap:
+                            db.record_deliveries_for_all(job["link"], chat_ids)
                         continue
 
                     # O mesmo edital costuma aparecer em duas fontes (ex: IBAM
@@ -221,19 +263,33 @@ def run(
                     # alerta é suprimido para não notificar duas vezes.
                     if db.find_duplicate_link(job["link"]):
                         logging.info(f"🔁 Duplicata de outra fonte, alerta suprimido: {job['title']}")
-                        db.record_deliveries_for_all(job["link"], notifier.chat_ids)
+                        db.record_deliveries_for_all(job["link"], chat_ids)
                         continue
 
                     message = _build_job_message(job["title"], job["pub_date"], job["link"])
-                    for chat_id in notifier.chat_ids:
-                        if sent_per_chat[chat_id] >= MAX_NEW_NOTIFICATIONS_PER_RUN:
+                    job_region = _resolve_region(job["title"], scraper.region)
+                    job_kind = classify_job_type(job["title"], scraper.job_type)
+
+                    for sub in subscribers:
+                        if not _wants(sub, job_region, job_kind):
+                            # Não é o que essa pessoa pediu. Não registramos
+                            # entrega: se ela mudar as preferências depois, a
+                            # vaga ainda pode alcançá-la pela fila de pendentes.
+                            continue
+                        if sent_per_chat[sub.chat_id] >= MAX_NEW_NOTIFICATIONS_PER_RUN:
                             # Fica pendente de propósito: sai nas próximas
                             # rodadas, sem atropelar o destinatário agora.
                             continue
-                        if notifier.send_to(chat_id, message):
-                            db.record_delivery(job["link"], chat_id)
-                            messages_sent += 1
-                            sent_per_chat[chat_id] += 1
+
+                        resultado = notifier.send_to(sub.chat_id, message)
+                        if resultado is DeliveryResult.BLOCKED:
+                            blocked.append(sub.chat_id)
+                            continue
+                        if is_resolved(resultado):
+                            db.record_delivery(job["link"], sub.chat_id)
+                            if resultado is DeliveryResult.SENT:
+                                messages_sent += 1
+                                sent_per_chat[sub.chat_id] += 1
                 else:
                     # Vaga já conhecida: registra que ela ainda está sendo encontrada.
                     db.touch_last_seen(job["link"])
@@ -266,15 +322,23 @@ def run(
     if owns_db:
         db.close()
 
+    # Quem bloqueou o bot sai da lista: insistir gastaria uma chamada de API
+    # por rodada, para sempre, com alguém que nunca mais vai receber.
+    if blocked:
+        removidos = prune_blocked(sorted(set(blocked)))
+        logging.info(f"🚫 {removidos} assinante(s) removido(s) por terem bloqueado o bot.")
+
     if scrapers and len(scraper_failures) == len(scrapers):
         logging.error("❌ Todos os scrapers falharam nesta execução.")
         failure_summary = "\n".join(f"• {failure}" for failure in scraper_failures)
-        alert_msg = (
+        # Vai só para quem mantém o robô: falha de scraper é problema de
+        # operação, não notícia para quem se inscreveu para saber de vaga.
+        notifier.send_admin(
+            load_admin_chat_id(),
             f"🔴 *MedAlert: falha total na execução*\n\n"
             f"Todos os {len(scrapers)} scrapers falharam nesta rodada:\n\n"
-            f"{failure_summary}"
+            f"{failure_summary}",
         )
-        notifier.send_message(alert_msg)
         return 1
 
     return 0

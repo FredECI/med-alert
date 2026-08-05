@@ -51,7 +51,26 @@ pip install -r requirements.txt
 python main.py
 ```
 
-As variáveis `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_IDS` (lista separada por vírgula) são opcionais — sem elas, o robô roda normalmente só sem enviar notificações.
+Sem as variáveis abaixo o robô roda normalmente, só sem enviar notificação —
+útil para testar a coleta:
+
+| Variável | Para quê |
+|---|---|
+| `TELEGRAM_BOT_TOKEN` | Enviar as mensagens |
+| `MEDALERT_WORKER_URL` | Onde ler a lista de assinantes |
+| `MEDALERT_SYNC_TOKEN` | Autorização para essa leitura |
+| `TELEGRAM_ADMIN_CHAT_ID` | Destino dos avisos de falha (não vai para assinantes) |
+
+## Quem recebe os alertas
+
+A lista de assinantes vive no **Cloudflare KV**, alimentada pelas pessoas via
+`/start` no bot — nenhum chat ID fica neste repositório, que é público. Cada
+assinante escolhe região e tipo de vaga, e o robô entrega só o que casa com o
+que ele pediu. Ver [worker/README.md](worker/README.md).
+
+Se o Worker estiver indisponível numa rodada, a coleta acontece normalmente e
+nada é marcado como entregue: as vagas ficam pendentes e saem na rodada
+seguinte, em vez de se perderem.
 
 ## Dados
 

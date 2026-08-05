@@ -1,32 +1,38 @@
 """Envio de notificações via Telegram, com isolamento de erro por destinatário."""
 import logging
+from enum import Enum
 from typing import List
 
 import requests
 
-#: Erros do Telegram que NÃO adianta retentar: a mensagem foi rejeitada pelo
-#: conteúdo ou o destinatário não é mais alcançável. Retentar nesses casos
-#: significaria repetir a mesma falha a cada rodada, para sempre.
-_PERMANENT_ERROR_CODES = {400, 403}
+
+class DeliveryResult(Enum):
+    """Desfecho de uma tentativa de envio.
+
+    A distinção entre os três existe porque cada um pede uma reação diferente:
+    insistir, desistir da mensagem, ou desistir do destinatário.
+    """
+
+    #: Entregue.
+    SENT = "sent"
+    #: O destinatário bloqueou o bot (403). Não adianta tentar de novo — e ele
+    #: deve sair da lista de assinantes.
+    BLOCKED = "blocked"
+    #: O Telegram recusou a mensagem (400), normalmente por formatação
+    #: inválida. Retentar repetiria a mesma falha para sempre.
+    REJECTED = "rejected"
+    #: Falha transitória (rede, 429, 5xx). Vale tentar na próxima rodada.
+    RETRY = "retry"
 
 
 class TelegramNotifier:
     """Handles sending notifications to Telegram chats."""
 
-    def __init__(self, bot_token: str, chat_ids: List[str]):
+    def __init__(self, bot_token: str):
         self.bot_token = bot_token
-        self.chat_ids = chat_ids
         self.base_url = f"https://api.telegram.org/bot{self.bot_token}/sendMessage"
 
-    def send_to(self, chat_id: str, text: str) -> bool:
-        """Envia para UM destinatário. True quando a entrega foi resolvida.
-
-        "Resolvida" inclui o erro permanente (400/403): se o Telegram recusou
-        a mensagem por formatação inválida ou o usuário bloqueou o bot, não há
-        o que retentar — insistir só repetiria a mesma falha em toda rodada.
-        Já erro transitório (rede, 429, 5xx) devolve False para a vaga
-        continuar na fila e ser tentada de novo depois.
-        """
+    def send_to(self, chat_id: str, text: str) -> DeliveryResult:
         payload = {
             "chat_id": chat_id,
             "text": text,
@@ -36,29 +42,37 @@ class TelegramNotifier:
         try:
             response = requests.post(self.base_url, json=payload, timeout=10)
             response.raise_for_status()
-            return True
+            return DeliveryResult.SENT
         except requests.HTTPError as e:
             status = e.response.status_code if e.response is not None else None
-            if status in _PERMANENT_ERROR_CODES:
-                logging.error(
-                    f"Telegram recusou definitivamente a mensagem para {chat_id} "
-                    f"(HTTP {status}); não será retentada."
-                )
-                return True
+            if status == 403:
+                logging.warning(f"{chat_id} bloqueou o bot; será removido da lista.")
+                return DeliveryResult.BLOCKED
+            if status == 400:
+                logging.error(f"Telegram recusou a mensagem para {chat_id} (400); não será retentada.")
+                return DeliveryResult.REJECTED
             logging.error(f"Falha transitória ao enviar para {chat_id} (HTTP {status}).")
-            return False
+            return DeliveryResult.RETRY
         except requests.RequestException as e:
             logging.error(f"Failed to send Telegram message to {chat_id}. Error: {e}")
+            return DeliveryResult.RETRY
+
+    def send_admin(self, admin_chat_id: str, text: str) -> bool:
+        """Aviso de operação, endereçado a quem mantém o robô."""
+        if not admin_chat_id:
+            logging.warning("TELEGRAM_ADMIN_CHAT_ID não configurado; aviso não enviado.")
             return False
+        return self.send_to(admin_chat_id, text) == DeliveryResult.SENT
 
-    def send_message(self, text: str) -> int:
-        """Envia a mesma mensagem para todos os chats configurados.
 
-        Usado para avisos que não são vaga (ex: alerta de falha total), onde
-        não existe destinatário específico. Retorna quantos foram resolvidos.
-        """
-        if not self.chat_ids:
-            logging.warning("Nenhum Chat ID configurado para envio.")
-            return 0
+#: Desfechos que encerram a pendência: ou foi entregue, ou não há o que fazer.
+RESOLVED = {DeliveryResult.SENT, DeliveryResult.BLOCKED, DeliveryResult.REJECTED}
 
-        return sum(1 for chat_id in self.chat_ids if self.send_to(chat_id, text))
+
+def is_resolved(result: DeliveryResult) -> bool:
+    return result in RESOLVED
+
+
+def blocked_from(results: List[tuple]) -> List[str]:
+    """Chat IDs que bloquearam o bot, a partir de pares (chat_id, resultado)."""
+    return [chat_id for chat_id, result in results if result is DeliveryResult.BLOCKED]
