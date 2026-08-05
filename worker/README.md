@@ -117,7 +117,7 @@ curl "https://api.telegram.org/bot<TOKEN_DO_BOT>/getWebhookInfo"
 ## Testes
 
 ```bash
-npm test     # ou: node --test test/
+npm test     # ou: node --test
 ```
 
 Cobrem a lógica pura (marcação de opções, montagem dos teclados, padrões e o

@@ -2,6 +2,12 @@ name = "medalert-bot"
 main = "src/worker.js"
 compatibility_date = "2026-01-01"
 
+# Explícitos para não dependerem de padrão implícito do wrangler:
+# o Worker precisa da URL pública (é o endereço do webhook), mas as URLs de
+# preview seriam só superfície extra exposta, sem uso para um webhook.
+workers_dev = true
+preview_urls = false
+
 # O id é preenchido pelo comando de criação do namespace (ver worker/README.md).
 [[kv_namespaces]]
 binding = "SUBSCRIBERS"

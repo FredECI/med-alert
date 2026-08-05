@@ -186,10 +186,17 @@ export default {
         return new Response("unauthorized", { status: 401 });
       }
       const { chat_ids: chatIds = [] } = await request.json();
+      // Conta remoções REAIS, não o tamanho da lista recebida: o robô usa
+      // este número para saber quantos assinantes de fato saíram, e devolver
+      // o total enviado faria uma limpeza vazia parecer bem-sucedida.
+      let removed = 0;
       for (const chatId of chatIds) {
-        await deleteSubscriber(env, chatId);
+        if (await getSubscriber(env, chatId)) {
+          await deleteSubscriber(env, chatId);
+          removed += 1;
+        }
       }
-      return Response.json({ removed: chatIds.length });
+      return Response.json({ removed });
     }
 
     return new Response("not found", { status: 404 });

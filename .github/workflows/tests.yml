@@ -44,6 +44,9 @@ jobs:
     # O runner embutido do Node basta: a lógica testada é pura (montagem de
     # teclado, marcação de opções), sem rede nem KV — nenhuma dependência
     # precisa ser instalada.
+    # Sem argumento de propósito: o Node autodescobre os arquivos de teste.
+    # Passar `test/` quebra a partir do Node 24, que tenta carregar o
+    # diretório como módulo em vez de varrê-lo.
     - name: Rodar testes do Worker
       working-directory: worker
-      run: node --test test/
+      run: node --test
