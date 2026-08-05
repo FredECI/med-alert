@@ -21,4 +21,11 @@ title: MedAlert RJ
 
 <p><button type="button" id="show-all-jobs" hidden></button></p>
 
-<script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+{%- comment -%}
+  O `?v=` muda a cada build e existe para furar o cache do navegador.
+  HTML e JavaScript são guardados em entradas de cache separadas: sem isso,
+  um visitante que já esteve aqui recebe o HTML novo com o JS velho — e o
+  sintoma é silencioso, porque a página carrega, só que os filtros não
+  funcionam. Foi exatamente o que aconteceu quando os chips estrearam.
+{%- endcomment -%}
+<script src="{{ '/assets/js/search.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>

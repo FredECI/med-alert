@@ -73,6 +73,16 @@ def test_filters_start_hidden_and_are_revealed_by_javascript(header, search_js):
     assert "filtersBox.hidden = false" in search_js
 
 
+def test_script_tag_busts_the_browser_cache():
+    """HTML e JS ficam em entradas de cache separadas. Sem versionar a URL do
+    script, quem já visitou o site recebe o HTML novo com o JS velho — e a
+    falha é silenciosa: a página carrega, mas os filtros não respondem."""
+    index = (RAIZ / "index.md").read_text(encoding="utf-8")
+
+    assert "search.js" in index
+    assert "?v=" in index, "a URL do script precisa mudar a cada build"
+
+
 def test_url_keeps_the_filter_state(search_js):
     """Para dar para mandar a alguém um link já filtrado."""
     for parametro in ("regiao", "tipo", "busca"):
