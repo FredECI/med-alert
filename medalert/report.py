@@ -124,11 +124,19 @@ class ReportGenerator:
 
         _write_json(filename, payload)
         logging.info(f"🗂️ Dados gerados: {filename} com {len(payload)} vagas.")
-        self._generate_specialty_index(payload)
+        self._generate_specialty_index(payload, filename)
 
     @staticmethod
-    def _generate_specialty_index(payload, filename: str = "_data/specialties.json") -> None:
+    def _generate_specialty_index(payload, jobs_filename: str) -> None:
         """Especialidades presentes no acervo, com contagem, para os chips.
+
+        O caminho é derivado do arquivo de vagas, e não fixo em
+        "_data/specialties.json". Fixo, ele ignorava o destino escolhido por
+        quem chamou e escrevia sempre no diretório atual: os testes, que geram
+        num tmp_path mas não trocam de diretório, sobrescreviam o arquivo do
+        repositório com um punhado de vagas de fixture — e o site foi ao ar com
+        um único chip. Os dois artefatos descrevem o mesmo acervo e por isso
+        nascem juntos, no mesmo lugar.
 
         Calculado aqui e não no template porque especialidade é uma LISTA por
         vaga: o Liquid não tem `flatten`, e montar isso lá viraria um laço
@@ -136,8 +144,9 @@ class ReportGenerator:
         justamente o que não dá para fazer nesta máquina. Mesmo raciocínio já
         aplicado à formatação de data (ver _format_display_timestamp).
         """
+        destino = Path(jobs_filename).with_name("specialties.json")
         contagem = Counter(chave for vaga in payload for chave in vaga["specialties"])
-        _write_json(filename, [
+        _write_json(str(destino), [
             {"key": chave, "label": rotulo, "count": contagem[chave]}
             for chave, rotulo in zip(SPECIALTIES, specialty_labels(SPECIALTIES))
             if contagem[chave]

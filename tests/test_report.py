@@ -156,3 +156,40 @@ def test_write_robot_status_with_no_failures(tmp_path):
     payload = json.loads(out_path.read_text(encoding="utf-8"))
     assert payload["scrapers_ok"] == 10
     assert payload["scrapers_failed"] == []
+
+
+def test_specialty_index_is_written_next_to_the_jobs_file(tmp_path, db, monkeypatch):
+    """Regressão de um bug que só apareceu no site publicado.
+
+    O índice de especialidades tinha caminho FIXO ("_data/specialties.json"),
+    então ignorava o destino escolhido por quem chamava e escrevia sempre no
+    diretório atual. Como estes testes geram num tmp_path sem trocar de
+    diretório, cada `pytest` sobrescrevia o arquivo do repositório com as duas
+    vagas de fixture — e o site foi ao ar com um chip só.
+    """
+    db.insert_job("[T] Vaga", "https://example.com/1", "2026-01-01",
+                  specialties=["pediatria"])
+    trabalho = tmp_path / "cwd"
+    trabalho.mkdir()
+    monkeypatch.chdir(trabalho)
+    destino = tmp_path / "saida" / "jobs.json"
+
+    ReportGenerator(db_manager=db).generate_jobs_data(filename=str(destino))
+
+    assert destino.with_name("specialties.json").exists(), "o índice acompanha as vagas"
+    assert not (trabalho / "_data").exists(), "nada é escrito no diretório atual"
+
+
+def test_specialty_index_counts_every_family_present(tmp_path, db):
+    db.insert_job("A", "https://example.com/a", "2026-01-01", specialties=["pediatria"])
+    db.insert_job("B", "https://example.com/b", "2026-01-01", specialties=["pediatria", "cirurgia"])
+    db.insert_job("C", "https://example.com/c", "2026-01-01")
+    destino = tmp_path / "jobs.json"
+
+    ReportGenerator(db_manager=db).generate_jobs_data(filename=str(destino))
+
+    indice = json.loads(destino.with_name("specialties.json").read_text(encoding="utf-8"))
+    contagem = {e["key"]: e["count"] for e in indice}
+
+    assert contagem == {"pediatria": 2, "cirurgia": 1, "nao_especificada": 1}
+    assert all(e["label"] for e in indice), "o chip precisa de rótulo legível"

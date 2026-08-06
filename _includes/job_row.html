@@ -1,11 +1,16 @@
+{%- comment -%}
+  NÃO ponha comentário Liquid DENTRO da tag <tr> abaixo. O `{%-` engole o
+  espaço que separa um atributo do seguinte, e `data-status="x"data-specialty`
+  não é HTML válido: o Kramdown desiste de ler o bloco como HTML e cospe a tag
+  inteira como texto na página. Foi assim que a tabela do site quebrou uma vez.
+
+  Sobre data-specialty: várias chaves separadas por espaço, porque uma vaga tem
+  N especialidades, ao contrário de região e tipo. O JS compara por token.
+{%- endcomment -%}
 <tr class="job-row{% if include.job.job_type == 'noticia' %} job-row--noticia{% endif %}{% if include.job.status == 'encerrado' %} job-row--encerrada{% endif %}"
     data-region="{{ include.job.region }}"
     data-type="{{ include.job.job_type }}"
     data-status="{{ include.job.status }}"
-    {%- comment -%}
-      Várias chaves separadas por espaço: uma vaga tem N especialidades, ao
-      contrário de região e tipo. O JS compara por token, não por igualdade.
-    {%- endcomment -%}
     data-specialty="{{ include.job.specialties | join: ' ' }}">
   <td>{{ include.job.discovered_at }}</td>
   <td>

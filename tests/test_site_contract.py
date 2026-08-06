@@ -102,6 +102,22 @@ def test_script_tag_busts_the_browser_cache():
     assert "?v=" in index, "a URL do script precisa mudar a cada build"
 
 
+def test_the_row_tag_keeps_its_attributes_separated(job_row):
+    """Regressão do dia em que a tabela do site apareceu como texto cru.
+
+    Um `{%- comment -%}` dentro da tag <tr> engoliu o espaço entre dois
+    atributos. `data-status="x"data-specialty="y"` não é HTML válido, o
+    Kramdown desistiu de ler o bloco como HTML e imprimiu a tag inteira na
+    página. Nada quebrou no build — o site simplesmente ficou ilegível.
+    """
+    import re
+
+    abertura = re.search(r"<tr\b.*?>", job_row, re.S).group(0)
+
+    assert not re.search(r'"\s*\{%-', abertura), "comentário Liquid não pode ficar dentro da tag"
+    assert not re.search(r'"[a-z-]+=', abertura), "atributos precisam de espaço entre si"
+
+
 def test_a_row_can_carry_several_specialties(job_row, search_js):
     """Especialidade é a única dimensão multivalorada na LINHA: um edital abre
     cargos de várias áreas. Comparar por igualdade, como se faz com região e

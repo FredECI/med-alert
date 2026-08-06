@@ -1,7 +1,62 @@
 [
   {
+    "key": "clinica_medica",
+    "label": "Clínica médica",
+    "count": 32
+  },
+  {
+    "key": "cirurgia",
+    "label": "Cirurgia e especialidades cirúrgicas",
+    "count": 41
+  },
+  {
+    "key": "pediatria",
+    "label": "Pediatria e neonatologia",
+    "count": 33
+  },
+  {
+    "key": "gineco_obstetricia",
+    "label": "Ginecologia e obstetrícia",
+    "count": 18
+  },
+  {
+    "key": "anestesiologia",
+    "label": "Anestesiologia",
+    "count": 24
+  },
+  {
+    "key": "intensiva_emergencia",
+    "label": "Terapia intensiva e emergência",
+    "count": 33
+  },
+  {
+    "key": "atencao_primaria",
+    "label": "Saúde da família e atenção básica",
+    "count": 15
+  },
+  {
+    "key": "psiquiatria",
+    "label": "Psiquiatria e saúde mental",
+    "count": 5
+  },
+  {
+    "key": "diagnostico",
+    "label": "Diagnóstico por imagem e patologia",
+    "count": 18
+  },
+  {
+    "key": "especialidades_clinicas",
+    "label": "Outras especialidades clínicas",
+    "count": 40
+  },
+  {
+    "key": "trabalho_pericia",
+    "label": "Medicina do trabalho, perícia e auditoria",
+    "count": 5
+  },
+  {
     "key": "nao_especificada",
     "label": "Sem especialidade identificada",
-    "count": 2
+    "count": 70
   }
 ]
