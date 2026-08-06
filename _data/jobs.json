@@ -9,7 +9,10 @@
     "job_type_label": "Processo seletivo / temporário",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": "https://www.ibam-concursos.org.br/default.asp"
+    "source_url": "https://www.ibam-concursos.org.br/default.asp",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Ministério da Saúde define banca organizadora de próximo seletivo",
@@ -21,7 +24,10 @@
     "job_type_label": "Notícia / radar",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Médico Do Trabalho - RJ",
@@ -33,7 +39,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "MEDICO ULTRASSONOGRAFISTA",
@@ -45,7 +54,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Médico Endocrinologista",
@@ -57,7 +69,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Analista Repasse Médico - Rio De Janeiro",
@@ -69,7 +84,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Médico Dermatologista",
@@ -81,7 +99,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Analista De Repasse Médico",
@@ -93,7 +114,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Secretária Médico - Zona Oeste",
@@ -105,7 +129,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Coordenador De Operações - Clínica Médica",
@@ -117,7 +144,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Analista De Relacionamento Médico – Inteligência De Dados E Performance",
@@ -129,7 +159,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Analista De Repasse Médico - Barra Da Tijuca",
@@ -141,7 +174,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Advogado Cível - 2 Anos De Experiencia Civel E Responsabilidade Civel E Medica",
@@ -153,7 +189,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Estagiário - Direito Médico E Direito Da Saúde",
@@ -165,7 +204,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "ANALISTA REPASSE MEDICO I - RIO DE JANEIRO",
@@ -177,7 +219,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "MEDICO DO TRABALHO - RQE",
@@ -189,7 +234,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Auxiliar De Médico - Consultório Dermatológico",
@@ -201,7 +249,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso Público para a Polícia Militar do Estado do Rio de Janeiro - Saúde",
@@ -213,7 +264,10 @@
     "job_type_label": "Concurso público",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Processo Seletivo Simplificado para o Ministério da Saúde",
@@ -225,7 +279,10 @@
     "job_type_label": "Processo seletivo / temporário",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso Público para a Empresa Brasileira de Serviços Hospitalares - EBSERH - Área Médica",
@@ -237,7 +294,10 @@
     "job_type_label": "Concurso público",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso Saquarema Saúde RJ",
@@ -249,7 +309,10 @@
     "job_type_label": "Notícia / radar",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "PSS Maricá Saúde RJ",
@@ -261,7 +324,10 @@
     "job_type_label": "Notícia / radar",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso SES RJ",
@@ -273,55 +339,70 @@
     "job_type_label": "Notícia / radar",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "GRUPO VIV - SAÚDE MENTAL E EMOCIONAL",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/viv-sme/2026/edital01_viv-sme_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "07/12/2025"
   },
   {
     "title": "HOSPITAL UNIVERSITÁRIO SUL FLUMINENSE",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/uss/2026/edital01_uss_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "22/01/2026"
   },
   {
     "title": "HOSPITAL UNIMED VOLTA REDONDA",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/unimed-vr/2026/edital01_retificado_unimed-vr_resimed_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "outras_rj",
     "region_label": "Outras regiões do RJ",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "19/01/2026"
   },
   {
     "title": "HOSPITAL UNIMED RIO",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br//static/concursos/editais/unimed-rj/2026/edital01_unimed-rj_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "27/10/2025"
   },
   {
     "title": "HOSPITAL UNIMED - COSTA DO SOL",
@@ -333,7 +414,10 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "HOSPITAL UNIVERSITÁRIO PEDRO ERNESTO",
@@ -345,19 +429,25 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "TESTE DE PROGRESSO INDIVIDUAL - DERMATOLOGIA",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/tpi-derma/2026/edital01_tpi-derma_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "25/11/2025"
   },
   {
     "title": "TÍTULO DE ESPECIALISTA EM PEDIATRIA",
@@ -369,19 +459,25 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "TÍTULO DE ESPECIALISTA EM GINECOLOGIA E OBSTETRÍCIA",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/tego/2026/edital01-retificado_tego_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "27/05/2026"
   },
   {
     "title": "SOCIEDADE PORTUGUESA DE BENEFICÊNCIA DE CAMPOS",
@@ -393,91 +489,115 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "SECRETARIA MUNICIPAL DE SAÚDE DE TRÊS RIOS",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/sms-tr/2026/edital01_sms-tr_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "outras_rj",
     "region_label": "Outras regiões do RJ",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "09/02/2026"
   },
   {
     "title": "SECRETARIA MUNICIPAL DE SAÚDE DE MARICÁ",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/sms-marica/2026/edital01_sms-marica_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "05/02/2026"
   },
   {
     "title": "SECRETARIA MUNICIPAL DE ADMINISTRAÇÃO DE MACAÉ",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/semad/2026/edital01_semad_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "24/11/2025"
   },
   {
     "title": "SANTA CASA DE MISERICÓRDIA DE CAMPOS",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/scmc-rj/edital01_scmc-rj_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "23/01/2026"
   },
   {
     "title": "SANTA CASA DE MISERICÓRDIA DE BARRA MANSA",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/scm-bm/2026/edital01-retificado02_scm-bm_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "outras_rj",
     "region_label": "Outras regiões do RJ",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "18/12/2025"
   },
   {
     "title": "PROCESSO SELETIVO UNIFICADO - RESIMED",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/resimed/2026/edital01_retificado_resimed_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "19/01/2026"
   },
   {
     "title": "HOSPITAL DA CRIANÇA - PRONTOBABY",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/prontobaby/2026/edital01_prontobaby_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "28/11/2025"
   },
   {
     "title": "GRUPO PERINATAL",
@@ -489,7 +609,10 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "POLICLÍNICA BOTAFOGO",
@@ -501,19 +624,25 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "HOSPITAL PASTEUR",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/amil - sp/2026/edital01_amil-sp_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "13/11/2025"
   },
   {
     "title": "INSTITUTO ONCOCLÍNICAS",
@@ -525,19 +654,25 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "INSTITUTO NACIONAL DE TRAUMATOLOGIA E ORTOPEDIA",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/into/2026/edital01-retificado_into_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "24/10/2025"
   },
   {
     "title": "INSTITUTO IMS",
@@ -549,7 +684,10 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "INSTITUTO FERNANDES FIGUEIRA",
@@ -561,7 +699,10 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "INSTITUTO DOR DE PESQUISA E ENSINO",
@@ -573,7 +714,10 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "INSTITUTO DE EDUCAÇÃO MÉDICA - 2ª",
@@ -585,31 +729,40 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "INSTITUTO BENJAMIN CONSTANT",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/ibc/2026/edital01_ibc_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "26/01/2026"
   },
   {
     "title": "INSTITUTO BRASILEIRO DE ASSISTÊNCIA E PESQUISA",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/ibap-rj/2026/edital01_ibap_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "26/01/2026"
   },
   {
     "title": "HOSPITAL SÃO JOSÉ DO AVAÍ",
@@ -621,7 +774,10 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "HOSPITAL SANTA HELENA",
@@ -633,7 +789,10 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "HOSPITAL DE OLHOS SANTA BEATRIZ",
@@ -645,7 +804,10 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "HOSPITAL DE CLÍNICAS NOSSA SENHORA DA CONCEIÇÃO",
@@ -657,103 +819,130 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "HOSPITAL NAVAL MARCÍLIO DIAS",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br//static/concursos/editais/hnmd/2026/edital-retificado02_hnmd_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "15/08/2025"
   },
   {
     "title": "HOSPITAL MÁRIO KRÖEFF",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br//static/concursos/editais/hmk/2026/edital01_hmk_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "10/10/2025"
   },
   {
     "title": "HOSPITAL DA FUNDAÇÃO OSWALDO ARANHA",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/hfoa/2026/edital01-retificado_hfoa_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "04/02/2026"
   },
   {
     "title": "HOSPITAL DA POLÍCIA MILITAR DE NITERÓI",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/enamed/2026/edital01_enamed_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "18/07/2025"
   },
   {
     "title": "HOSPITAL CASA DE PORTUGAL",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/hcp/2026/edital01-retificado_hcp_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "21/11/2025"
   },
   {
     "title": "HOSPITAL ADVENTISTA SILVESTRE",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/has/2026/edital01_has_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "19/11/2025"
   },
   {
     "title": "H. OLHOS SÃO GONÇALO",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/h.olhos/2026/edital01-retificado_h.olhos_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "22/12/2025"
   },
   {
     "title": "INSTITUTO ESTADUAL DE DIABETES E ENDOCRINOLOGIA LUIZ CAPRIGLIONE",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/sesrj/2026/edital03_ses-rj_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "29/09/2025"
   },
   {
     "title": "FUNDAÇÃO MUNICIPAL DE SAÚDE DE CAMPOS DOS GOYTACAZES",
@@ -765,91 +954,115 @@
     "job_type_label": "Residência médica",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "FACULDADE DE MEDICINA DE CAMPOS",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/fmc/2026/edital01_fmc_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "28/11/2025"
   },
   {
     "title": "UNIVERSIDADE FEDERAL DO ESTADO DO RIO DE JANEIRO",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/enare/2026/edital01-retificado_enare_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "30/07/2025"
   },
   {
     "title": "CASA DE SAÚDE SÃO JOSÉ",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/cssj/2026/edital01_retificado_cssj_resimed_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "19/01/2026"
   },
   {
     "title": "CIRURGIA OCULAR SÃO CRISTÓVÃO",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br//static/concursos/editais/cosc/2026/edital01_cosc_hob-df_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "12/10/2025"
   },
   {
     "title": "CENTRO DE ESTUDOS E PESQUISAS OCULISTAS ASSOCIADOS",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/cepoa/2026/edital01-retificado_cepoa_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "29/12/2025"
   },
   {
     "title": "INSTITUTO DE NEONATOLOGIA E PEDIATRIA LTDA",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/ceplin/2026/edital02_ceplin_2026_.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "13/03/2026"
   },
   {
     "title": "REDE AMÉRICAS",
     "source": "MedGrupo",
     "link": "https://static.medgrupo.com.br/static/concursos/editais/rede-americas/2026/edital01_rede-américas_2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "residencia",
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "30/11/2025"
   },
   {
     "title": "ASSOCIAÇÃO FLUMINENSE DE ASSISTÊNCIA À MULHER, À CRIANÇA E AO IDOSO",
@@ -861,7 +1074,10 @@
     "job_type_label": "Residência médica",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": "https://concursos.medgrupo.com.br/"
+    "source_url": "https://concursos.medgrupo.com.br/",
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Municipio de Casimiro de Abreu - Ed. 01/2026 PS - Processo Seletivo Público para contratação, pelo regime da Consolidação das Leis do Trabalho - CLT, de Agente Comunitário de Saúde e Agente de Combate às Endemias",
@@ -873,7 +1089,10 @@
     "job_type_label": "Processo seletivo / temporário",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Banco de currículos - Diversos cargos - INC/RJ",
@@ -885,7 +1104,10 @@
     "job_type_label": "Processo seletivo / temporário",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Banco de currículos - Diversos cargos - Hospital Federal da Lagoa/RJ",
@@ -897,7 +1119,10 @@
     "job_type_label": "Processo seletivo / temporário",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Programa Agora tem Especialista (INC) - 24 cargos",
@@ -909,7 +1134,10 @@
     "job_type_label": "Processo seletivo / temporário",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Hospital Federal da Lagoa - Banco de currículos - 17 cargos",
@@ -921,403 +1149,505 @@
     "job_type_label": "Processo seletivo / temporário",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Edital 041/2026 — MÉDICO (RADIOLOGISTA PEDIATRICO - 12H), MÉDICO (INTENSIVISTA PEDIATRICO - 12H), MÉDICO ROTINA (INTENSIVISTA PEDIATRICO - 30H) (+2)",
     "source": "RioSaúde PSS",
     "link": "https://pss.riosaude.rio.br/041-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://pss.riosaude.rio.br"
+    "source_url": "https://pss.riosaude.rio.br",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "31/05/2026"
   },
   {
     "title": "Edital 040/2026 — MÉDICO (ANESTESIOLOGISTA), MÉDICO (CARDIOLOGISTA), MÉDICO (CLINICO EMERGENCIA) (+8)",
     "source": "RioSaúde PSS",
     "link": "https://pss.riosaude.rio.br/040-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://pss.riosaude.rio.br"
+    "source_url": "https://pss.riosaude.rio.br",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 039/2026 — MÉDICO (CIRURGIA PEDIÁTRICA), MÉDICO (CIRURGIA TORÁCICA), MÉDICO (EMERGENCISTA) (+14)",
     "source": "RioSaúde PSS",
     "link": "https://pss.riosaude.rio.br/039-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://pss.riosaude.rio.br"
+    "source_url": "https://pss.riosaude.rio.br",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 029/2026 — MÉDICO (CLÍNICA MÉDICA - 12H), MÉDICO (CLÍNICA MÉDICA - 30H), MÉDICO (CLÍNICA MÉDICA - 40H) (+3)",
     "source": "RioSaúde PSS",
     "link": "https://pss.riosaude.rio.br/029-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://pss.riosaude.rio.br"
+    "source_url": "https://pss.riosaude.rio.br",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "31/05/2026"
   },
   {
     "title": "Edital 009/2026 — MÉDICO (CIRURGIÃO VASCULAR - 12H), MÉDICO (ORTOPEDIA - 30H), MÉDICO (NEUROCIRURGIÃO - 30H)",
     "source": "RioSaúde PSS",
     "link": "https://pss.riosaude.rio.br/009-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://pss.riosaude.rio.br"
+    "source_url": "https://pss.riosaude.rio.br",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 008/2026 — MÉDICO (ANESTESIOLOGISTA -12H), MÉDICO (CIRURGIÃO ONCOLÓGICO -12H), MÉDICO (CIRURGIÃO PLASTICO - 12H) (+15)",
     "source": "RioSaúde PSS",
     "link": "https://pss.riosaude.rio.br/008-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://pss.riosaude.rio.br"
+    "source_url": "https://pss.riosaude.rio.br",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "20/05/2026"
   },
   {
     "title": "Edital 007/2026 — MÉDICO (CLÍNICA MÉDICA), MÉDICO (PEDIATRIA)",
     "source": "RioSaúde PSS",
     "link": "https://pss.riosaude.rio.br/007-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://pss.riosaude.rio.br"
+    "source_url": "https://pss.riosaude.rio.br",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 005/2026 — MÉDICO (ANESTESIOLOGISTA), MÉDICO (CIRURGIÃO GERAL), MÉDICO (CLÍNICA MÉDICA) (+5)",
     "source": "RioSaúde PSS",
     "link": "https://pss.riosaude.rio.br/005-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://pss.riosaude.rio.br"
+    "source_url": "https://pss.riosaude.rio.br",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 003/2026 — MÉDICO (ANESTESIOLOGISTA - 12H), MÉDICO (ANGIOLOGISTA - 10H), MÉDICO (CIRURGIÃO GERAL -10H) (+20)",
     "source": "RioSaúde PSS",
     "link": "https://pss.riosaude.rio.br/003-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://pss.riosaude.rio.br"
+    "source_url": "https://pss.riosaude.rio.br",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "20/05/2026"
   },
   {
     "title": "Edital 046/2026 (Unidades geridas pela RioSaúde) – técnico de farmácia (30h e 40h) – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-046-2026-tec-farmacia.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 043/2026 – retificado Anexo II – Atualizado",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital-43-2026-retificado.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "21/06/2026"
   },
   {
     "title": "Edital 043/2026 – (Unidades geridas pela RioSaúde) – Assistente administrativo e auxiliar de suprimentos – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital-43-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "21/06/2026"
   },
   {
     "title": "Edital 041/2026 (Hospital Municipal Jesus) – Médicos: radiologista pediátrico – 12h, intensivista pediátrico – 12h, intensivista pediátrico (rotina) – 30h, nefrologista pediátrico – 12h, e neurologista pediátrico – 12h – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/EDITAL_CO_RSU_041_2026_HMJ.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "31/05/2026"
   },
   {
     "title": "Edital 040/2026 (Hospital Municipal Miguel Couto) – médicos: anestesiologista – 12h, intensivista adulto rotina – 30h, intensivista pediátrico – 12h, cardiologista – 12h, clínico emergência 12h, neurocirurgião – 12h, obstetra – 12h, pediatra – 12h, oftalmologista – 12h, intensivista UTI neonatalogista – 12h – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-040-2026-hmmc.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 039/2026 (Hospital Municipal Souza Aguiar) – médicos: otorrino – 12h, cirurgia pediátrica – 12h, radiologista – 12h, intensivista pediátrico – 12h, urologista – 12h, neurocirurgião – 12h, cirurgião plástico – 12h, cirurgião vascular – 12h, ortopedista – 12h, nefrologista – 12h, cirurgião geral – 12h, intensivista adulto – 12h, intensivista adulto – 30h, emergencista rotina – 30h, emergencista – 12h e cirurgião torácico – 12h – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-039-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 037/2026 – (Unidades geridas pela RioSaúde) – Técnico de Enfermagem (CTI pediátrico) – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital-037-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "14/06/2026"
   },
   {
     "title": "Edital 036/2026 (Unidades geridas pela RioSaúde) – Histotécnico 30h, instrumentador cirúrgico 30h e técnico de gesso 30h – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-036-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 031/2026 (Unidades geridas pela RioSaúde) – Agente de limpeza hospitalar, encarregado de limpeza hospitalar e enfermeiro CCIH – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-31-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "14/05/2026"
   },
   {
     "title": "Edital 030/2026 – (Unidades geridas pela RioSaúde) – Técnico de Enfermagem (30h e 40h – centro cirúrgico) – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital-030-2026-tec-enfermagem-cc.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "14/06/2026"
   },
   {
     "title": "Edital 029/2026 (Hospital Municipal Piedade) – Médicos: clínica médica – 12h, clínica médica (rotina) – 30h, clínica médica (rotina) – 40h, intensivista adulto – 12h, ginecologista – 12h, e urologista – 12h – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/EDITAL_CO_RSU_029_2026-HMP.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "31/05/2026"
   },
   {
     "title": "Edital 017/2026 – (Unidades geridas pela RioSaúde) – Enfermeiro 30h (CTI pediátrico) – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital-017-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "14/06/2026"
   },
   {
     "title": "Edital 009/2026 (Hospital Municipal Salgado Filho) – Médicos: cirurgião vascular – 12h, ortopedista – 30h e neurocirurgião – 30h – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-009-2026-hmsf.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 008/2026 (Hospital do Andaraí) – Médicos: anestesiologia, cirurgião oncológico, cirurgião plástico, cirurgião vascular, médico clínico – 30h (rotina), cuidados paliativos, cardiologista – especialista em ecocardiograma, endocrinologista, endoscopia digestiva – cpre, hematologista, intensivista – 12h, intensivista – 30h (rotina), nefrologista, neurocirurgia, oncologista clínico, onco-hematologista, pneumologista (broncoscopia), radioterapeuta – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-008-2026-andarai.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "20/05/2026"
   },
   {
     "title": "Edital 007/2026 (UPAs e CER Barra) – Médicos: clínica médica 12h e pediatra 12h – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-007-upa-cer-barra.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 005/2026 (Hospital Mun. Lourenço Jorge) – Médicos: anestesiologista, cirurgião geral, cirurgião vascular, clínica médica, hemoterapeuta, ortopedista, pediatra e radiologista – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-005-2026-hmlj.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "17/05/2026"
   },
   {
     "title": "Edital 003/2026 (Hospital Ronaldo Gazolla) – Médicos: anestesiologista -12h, angiologista – 10h, cirurgião geral – 10h, cirurgião geral – 12h, cirurgião vascular – 12h e cardiologista – 10h, clínico 12h, clínico 30h, infectologista 10h, infectologista 30h, intensivista 12h, intensivista 30h, nefrologista 10h, neurologista 10h, ortopedista 10h, otorrinolaringologista 10h, pneumologista 10h, proctologista 12h, radiologista 12h, reumatologista 10h, ultrassonografista 12h, urologista 10h e urologista 12h – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-003-2026-gazolla.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "20/05/2026"
   },
   {
     "title": "Edital 014/2026 – (Unidades geridas pela RioSaúde) – Fisioterapeutas (pediatra 24h; intensivista pediatra 24h e 30h; neonatologista 30h) – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital-014-2026-fisio.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "28/06/2026"
   },
   {
     "title": "Edital 013/2026 (Unidades geridas pela RioSaúde) – Fisioterapeutas – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-13-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "14/05/2026"
   },
   {
     "title": "Edital 012/2026 (Unidades geridas pela RioSaúde) – Farmacêutico (24h, 30h e 40h) e farmacêutico oncologia (24h) – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital_12-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "14/06/2026"
   },
   {
     "title": "Edital 010/2026 (Unidades geridas pela RioSaúde) – Assistente social, fonoaudiólogo (24h e 30h), fonoaudiólogo – audiometria (24h e 30h), nutricionista (24h, 30h e 40h), psicólogo (24h e 30h) – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/EDITAL_CO_RSU_010_2026_-ATUALIZADO.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "07/06/2026"
   },
   {
     "title": "Edital 006/2026 (IVISA-Rio) – Agente de apoio, técnico de laboratório, técnico de edificações, analista de engenharia e arquitetura – arquiteto, analista de engenharia e arquitetura – engenheiro – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/EDITAL_CO_RSU_006_2026_-IVISA-ATUALIZADO-PARA-PUBLICACAO.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "04/06/2026"
   },
   {
     "title": "Edital 004/2026 (Unidades geridas pela RioSaúde) – Agente de portaria acolhedor, agente de recepção acolhedor e maqueiro – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-004-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "14/05/2026"
   },
   {
     "title": "Edital 001/2026 (Unidades geridas pela RioSaúde) – Agente de regulação e enfermeiros – INSCRIÇÕES ENCERRADAS Acesse o edital",
     "source": "RioSaúde",
     "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital-01-2026.pdf",
     "discovered_at": "2026-08-04",
-    "last_seen_at": "05/08/2026 às 19:06",
+    "last_seen_at": "06/08/2026 às 00:12",
     "job_type": "processo_seletivo",
     "job_type_label": "Processo seletivo / temporário",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/"
+    "source_url": "https://riosaude.prefeitura.rio/processos-seletivos-editais-abertos-2025/",
+    "status": "encerrado",
+    "status_label": "Inscrições encerradas",
+    "deadline": "11/06/2026"
   },
   {
     "title": "Vaga de Médico Empresa Confidencial Cabo Frio/RJ Presencial ...",
@@ -1329,7 +1659,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Homedical Assitência Domiciliar Cambuci/RJ Pr...",
@@ -1341,7 +1674,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "2 Vagas de Médico Emad Saúde Campos dos Goytacazes/RJ Presen...",
@@ -1353,7 +1689,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Lifemed Clinica E Exames Campos dos Goytacaze...",
@@ -1365,7 +1704,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Lifemed Clinica E Exames Campos dos Goytacaze...",
@@ -1377,7 +1719,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Medvida Clinica Popular Rio das Ostras/RJ Pre...",
@@ -1389,7 +1734,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Empresa Confidencial Rio das Ostras/RJ Presen...",
@@ -1401,7 +1749,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Empresa Confidencial Rio das Ostras/RJ Presen...",
@@ -1413,7 +1764,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Empresa Confidencial Rio de Janeiro/RJ Presen...",
@@ -1425,7 +1779,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Maximizarh Rio de Janeiro/RJ R$ 1.280,00 por ...",
@@ -1437,7 +1794,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Empresa Confidencial Rio de Janeiro/RJ R$ 1.2...",
@@ -1449,7 +1809,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Empresa Confidencial Rio de Janeiro/RJ Presen...",
@@ -1461,7 +1824,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Masterserv Rio de Janeiro/RJ Presencial Efeti...",
@@ -1473,7 +1839,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Hrsoul Rio de Janeiro/RJ Presencial Efetivo/C...",
@@ -1485,7 +1854,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Centro Médico Pastore Rio de Janeiro/RJ Prese...",
@@ -1497,7 +1869,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Centro Médico Pastore Rio de Janeiro/RJ Prese...",
@@ -1509,7 +1884,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Colégio Na Taquara Rio de Janeiro/RJ Presenci...",
@@ -1521,7 +1899,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Igedes Rio de Janeiro/RJ Presencial Efetivo/C...",
@@ -1533,7 +1914,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Igedes Rio de Janeiro/RJ Presencial Efetivo/C...",
@@ -1545,7 +1929,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "3 Vagas de Médico Lifemed Clínica & Exames Rio de Janeiro/RJ...",
@@ -1557,7 +1944,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "capital_metropolitana",
     "region_label": "Capital e Região Metropolitana",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Equipacare Macaé/RJ Presencial Efetivo/CLT...",
@@ -1569,7 +1959,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Equipacare Macaé/RJ Presencial Efetivo/CLT...",
@@ -1581,7 +1974,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Equipacare Macaé/RJ Presencial Efetivo/CLT...",
@@ -1593,7 +1989,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Empresa Confidencial Macaé/RJ Presencial Efet...",
@@ -1605,7 +2004,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico N Aster Serviços Macaé/RJ Presencial Efetivo/...",
@@ -1617,7 +2019,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Empresa Confidencial Macaé/RJ Presencial Efet...",
@@ -1629,7 +2034,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Fratelli Cosulich Macaé/RJ Presencial Efetivo...",
@@ -1641,7 +2049,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Clínica Médica, Clínica E Psicologia Infantil...",
@@ -1653,7 +2064,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Empresa Confidencial Macaé/RJ Presencial Efet...",
@@ -1665,7 +2079,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Equipacare Macaé/RJ Presencial Efetivo/CLT...",
@@ -1677,7 +2094,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Equipacare Macaé/RJ Presencial Efetivo/CLT...",
@@ -1689,7 +2109,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Red Flag Macaé/RJ Presencial Efetivo/CLT...",
@@ -1701,7 +2124,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Vaga de Médico Blueoos Macaé/RJ Presencial Efetivo/CLT...",
@@ -1713,7 +2139,10 @@
     "job_type_label": "Emprego CLT / privado",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso Saúde RJ: edital para 287 vagas deve ser publicado no decorrer dos próximos dias",
@@ -1725,7 +2154,10 @@
     "job_type_label": "Notícia / radar",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso Prefeitura Saquarema RJ: novo edital em pauta para área de saúde",
@@ -1737,7 +2169,10 @@
     "job_type_label": "Notícia / radar",
     "region": "regiao_dos_lagos",
     "region_label": "Região dos Lagos",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso Prefeitura Campos de Goytacazes RJ: formada comissão para a área de saúde",
@@ -1749,7 +2184,10 @@
     "job_type_label": "Notícia / radar",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso PME RJ: publicado contrato com banca organizadora para área de saúde; edital já pode sair",
@@ -1761,7 +2199,10 @@
     "job_type_label": "Notícia / radar",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso Ministério da Saúde: publicada autorização para 1.786 vagas de níveis médio e superior",
@@ -1773,7 +2214,10 @@
     "job_type_label": "Notícia / radar",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso Fundação Saúde RJ: aumenta a oferta de vagas para novo edital",
@@ -1785,7 +2229,10 @@
     "job_type_label": "Notícia / radar",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Concurso Bombeiros RJ: nova seleção em pauta para a área de saúde",
@@ -1797,7 +2244,10 @@
     "job_type_label": "Notícia / radar",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "SESAU - AL retifica concurso para especialistas e assistentes em saúde",
@@ -1809,7 +2259,10 @@
     "job_type_label": "Concurso público",
     "region": "estadual_nacional",
     "region_label": "Estadual / Nacional",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Prefeitura de Volta Redonda - Secretaria Municipal de Saúde",
@@ -1821,7 +2274,10 @@
     "job_type_label": "Concurso público",
     "region": "outras_rj",
     "region_label": "Outras regiões do RJ",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   },
   {
     "title": "Prefeitura de Casimiro de Abreu",
@@ -1833,6 +2289,9 @@
     "job_type_label": "Concurso público",
     "region": "norte_fluminense",
     "region_label": "Norte Fluminense (Macaé e região)",
-    "source_url": null
+    "source_url": null,
+    "status": "desconhecido",
+    "status_label": "Prazo não informado",
+    "deadline": null
   }
 ]
