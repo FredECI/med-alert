@@ -1,3 +1,8 @@
 cloudscraper==1.2.71
 beautifulsoup4==4.14.3
 requests==2.32.4
+# Leitura do texto dos editais. Python puro, sem biblioteca de sistema — roda
+# no runner do Actions sem instalar nada além do pip. Hoje usado só por
+# tools/build_deadline_corpus.py; passa a ser usado em produção quando a
+# extração de prazo sair do modo "abstém sempre" (medalert/deadline.py).
+pypdf==6.14.2

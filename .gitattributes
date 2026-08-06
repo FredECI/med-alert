@@ -1,6 +1,11 @@
 # O banco é binário: diff/merge textual não faz sentido e só polui o histórico.
 med_alerts.db -diff -merge binary
 
+# O texto dos editais do conjunto de referência. São capturas imutáveis de
+# documentos externos, não código: só entram e saem inteiros, nunca são
+# editados linha a linha.
+tests/fixtures/editais/*.gz -diff -merge binary
+
 # vagas_abertas.csv e _data/*.json são gerados a cada rodada, mas são TEXTO —
 # ver o diff é justamente como se percebe que uma vaga entrou, saiu ou veio
 # com título quebrado.

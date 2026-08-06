@@ -1,0 +1,310 @@
+{
+ "_leia_me": [
+  "Conjunto de referencia para a extracao do prazo de inscricao.",
+  "",
+  "Cada 'encerramento' foi lido A MAO, abrindo o edital e conferindo o texto",
+  "normativo contra o cronograma do anexo. Nao foi gerado por nenhum extrator:",
+  "se fosse, o conjunto so provaria que o extrator concorda consigo mesmo.",
+  "",
+  "REGRA DO CONFLITO: quando o edital oferece mais de uma data de encerramento",
+  "-- por se contradizer, ou por ser uma retificacao cujo tacho sumiu na",
+  "extracao -- vale A MAIOR. Os itens assim resolvidos trazem",
+  "'resolvido_por': 'maior data'.",
+  "",
+  "O motivo e a assimetria do erro, a mesma que rege o resto do projeto: so",
+  "damos a vaga por encerrada quando HOJE ja passou de todas as leituras, isto",
+  "e, quando nao existe interpretacao do edital em que ela ainda esteja aberta.",
+  "Escolher a menor fecharia a vaga antes da hora em troca de nada.",
+  "A regra vale so entre candidatas ja validadas como fim de inscricao; como",
+  "maximo global do documento ela escolheria sempre a data da prova ou do",
+  "resultado, que sao posteriores por definicao.",
+  "",
+  "encerramento = null significa QUE E PRECISO ABSTER: sobra so o caso em que",
+  "nao ha o que ler, o PDF escaneado sem camada de texto.",
+  "",
+  "O texto de cada edital esta em tests/fixtures/editais/, comprimido. Fica o",
+  "documento INTEIRO de proposito: o trabalho dificil nao e ler a frase certa,",
+  "e escolher entre as dezenas de datas do edital sem cair nas armadilhas (data",
+  "do D.O.U., prazo de RQE, dia do boleto, data da prova). Guardar so o trecho",
+  "da resposta transformaria o teste numa formalidade.",
+  "",
+  "Para crescer o conjunto: tools/build_deadline_corpus.py"
+ ],
+ "editais": [
+  {
+   "arquivo": "medgrupo-afamci.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/afamci/2026/edital01_afamci_2026.pdf",
+   "titulo": "[MedGrupo] ASSOCIAÇÃO FLUMINENSE DE ASSISTÊNCIA À MULHER, À CRIANÇA E AO IDOSO",
+   "encerramento": null,
+   "nota": "PDF escaneado: a extracao devolve zero caractere"
+  },
+  {
+   "arquivo": "medgrupo-ceplin.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/ceplin/2026/edital02_ceplin_2026_.pdf",
+   "titulo": "[MedGrupo] INSTITUTO DE NEONATOLOGIA E PEDIATRIA LTDA",
+   "encerramento": "2026-03-13",
+   "nota": "a prosa traz 'no periodo de de 13/02/2026 a 13/03/2026', com 'de' duplicado"
+  },
+  {
+   "arquivo": "medgrupo-cepoa.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/cepoa/2026/edital01-retificado_cepoa_2026.pdf",
+   "titulo": "[MedGrupo] CENTRO DE ESTUDOS E PESQUISAS OCULISTAS ASSOCIADOS",
+   "encerramento": "2025-12-29",
+   "nota": "'as inscricoes serao efetuadas de 20/10/2025 a 29/12/2025'"
+  },
+  {
+   "arquivo": "medgrupo-cosc.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br//static/concursos/editais/cosc/2026/edital01_cosc_hob-df_2026.pdf",
+   "titulo": "[MedGrupo] CIRURGIA OCULAR SÃO CRISTÓVÃO",
+   "encerramento": "2025-10-12",
+   "nota": "ARMADILHA: 13/10/2025 aparece como prazo do boleto, primeiro dia util APOS o encerramento"
+  },
+  {
+   "arquivo": "medgrupo-cssj-resimed.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/cssj/2026/edital01_retificado_cssj_resimed_2026.pdf",
+   "titulo": "[MedGrupo] CASA DE SAÚDE SÃO JOSÉ",
+   "encerramento": "2026-01-19",
+   "nota": "cronograma tabular; o inicio ('08/12') vem sem ano"
+  },
+  {
+   "arquivo": "medgrupo-enamed.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/enamed/2026/edital01_enamed_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL DA POLÍCIA MILITAR DE NITERÓI",
+   "encerramento": "2025-07-18",
+   "nota": "cronograma compacto: 'inscricao 7 a 18/7/2025' — dia sem zero e mes/ano so no fim"
+  },
+  {
+   "arquivo": "medgrupo-enare.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/enare/2026/edital01-retificado_enare_2026.pdf",
+   "titulo": "[MedGrupo] UNIVERSIDADE FEDERAL DO ESTADO DO RIO DE JANEIRO",
+   "encerramento": "2025-07-30",
+   "nota": "RETIFICACAO resolvida pela maior data: le-se '18/07/2025 30/07/2025' porque o tacho da data antiga e visual e some na extracao; o arquivo e 'edital01-retificado'",
+   "resolvido_por": "maior data"
+  },
+  {
+   "arquivo": "medgrupo-fmc.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/fmc/2026/edital01_fmc_2026.pdf",
+   "titulo": "[MedGrupo] FACULDADE DE MEDICINA DE CAMPOS",
+   "encerramento": "2025-11-28",
+   "nota": "ARTEFATO+ARMADILHA: datas saem como '28 / 11 / 2025' e o proprio edital erra um ano ('28 / 11 / 2024')"
+  },
+  {
+   "arquivo": "medgrupo-fms-campos.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/fms/2026/edital01_fms_2026.pdf",
+   "titulo": "[MedGrupo] FUNDAÇÃO MUNICIPAL DE SAÚDE DE CAMPOS DOS GOYTACAZES",
+   "encerramento": null,
+   "nota": "PDF escaneado: a extracao devolve zero caractere"
+  },
+  {
+   "arquivo": "medgrupo-h-olhos.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/h.olhos/2026/edital01-retificado_h.olhos_2026.pdf",
+   "titulo": "[MedGrupo] H. OLHOS SÃO GONÇALO",
+   "encerramento": "2025-12-22",
+   "nota": "cronograma por extenso"
+  },
+  {
+   "arquivo": "medgrupo-has.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/has/2026/edital01_has_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL ADVENTISTA SILVESTRE",
+   "encerramento": "2025-11-19",
+   "nota": "cronograma com a DATA ANTES do rotulo: '19/11/2025 encerramento das inscricoes'"
+  },
+  {
+   "arquivo": "medgrupo-hcp.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/hcp/2026/edital01-retificado_hcp_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL CASA DE PORTUGAL",
+   "encerramento": "2025-11-21",
+   "nota": "prosa por extenso e cronograma em numeros; concordam"
+  },
+  {
+   "arquivo": "medgrupo-hfoa.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/hfoa/2026/edital01-retificado_hfoa_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL DA FUNDAÇÃO OSWALDO ARANHA",
+   "encerramento": "2026-02-04",
+   "nota": "cronograma tabular"
+  },
+  {
+   "arquivo": "medgrupo-hmk.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br//static/concursos/editais/hmk/2026/edital01_hmk_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL MÁRIO KRÖEFF",
+   "encerramento": "2025-10-10",
+   "nota": "'das 08h00 do dia 15/09/2025 ate as 17h00 do dia 10/10/2025'"
+  },
+  {
+   "arquivo": "medgrupo-rede-americas.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/rede-americas/2026/edital01_rede-américas_2026.pdf",
+   "titulo": "[MedGrupo] REDE AMÉRICAS",
+   "encerramento": "2025-11-30",
+   "nota": "por extenso na prosa e em numeros no cronograma; concordam"
+  },
+  {
+   "arquivo": "medgrupo-ses-rj.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/sesrj/2026/edital03_ses-rj_2026.pdf",
+   "titulo": "[MedGrupo] INSTITUTO ESTADUAL DE DIABETES E ENDOCRINOLOGIA LUIZ CAPRIGLIONE",
+   "encerramento": "2025-09-29",
+   "nota": "cronograma do anexo IV; o inicio ('29/08') vem sem ano"
+  },
+  {
+   "arquivo": "riosaude-edital-003-2026-gazolla.txt.gz",
+   "fonte": "riosaude",
+   "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-003-2026-gazolla.pdf",
+   "titulo": "[RioSaúde] Edital 003/2026 (Hospital Ronaldo Gazolla) – Médicos: anestesiologista -12h, angiologista – 10h, cirurgião geral – 10h, cirurgião geral – 12h, cirurgião vascular – 12h e cardiologista – 10h, clínico 12h, clínico 30h, infectologista 10h, infectologista 30h, intensivista 12h, intensivista 30h, nefrologista 10h, neurologista 10h, ortopedista 10h, otorrinolaringologista 10h, pneumologista 10h, proctologista 12h, radiologista 12h, reumatologista 10h, ultrassonografista 12h, urologista 10h e urologista 12h – INSCRIÇÕES ENCERRADAS Acesse o edital",
+   "encerramento": "2026-05-20",
+   "nota": ""
+  },
+  {
+   "arquivo": "riosaude-edital-004-2026.txt.gz",
+   "fonte": "riosaude",
+   "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-004-2026.pdf",
+   "titulo": "[RioSaúde] Edital 004/2026 (Unidades geridas pela RioSaúde) – Agente de portaria acolhedor, agente de recepção acolhedor e maqueiro – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
+   "encerramento": "2026-05-14",
+   "nota": "ARTEFATO: a prosa saiu como '1 4/05/2026', com espaco dentro do numero"
+  },
+  {
+   "arquivo": "riosaude-edital-005-2026-hmlj.txt.gz",
+   "fonte": "riosaude",
+   "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-005-2026-hmlj.pdf",
+   "titulo": "[RioSaúde] Edital 005/2026 (Hospital Mun. Lourenço Jorge) – Médicos: anestesiologista, cirurgião geral, cirurgião vascular, clínica médica, hemoterapeuta, ortopedista, pediatra e radiologista – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
+   "encerramento": "2026-05-17",
+   "nota": ""
+  },
+  {
+   "arquivo": "riosaude-edital-01-2026.txt.gz",
+   "fonte": "riosaude",
+   "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital-01-2026.pdf",
+   "titulo": "[RioSaúde] Edital 001/2026 (Unidades geridas pela RioSaúde) – Agente de regulação e enfermeiros – INSCRIÇÕES ENCERRADAS Acesse o edital",
+   "encerramento": "2026-06-11",
+   "nota": "texto normativo e cronograma concordam"
+  },
+  {
+   "arquivo": "riosaude-edital-014-2026-fisio.txt.gz",
+   "fonte": "riosaude",
+   "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital-014-2026-fisio.pdf",
+   "titulo": "[RioSaúde] Edital 014/2026 – (Unidades geridas pela RioSaúde) – Fisioterapeutas (pediatra 24h; intensivista pediatra 24h e 30h; neonatologista 30h) – INSCRIÇÕES ENCERRADAS Acesse o edital",
+   "encerramento": "2026-06-28",
+   "nota": ""
+  },
+  {
+   "arquivo": "riosaude-edital-12-2026.txt.gz",
+   "fonte": "riosaude",
+   "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/edital_12-2026.pdf",
+   "titulo": "[RioSaúde] Edital 012/2026 (Unidades geridas pela RioSaúde) – Farmacêutico (24h, 30h e 40h) e farmacêutico oncologia (24h) – INSCRIÇÕES ENCERRADAS Acesse o edital",
+   "encerramento": "2026-06-14",
+   "nota": ""
+  },
+  {
+   "arquivo": "riosaude-edital-13-2026.txt.gz",
+   "fonte": "riosaude",
+   "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/05/edital-13-2026.pdf",
+   "titulo": "[RioSaúde] Edital 013/2026 (Unidades geridas pela RioSaúde) – Fisioterapeutas – INSCRIÇÕES ENCERRADAS Acesse o edital Retificação",
+   "encerramento": "2026-05-14",
+   "nota": ""
+  },
+  {
+   "arquivo": "riosaude-edital-co-rsu-006-2026-ivisa-atualizado-para.txt.gz",
+   "fonte": "riosaude",
+   "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/EDITAL_CO_RSU_006_2026_-IVISA-ATUALIZADO-PARA-PUBLICACAO.pdf",
+   "titulo": "[RioSaúde] Edital 006/2026 (IVISA-Rio) – Agente de apoio, técnico de laboratório, técnico de edificações, analista de engenharia e arquitetura – arquiteto, analista de engenharia e arquitetura – engenheiro – INSCRIÇÕES ENCERRADAS Acesse o edital",
+   "encerramento": "2026-06-04",
+   "nota": ""
+  },
+  {
+   "arquivo": "riosaude-edital-co-rsu-010-2026-atualizado.txt.gz",
+   "fonte": "riosaude",
+   "link": "https://riosaude.prefeitura.rio/wp-content/uploads/sites/66/2026/06/EDITAL_CO_RSU_010_2026_-ATUALIZADO.pdf",
+   "titulo": "[RioSaúde] Edital 010/2026 (Unidades geridas pela RioSaúde) – Assistente social, fonoaudiólogo (24h e 30h), fonoaudiólogo – audiometria (24h e 30h), nutricionista (24h, 30h e 40h), psicólogo (24h e 30h) – INSCRIÇÕES ENCERRADAS Acesse o edital",
+   "encerramento": "2026-06-07",
+   "nota": ""
+  },
+  {
+   "arquivo": "riosaude-pss-003-2026.txt.gz",
+   "fonte": "riosaude-pss",
+   "link": "https://pss.riosaude.rio.br/003-2026.pdf",
+   "titulo": "[RioSaúde PSS] Edital 003/2026 — MÉDICO (ANESTESIOLOGISTA - 12H), MÉDICO (ANGIOLOGISTA - 10H), MÉDICO (CIRURGIÃO GERAL -10H) (+20)",
+   "encerramento": "2026-05-20",
+   "nota": "texto normativo e cronograma concordam"
+  },
+  {
+   "arquivo": "riosaude-pss-005-2026.txt.gz",
+   "fonte": "riosaude-pss",
+   "link": "https://pss.riosaude.rio.br/005-2026.pdf",
+   "titulo": "[RioSaúde PSS] Edital 005/2026 — MÉDICO (ANESTESIOLOGISTA), MÉDICO (CIRURGIÃO GERAL), MÉDICO (CLÍNICA MÉDICA) (+5)",
+   "encerramento": "2026-05-17",
+   "nota": "texto normativo e cronograma concordam"
+  },
+  {
+   "arquivo": "riosaude-pss-007-2026.txt.gz",
+   "fonte": "riosaude-pss",
+   "link": "https://pss.riosaude.rio.br/007-2026.pdf",
+   "titulo": "[RioSaúde PSS] Edital 007/2026 — MÉDICO (CLÍNICA MÉDICA), MÉDICO (PEDIATRIA)",
+   "encerramento": "2026-05-17",
+   "nota": "texto normativo e cronograma concordam"
+  },
+  {
+   "arquivo": "riosaude-pss-008-2026.txt.gz",
+   "fonte": "riosaude-pss",
+   "link": "https://pss.riosaude.rio.br/008-2026.pdf",
+   "titulo": "[RioSaúde PSS] Edital 008/2026 — MÉDICO (ANESTESIOLOGISTA -12H), MÉDICO (CIRURGIÃO ONCOLÓGICO -12H), MÉDICO (CIRURGIÃO PLASTICO - 12H) (+15)",
+   "encerramento": "2026-05-20",
+   "nota": "separador 'e' em vez de 'a' no periodo"
+  },
+  {
+   "arquivo": "riosaude-pss-009-2026.txt.gz",
+   "fonte": "riosaude-pss",
+   "link": "https://pss.riosaude.rio.br/009-2026.pdf",
+   "titulo": "[RioSaúde PSS] Edital 009/2026 — MÉDICO (CIRURGIÃO VASCULAR - 12H), MÉDICO (ORTOPEDIA - 30H), MÉDICO (NEUROCIRURGIÃO - 30H)",
+   "encerramento": "2026-05-17",
+   "nota": "texto normativo e cronograma concordam"
+  },
+  {
+   "arquivo": "riosaude-pss-029-2026.txt.gz",
+   "fonte": "riosaude-pss",
+   "link": "https://pss.riosaude.rio.br/029-2026.pdf",
+   "titulo": "[RioSaúde PSS] Edital 029/2026 — MÉDICO (CLÍNICA MÉDICA - 12H), MÉDICO (CLÍNICA MÉDICA - 30H), MÉDICO (CLÍNICA MÉDICA - 40H) (+3)",
+   "encerramento": "2026-05-31",
+   "nota": "CONFLITO resolvido pela maior data: a prosa diz 28/05/2026 e o cronograma do anexo diz 31/05/2026",
+   "resolvido_por": "maior data"
+  },
+  {
+   "arquivo": "riosaude-pss-039-2026.txt.gz",
+   "fonte": "riosaude-pss",
+   "link": "https://pss.riosaude.rio.br/039-2026.pdf",
+   "titulo": "[RioSaúde PSS] Edital 039/2026 — MÉDICO (CIRURGIA PEDIÁTRICA), MÉDICO (CIRURGIA TORÁCICA), MÉDICO (EMERGENCISTA) (+14)",
+   "encerramento": "2026-05-17",
+   "nota": "texto normativo e cronograma concordam"
+  },
+  {
+   "arquivo": "riosaude-pss-040-2026.txt.gz",
+   "fonte": "riosaude-pss",
+   "link": "https://pss.riosaude.rio.br/040-2026.pdf",
+   "titulo": "[RioSaúde PSS] Edital 040/2026 — MÉDICO (ANESTESIOLOGISTA), MÉDICO (CARDIOLOGISTA), MÉDICO (CLINICO EMERGENCIA) (+8)",
+   "encerramento": "2026-05-17",
+   "nota": "texto normativo e cronograma concordam"
+  },
+  {
+   "arquivo": "riosaude-pss-041-2026.txt.gz",
+   "fonte": "riosaude-pss",
+   "link": "https://pss.riosaude.rio.br/041-2026.pdf",
+   "titulo": "[RioSaúde PSS] Edital 041/2026 — MÉDICO (RADIOLOGISTA PEDIATRICO - 12H), MÉDICO (INTENSIVISTA PEDIATRICO - 12H), MÉDICO ROTINA (INTENSIVISTA PEDIATRICO - 30H) (+2)",
+   "encerramento": "2026-05-31",
+   "nota": "CONFLITO resolvido pela maior data: a prosa diz 11/05/2026 a 28/05/2026 e o cronograma do anexo diz 18/05/2026 a 31/05/2026; ate o inicio diverge",
+   "resolvido_por": "maior data"
+  }
+ ]
+}
