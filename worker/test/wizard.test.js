@@ -4,6 +4,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  SITE_TEXT,
+  SITE_URL,
   especialidadesDe,
   isSubscriptionUseless,
   regionKeyboard,
@@ -20,6 +22,7 @@ import {
   SPECIALTY_KEYS,
 } from "../src/taxonomy.js";
 import { newSubscriber } from "../src/store.js";
+import { buildMessagePayload } from "../src/telegram.js";
 
 test("toggle marca e desmarca sem alterar a lista original", () => {
   const original = ["a"];
@@ -115,6 +118,38 @@ test("campo de especialidade ausente vale como TODAS, nunca como nenhuma", () =>
   assert.deepEqual(especialidadesDe(antigo), SPECIALTY_KEYS);
   assert.ok(!isSubscriptionUseless(antigo));
   assert.match(summaryText(antigo), /Clínica médica/);
+});
+
+test("o texto do painel leva o endereço do site", () => {
+  assert.equal(SITE_URL, "https://fredeci.github.io/med-alert/");
+  assert.ok(SITE_TEXT.includes(SITE_URL), "o endereço precisa estar no corpo da mensagem");
+});
+
+test("a prévia de link vem desligada por padrão", () => {
+  // Num alerta de vaga a prévia mostraria o cabeçalho de um PDF de edital:
+  // ocupa espaço e não informa nada.
+  const payload = buildMessagePayload("1", "texto");
+  assert.equal(payload.disable_web_page_preview, true);
+});
+
+test("a prévia pode ser ligada quando o link é o assunto da mensagem", () => {
+  const payload = buildMessagePayload("1", SITE_TEXT, undefined, { preview: true });
+  assert.equal(payload.disable_web_page_preview, false);
+});
+
+test("o teclado continua sendo enviado junto quando existe", () => {
+  const comTeclado = buildMessagePayload("1", "t", regionKeyboard([]));
+  const semTeclado = buildMessagePayload("1", "t");
+
+  assert.ok(comTeclado.reply_markup, "o teclado precisa chegar ao Telegram");
+  assert.ok(!("reply_markup" in semTeclado), "sem teclado, o campo nem é enviado");
+});
+
+test("o resumo aponta para o painel", () => {
+  // O alerta entrega só o que passa no filtro da pessoa; o painel é onde ela
+  // acha o que ficou de fora e o que já passou.
+  const texto = summaryText({ regioes: ["outras_rj"], tipos: ["concurso"] });
+  assert.match(texto, /\/site/);
 });
 
 test("assinatura com qualquer das três listas vazia nunca casaria com nada", () => {

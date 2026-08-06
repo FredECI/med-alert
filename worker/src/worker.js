@@ -63,8 +63,20 @@ async function handleCommand(env, chatId, text) {
     return sendMessage(env, chatId, REGION_STEP_TEXT, regionKeyboard(sub.regioes));
   }
 
+  // Antes da checagem de inscrição de propósito: o painel é público e serve
+  // justamente a quem ainda não se inscreveu, ou a quem saiu com /parar.
+  if (comando === "/site") {
+    // Única mensagem com prévia: aqui o link é o assunto, e ver o título e a
+    // descrição da página antes de tocar é justamente o que se quer.
+    return sendMessage(env, chatId, SITE_TEXT, undefined, { preview: true });
+  }
+
   if (!sub) {
-    return sendMessage(env, chatId, "Você ainda não está inscrito. Envie /start para começar.");
+    return sendMessage(
+      env,
+      chatId,
+      "Você ainda não está inscrito. Envie /start para começar, ou /site para ver o painel.",
+    );
   }
 
   if (comando === "/regioes") {
@@ -91,7 +103,7 @@ async function handleCommand(env, chatId, text) {
   return sendMessage(
     env,
     chatId,
-    "Comandos: /minhas, /regioes, /tipos, /especialidades, /parar",
+    "Comandos: /minhas, /site, /regioes, /tipos, /especialidades, /parar",
   );
 }
 

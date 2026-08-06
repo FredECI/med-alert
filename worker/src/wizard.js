@@ -70,6 +70,16 @@ export const SPECIALTY_STEP_TEXT =
   "boa parte das vagas — inclusive algumas que são da sua área e simplesmente " +
   "não dizem isso no título.";
 
+//: Painel público, gerado pelo Jekyll a cada rodada do robô.
+export const SITE_URL = "https://fredeci.github.io/med-alert/";
+
+export const SITE_TEXT =
+  "🌐 *Painel do MedAlert RJ*\n\n" +
+  `${SITE_URL}\n\n` +
+  "Lá está o acervo inteiro, com busca e filtros por região, tipo e " +
+  "especialidade. Serve para dois casos que o alerta não cobre: procurar algo " +
+  "que já passou e ver o que ficou de fora do seu filtro.";
+
 function listOrNone(keys, catalogo) {
   if (!keys.length) return "_nenhuma — você não receberá alertas_";
   return keys.map((k) => `• ${labelFor(catalogo, k)}`).join("\n");
@@ -87,6 +97,7 @@ export function summaryText(sub) {
     `*Regiões:*\n${listOrNone(sub.regioes, REGIONS)}\n\n` +
     `*Tipos:*\n${listOrNone(sub.tipos, JOB_TYPES)}\n\n` +
     `*Especialidades:*\n${listOrNone(especialidadesDe(sub), SPECIALTIES)}\n\n` +
+    "Painel completo: /site\n" +
     "Para mudar: /regioes, /tipos ou /especialidades. Para sair: /parar"
   );
 }
