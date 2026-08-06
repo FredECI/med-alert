@@ -20,15 +20,28 @@
   var chips = Array.prototype.slice.call(document.querySelectorAll(".chip[data-filter]"));
   var rows = Array.prototype.slice.call(tbody.querySelectorAll("tr"));
 
-  var state = { region: [], type: [], text: "", hideClosed: false };
+  var state = { region: [], type: [], specialty: [], text: "", hideClosed: false };
   var limitActive = rows.length > INITIAL_VISIBLE;
+
+  // Especialidade é a única dimensão em que a LINHA tem vários valores: uma
+  // vaga abre cargos de várias áreas. Região e tipo comparam por igualdade;
+  // aqui é interseção entre dois conjuntos.
+  function intersects(row, atributo, escolhidas) {
+    if (!escolhidas.length) return true;
+    var daLinha = (row.getAttribute(atributo) || "").split(" ");
+    for (var i = 0; i < escolhidas.length; i++) {
+      if (daLinha.indexOf(escolhidas[i]) !== -1) return true;
+    }
+    return false;
+  }
 
   // --- Lógica de correspondência -------------------------------------------
   // Dentro de uma dimensão vale OU (marcar duas regiões mostra as duas);
-  // entre dimensões vale E (região E tipo E texto).
+  // entre dimensões vale E (região E tipo E especialidade E texto).
   function matches(row) {
     if (state.region.length && state.region.indexOf(row.getAttribute("data-region")) === -1) return false;
     if (state.type.length && state.type.indexOf(row.getAttribute("data-type")) === -1) return false;
+    if (!intersects(row, "data-specialty", state.specialty)) return false;
     // Esconde só o que a fonte afirmou estar encerrado. "desconhecido"
     // continua visível de propósito: ele significa "não sabemos", e sumir
     // com uma vaga possivelmente aberta é o pior erro possível aqui.
@@ -38,7 +51,13 @@
   }
 
   function isFiltering() {
-    return state.region.length > 0 || state.type.length > 0 || state.text !== "" || state.hideClosed;
+    return (
+      state.region.length > 0 ||
+      state.type.length > 0 ||
+      state.specialty.length > 0 ||
+      state.text !== "" ||
+      state.hideClosed
+    );
   }
 
   // --- Estado na URL --------------------------------------------------------
@@ -47,6 +66,7 @@
     var params = new URLSearchParams(window.location.search);
     state.region = (params.get("regiao") || "").split(",").filter(Boolean);
     state.type = (params.get("tipo") || "").split(",").filter(Boolean);
+    state.specialty = (params.get("especialidade") || "").split(",").filter(Boolean);
     state.text = (params.get("busca") || "").trim().toLowerCase();
     state.hideClosed = params.get("encerradas") === "nao";
     if (input && state.text) input.value = params.get("busca");
@@ -56,6 +76,7 @@
     var params = new URLSearchParams();
     if (state.region.length) params.set("regiao", state.region.join(","));
     if (state.type.length) params.set("tipo", state.type.join(","));
+    if (state.specialty.length) params.set("especialidade", state.specialty.join(","));
     if (state.text) params.set("busca", state.text);
     if (state.hideClosed) params.set("encerradas", "nao");
     var query = params.toString();
@@ -144,6 +165,7 @@
     clearButton.addEventListener("click", function () {
       state.region = [];
       state.type = [];
+      state.specialty = [];
       state.text = "";
       state.hideClosed = false;
       if (input) input.value = "";

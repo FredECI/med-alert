@@ -1,4 +1,4 @@
-import { DEFAULT_JOB_TYPES, DEFAULT_REGIONS } from "./taxonomy.js";
+import { DEFAULT_JOB_TYPES, DEFAULT_REGIONS, DEFAULT_SPECIALTIES } from "./taxonomy.js";
 
 // Uma chave por assinante, e não um blob único com a lista toda.
 // O KV gratuito permite apenas 1 escrita por segundo NA MESMA CHAVE: com um
@@ -14,6 +14,7 @@ export function newSubscriber(chatId) {
     chat_id: String(chatId),
     regioes: [...DEFAULT_REGIONS],
     tipos: [...DEFAULT_JOB_TYPES],
+    especialidades: [...DEFAULT_SPECIALTIES],
     criado_em: new Date().toISOString(),
     ativo: true,
   };

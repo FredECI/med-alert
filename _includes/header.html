@@ -57,6 +57,22 @@
   </div>
 
   {%- comment -%}
+    A contagem vem pronta de _data/specialties.json, calculada em Python: aqui
+    uma vaga tem VÁRIAS especialidades, e o Liquid não sabe achatar lista de
+    listas para contar chaves distintas.
+  {%- endcomment -%}
+  <div class="filters__group">
+    <span class="filters__label" id="label-especialidade">Especialidade</span>
+    <div role="group" aria-labelledby="label-especialidade">
+      {% for esp in site.data.specialties %}
+        <button type="button" class="chip" data-filter="specialty" data-value="{{ esp.key }}" aria-pressed="false">
+          {{ esp.label }} <span class="chip__count">{{ esp.count }}</span>
+        </button>
+      {% endfor %}
+    </div>
+  </div>
+
+  {%- comment -%}
     Este não é um chip das outras dimensões: região e tipo são conjuntos onde
     marcar duas opções mostra as duas, enquanto aqui existe uma única ação —
     esconder o que a fonte já disse estar encerrado. Por isso ele exclui em

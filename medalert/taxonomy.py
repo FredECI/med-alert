@@ -5,7 +5,7 @@ Sem isso não há o que filtrar: até aqui o robô só guardava título e link, 
 nenhuma noção de onde a vaga fica nem de que natureza ela é.
 """
 import re
-from typing import Optional
+from typing import List, Optional
 
 from medalert.textutils import strip_accents
 
@@ -194,6 +194,132 @@ def region_label(region: Optional[str]) -> str:
 
 def job_type_label(job_type: Optional[str]) -> str:
     return JOB_TYPE_LABELS.get(job_type or "", "Não classificado")
+
+
+# ==========================================
+# ESPECIALIDADES
+# ==========================================
+# Famílias, não especialidades individuais. O CFM reconhece 55 especialidades e
+# o próprio MedGrupo lista 144 opções; com essa granularidade "Cardiologia"
+# teria 4 vagas no acervo inteiro e o filtro pareceria quebrado. Agrupadas,
+# toda família tem volume utilizável — e cabem numa tela de Telegram.
+CLINICA_MEDICA = "clinica_medica"
+CIRURGIA = "cirurgia"
+PEDIATRIA = "pediatria"
+GINECO_OBSTETRICIA = "gineco_obstetricia"
+ANESTESIOLOGIA = "anestesiologia"
+INTENSIVA_EMERGENCIA = "intensiva_emergencia"
+ATENCAO_PRIMARIA = "atencao_primaria"
+PSIQUIATRIA = "psiquiatria"
+DIAGNOSTICO = "diagnostico"
+ESPECIALIDADES_CLINICAS = "especialidades_clinicas"
+TRABALHO_PERICIA = "trabalho_pericia"
+#: Opção de verdade, e não ausência de resposta.
+#:
+#: 72% das vagas não dizem a especialidade em lugar nenhum legível. Se o filtro
+#: funcionasse como região e tipo, quem marcasse "Pediatria" deixaria de
+#: receber a maioria de tudo — inclusive editais que TÊM vaga de pediatria mas
+#: não dizem no título. Sendo uma chave normal, marcada por padrão, a regra de
+#: correspondência continua sendo interseção simples, sem exceção nenhuma no
+#: código, e o comportamento padrão é inclusivo.
+NAO_ESPECIFICADA = "nao_especificada"
+
+SPECIALTIES = [
+    CLINICA_MEDICA,
+    CIRURGIA,
+    PEDIATRIA,
+    GINECO_OBSTETRICIA,
+    ANESTESIOLOGIA,
+    INTENSIVA_EMERGENCIA,
+    ATENCAO_PRIMARIA,
+    PSIQUIATRIA,
+    DIAGNOSTICO,
+    ESPECIALIDADES_CLINICAS,
+    TRABALHO_PERICIA,
+    NAO_ESPECIFICADA,
+]
+
+SPECIALTY_LABELS = {
+    CLINICA_MEDICA: "Clínica médica",
+    CIRURGIA: "Cirurgia e especialidades cirúrgicas",
+    PEDIATRIA: "Pediatria e neonatologia",
+    GINECO_OBSTETRICIA: "Ginecologia e obstetrícia",
+    ANESTESIOLOGIA: "Anestesiologia",
+    INTENSIVA_EMERGENCIA: "Terapia intensiva e emergência",
+    ATENCAO_PRIMARIA: "Saúde da família e atenção básica",
+    PSIQUIATRIA: "Psiquiatria e saúde mental",
+    DIAGNOSTICO: "Diagnóstico por imagem e patologia",
+    ESPECIALIDADES_CLINICAS: "Outras especialidades clínicas",
+    TRABALHO_PERICIA: "Medicina do trabalho, perícia e auditoria",
+    NAO_ESPECIFICADA: "Sem especialidade identificada",
+}
+
+#: Vocabulário de cada família. Escrito sem acento porque a comparação
+#: normaliza o texto antes. Os termos mais longos são testados primeiro (ver
+#: classify_specialties), para "cirurgia pediátrica" não virar só "cirurgia".
+SPECIALTY_TERMS = {
+    CLINICA_MEDICA: ["clinica medica", "clinico geral", "clinica geral", "medico clinico",
+                     "clinico(a)", "medicina interna"],
+    CIRURGIA: ["cirurg", "ortoped", "traumatolog", "urolog", "neurocirurg", "vascular",
+               "angiolog", "proctolog", "coloproctolog", "mastolog", "buco", "plastic",
+               "bariatric", "transplante", "queimado"],
+    PEDIATRIA: ["pediatr", "neonatolog", "neonatal"],
+    GINECO_OBSTETRICIA: ["ginecolog", "obstetr", "obstetra", "tocoginecolog", "medicina fetal",
+                         "reproducao assistida", "reproducao humana", "sexologia"],
+    ANESTESIOLOGIA: ["anestesi"],
+    INTENSIVA_EMERGENCIA: ["intensiv", "terapia intensiva", "uti", "urgenc", "emergenc",
+                           "plantonista", "samu", "pronto socorro", "pronto-socorro"],
+    # "familia e da comunidade" além de "familia e comunidade": o nome oficial
+    # da especialidade tem o segundo artigo, e sem ele o termo não casava.
+    ATENCAO_PRIMARIA: ["saude da familia", "familia e comunidade", "familia e da comunidade",
+                       "atencao basica", "atencao primaria", "estrategia saude",
+                       "medicina preventiva"],
+    PSIQUIATRIA: ["psiquiatr", "saude mental", "dependencia quimica", "psicoterapia"],
+    DIAGNOSTICO: ["radiolog", "ultrassonograf", "ultrassom", "patolog", "endoscop",
+                  "diagnostico por imagem", "medicina nuclear", "citopatolog", "hemoterap",
+                  "densitometria", "mamografia", "radioterapia", "neurofisiologia",
+                  "ecocardiograf", "ecocardiograma", "ergometria"],
+    ESPECIALIDADES_CLINICAS: ["cardiolog", "endocrinolog", "nefrolog", "neurolog", "pneumolog",
+                              "reumatolog", "gastroenterolog", "hepatolog", "dermatolog",
+                              "oftalmolog", "otorrino", "oncolog", "hematolog", "infectolog",
+                              "geriatr", "alergolog", "imunolog", "nutrolog", "paliativ",
+                              "genetica medica", "medicina esportiva", "acupuntura",
+                              "homeopat", "hansenolog", "medicina tropical", "toxicolog",
+                              "medicina do sono", "medicina da dor", "foniatria",
+                              "medicina fisica", "reabilitacao", "eletrofisiologia",
+                              "estimulacao cardiaca", "medicina do adolescente"],
+    TRABALHO_PERICIA: ["medicina do trabalho", "pericia", "perito", "auditor", "medicina legal",
+                       "regulacao", "medico do trabalho", "medicina de trafego",
+                       "medicina aeroespacial"],
+}
+
+
+def classify_specialties(text: str) -> List[str]:
+    """Famílias de especialidade citadas no texto.
+
+    Devolve LISTA porque especialidade é multivalorada, ao contrário de região
+    e tipo: um único edital do RioSaúde abre vinte cargos médicos diferentes.
+
+    Vazio quando nada é reconhecido — e quem chama traduz isso em
+    NAO_ESPECIFICADA, que é uma resposta, não uma falha.
+
+    Feito para texto CURTO e estruturado: título da vaga, lista de cargos,
+    nome de programa. Não use no corpo inteiro do edital: ali "clínica médica"
+    aparece em bibliografia de prova, tabela de salário, nome de supervisor e
+    pré-requisito do candidato — medido em 219 ocorrências irrelevantes contra
+    ~80 de vaga real, o que marcaria quase todo edital com quase toda família.
+    """
+    normalized = strip_accents(text).lower()
+    achadas = [
+        familia
+        for familia, termos in SPECIALTY_TERMS.items()
+        if any(termo in normalized for termo in termos)
+    ]
+    return [f for f in SPECIALTIES if f in achadas]  # ordem estável da taxonomia
+
+
+def specialty_labels(keys: Optional[List[str]]) -> List[str]:
+    return [SPECIALTY_LABELS.get(k, k) for k in (keys or [])]
 
 
 # ==========================================

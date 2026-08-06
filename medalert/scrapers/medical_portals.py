@@ -6,7 +6,15 @@ from typing import Dict, List, Optional
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
-from medalert.taxonomy import DESCONHECIDO, ENCERRADO, FONTE, NOTICIA, RESIDENCIA
+from medalert.taxonomy import (
+    DESCONHECIDO,
+    ENCERRADO,
+    FONTE,
+    NOTICIA,
+    RESIDENCIA,
+    SPECIALTIES,
+    classify_specialties,
+)
 from medalert.textutils import sanitize_title
 from medalert.timeutil import now_brt, today_str
 
@@ -14,6 +22,10 @@ from medalert.timeutil import now_brt, today_str
 #: checkbox "Rio de Janeiro" em #lstEstados).
 _MEDGRUPO_RJ = "1"
 _MEDGRUPO_FILTER_URL = "https://concursos.medgrupo.com.br/Home/Filtrar"
+
+#: Valor da opção "todas as especialidades" no formulário — não é uma
+#: especialidade e precisa ficar de fora do catálogo.
+_MEDGRUPO_TODAS = "-1"
 
 #: Única palavra da coluna "inscrição" que afirma alguma coisa. Medido na
 #: listagem real do RJ: de 83 concursos, 44 vinham como "encerradas", 28 como
@@ -41,9 +53,98 @@ class MedGrupoScraper(BaseScraper):
     url = "https://concursos.medgrupo.com.br/"
 
     def scrape(self) -> List[Dict[str, str]]:
+        soup = self._buscar(None)
+        if soup is None:
+            return []
+
+        found_jobs = [
+            job for job in (self._parse_candidate(row) for row in soup.find_all("tr")) if job is not None
+        ]
+
+        unique_jobs = list({job["link"]: job for job in found_jobs}.values())
+
+        por_link = self._especialidades_por_link()
+        for job in unique_jobs:
+            familias = por_link.get(job["link"])
+            if familias:
+                job["specialties"] = familias
+
+        com_especialidade = sum(1 for job in unique_jobs if job.get("specialties"))
+        logging.info(
+            f"[{self.label}] Found {len(unique_jobs)} relevant medical jobs "
+            f"({com_especialidade} com especialidade declarada pela fonte)."
+        )
+        return unique_jobs
+
+    def _especialidades_por_link(self) -> Dict[str, List[str]]:
+        """Link do edital -> famílias de especialidade que ele oferece.
+
+        Perguntado ao próprio MedGrupo, não deduzido do texto. O site mantém um
+        catálogo de 143 especialidades e filtra a listagem por elas; refazemos a
+        busca uma vez por família e vemos quais concursos sobrevivem ao filtro.
+        É caro (uma chamada por família) e vale a pena: o título de um concurso
+        aqui é só o nome do hospital, e o corpo do edital cita especialidade em
+        bibliografia, tabela de salário e pré-requisito — 219 ocorrências
+        irrelevantes contra ~80 de vaga real quando medido. Ler ali marcaria
+        quase todo edital com quase toda família.
+
+        Falha em silêncio: sem o catálogo, as vagas saem sem especialidade e o
+        resto da coleta segue igual.
+        """
+        catalogo = self._catalogo_de_especialidades()
+        if not catalogo:
+            return {}
+
+        # Conjunto por link, não lista: um mesmo concurso ocupa várias linhas
+        # da tabela (edital, retificação, anexos), então o link volta repetido
+        # dentro de uma única busca.
+        por_link: Dict[str, set] = {}
+        for familia, ids in catalogo.items():
+            for link in self._links_da_busca(ids):
+                por_link.setdefault(link, set()).add(familia)
+
+        # Reordenado pela taxonomia para a saída não depender da ordem em que
+        # as buscas voltaram.
+        return {
+            link: [f for f in SPECIALTIES if f in familias]
+            for link, familias in por_link.items()
+        }
+
+    def _catalogo_de_especialidades(self) -> Dict[str, List[str]]:
+        """Família -> códigos do MedGrupo, montado classificando o catálogo
+        deles com o nosso vocabulário. Assim uma especialidade nova no site
+        entra sozinha, sem ninguém precisar editar uma tabela aqui."""
+        html = self.fetch_html(self.url)
+        if not html:
+            return {}
+
+        lista = BeautifulSoup(html, "html.parser").find(id="lstEspecialidades")
+        if not lista:
+            logging.error(f"[{self.label}] Catálogo de especialidades não encontrado — layout mudou?")
+            return {}
+
+        catalogo: Dict[str, List[str]] = {}
+        for opcao in lista.select("input[value], option[value]"):
+            codigo = opcao.get("value")
+            rotulo = (opcao.get("data-label") or opcao.parent.get_text(" ", strip=True)).strip()
+            if not codigo or codigo == _MEDGRUPO_TODAS or not rotulo:
+                continue
+            for familia in classify_specialties(rotulo):
+                catalogo.setdefault(familia, []).append(codigo)
+        return catalogo
+
+    def _links_da_busca(self, especialidades: Optional[List[str]]) -> List[str]:
+        """Links de edital devolvidos pela listagem com o filtro aplicado."""
+        soup = self._buscar(especialidades)
+        if soup is None:
+            return []
+        links = (self._extract_edital_link(linha) for linha in soup.find_all("tr"))
+        return [link for link in links if link]
+
+    def _buscar(self, especialidades: Optional[List[str]]) -> Optional[BeautifulSoup]:
         payload = json.dumps({
             "estados": [_MEDGRUPO_RJ],
-            "especialidades": None,
+            "especialidades": especialidades,
             "tipos": None,
             "ano": now_brt().year,
         })
@@ -60,16 +161,8 @@ class MedGrupoScraper(BaseScraper):
             response.raise_for_status()
         except Exception as e:
             logging.error(f"Failed to fetch {_MEDGRUPO_FILTER_URL}. Error: {e}")
-            return []
-
-        soup = BeautifulSoup(response.text, "html.parser")
-        found_jobs = [
-            job for job in (self._parse_candidate(row) for row in soup.find_all("tr")) if job is not None
-        ]
-
-        unique_jobs = {job["link"]: job for job in found_jobs}.values()
-        logging.info(f"[{self.label}] Found {len(unique_jobs)} relevant medical jobs.")
-        return list(unique_jobs)
+            return None
+        return BeautifulSoup(response.text, "html.parser")
 
     def _parse_candidate(self, candidate) -> Optional[Dict[str, str]]:
         instituicao_tag = candidate.select_one("a.concurso-relacao")

@@ -41,10 +41,12 @@ from medalert.storage import DatabaseManager
 from medalert.taxonomy import (
     CRONOGRAMA,
     ESTADUAL_NACIONAL,
+    NAO_ESPECIFICADA,
     NOTICIA,
     can_suppress_alert,
     classify_job_type,
     classify_region,
+    classify_specialties,
     status_from_deadline,
 )
 from medalert.timeutil import today_str
@@ -146,6 +148,23 @@ def _read_deadline(job: Dict, scraper: BaseScraper) -> Optional[str]:
         return None
 
 
+def _resolve_specialties(job: Dict) -> List[str]:
+    """Especialidades da vaga: a fonte manda, o título cobre o resto.
+
+    Quando o scraper traz a informação, ela é sempre melhor — o MedGrupo é
+    perguntado no catálogo dele próprio, e o RioSaúde PSS conhece a lista
+    completa de cargos, da qual o título mostra só os três primeiros.
+
+    Lista vazia é resposta legítima, não falha: 72% das vagas não dizem a
+    especialidade em lugar nenhum legível. Elas passam a valer por
+    NAO_ESPECIFICADA, que é uma opção de assinatura marcada por padrão.
+    """
+    da_fonte = job.get("specialties")
+    if da_fonte:
+        return list(da_fonte)
+    return classify_specialties(job["title"])
+
+
 def _resolve_region(title: str, scraper_region: Optional[str]) -> str:
     """Região da vaga: o texto manda, a fonte cobre o que ele não disser.
 
@@ -203,6 +222,7 @@ def _deliver_pending(
             limit=MAX_NEW_NOTIFICATIONS_PER_RUN,
             regions=sub.regions,
             job_types=sub.job_types,
+            specialties=sub.specialties,
         )
         if not pending:
             continue
@@ -228,8 +248,18 @@ def _deliver_pending(
     return messages_sent
 
 
-def _wants(sub: Subscriber, region: str, job_type: str) -> bool:
-    return region in sub.regions and job_type in sub.job_types
+def _wants(sub: Subscriber, region: str, job_type: str, specialties: List[str]) -> bool:
+    """Se esta vaga é o que a pessoa pediu.
+
+    Região e tipo são igualdade; especialidade é interseção, porque uma vaga
+    tem várias. Vaga sem especialidade reconhecida vale por NAO_ESPECIFICADA —
+    uma chave normal, marcada por padrão —, então quem não mexeu em nada
+    continua recebendo tudo, e a regra segue sendo interseção pura.
+    """
+    if region not in sub.regions or job_type not in sub.job_types:
+        return False
+    da_vaga = specialties or [NAO_ESPECIFICADA]
+    return any(e in sub.specialties for e in da_vaga)
 
 
 def run(
@@ -301,6 +331,7 @@ def run(
 
             for job in jobs:
                 job_kind = classify_job_type(job["title"], scraper.job_type)
+                job_specialties = _resolve_specialties(job)
 
                 # A fonte manda: quando ela própria declara a situação (o
                 # MedGrupo marca "encerradas"), não há por que baixar o PDF
@@ -334,6 +365,7 @@ def run(
                     status=job.get("status"),
                     deadline=job.get("deadline"),
                     status_source=job.get("status_source"),
+                    specialties=_resolve_specialties(job),
                 )
 
                 if is_new:
@@ -374,10 +406,11 @@ def run(
                         source_url=job.get("source_url"),
                         deadline=job.get("deadline"),
                         status_source=job.get("status_source"),
+                        specialties=job_specialties,
                     )
 
                     for sub in subscribers:
-                        if not _wants(sub, job_region, job_kind):
+                        if not _wants(sub, job_region, job_kind, job_specialties):
                             # Não é o que essa pessoa pediu. Não registramos
                             # entrega: se ela mudar as preferências depois, a
                             # vaga ainda pode alcançá-la pela fila de pendentes.
@@ -405,6 +438,7 @@ def run(
                         status=job.get("status"),
                         deadline=job.get("deadline"),
                         status_source=job.get("status_source"),
+                        specialties=job_specialties,
                     )
 
         except Exception as e:

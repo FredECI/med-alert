@@ -4,13 +4,21 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  especialidadesDe,
   isSubscriptionUseless,
   regionKeyboard,
+  specialtyKeyboard,
   summaryText,
   toggle,
   typeKeyboard,
 } from "../src/wizard.js";
-import { DEFAULT_JOB_TYPES, DEFAULT_REGIONS, REGION_KEYS } from "../src/taxonomy.js";
+import {
+  DEFAULT_JOB_TYPES,
+  DEFAULT_REGIONS,
+  DEFAULT_SPECIALTIES,
+  REGION_KEYS,
+  SPECIALTY_KEYS,
+} from "../src/taxonomy.js";
 import { newSubscriber } from "../src/store.js";
 
 test("toggle marca e desmarca sem alterar a lista original", () => {
@@ -46,13 +54,34 @@ test("o teclado de regiões oferece uma opção por região e o avanço", () => 
   assert.equal(teclado.inline_keyboard.at(-1)[0].callback_data, "go|tipos");
 });
 
-test("o teclado de tipos permite voltar e concluir", () => {
+test("o teclado de tipos permite voltar e avançar para especialidades", () => {
   const acoes = typeKeyboard(DEFAULT_JOB_TYPES).inline_keyboard.at(-1);
-  assert.deepEqual(acoes.map((b) => b.callback_data), ["go|regioes", "go|fim"]);
+  assert.deepEqual(acoes.map((b) => b.callback_data), ["go|regioes", "go|especialidades"]);
+});
+
+test("o teclado de especialidades encerra o assistente", () => {
+  const teclado = specialtyKeyboard(DEFAULT_SPECIALTIES);
+  assert.equal(teclado.inline_keyboard.length, SPECIALTY_KEYS.length + 1);
+  assert.deepEqual(
+    teclado.inline_keyboard.at(-1).map((b) => b.callback_data),
+    ["go|tipos", "go|fim"],
+  );
+});
+
+test("novo assinante recebe todas as especialidades marcadas", () => {
+  // Inclusive "sem especialidade identificada": a maioria das vagas não diz a
+  // especialidade, e estrear com ela desmarcada esconderia quase tudo de quem
+  // acabou de se inscrever.
+  const sub = newSubscriber(123);
+  assert.deepEqual(sub.especialidades, SPECIALTY_KEYS);
 });
 
 test("callback_data cabe no limite de 64 bytes do Telegram", () => {
-  const todos = [...regionKeyboard([]).inline_keyboard, ...typeKeyboard([]).inline_keyboard];
+  const todos = [
+    ...regionKeyboard([]).inline_keyboard,
+    ...typeKeyboard([]).inline_keyboard,
+    ...specialtyKeyboard([]).inline_keyboard,
+  ];
   for (const linha of todos) {
     for (const botao of linha) {
       const bytes = new TextEncoder().encode(botao.callback_data).length;
@@ -62,18 +91,36 @@ test("callback_data cabe no limite de 64 bytes do Telegram", () => {
 });
 
 test("o resumo lista as escolhas em português", () => {
-  const texto = summaryText({ regioes: ["regiao_dos_lagos"], tipos: ["residencia"] });
+  const texto = summaryText({
+    regioes: ["regiao_dos_lagos"],
+    tipos: ["residencia"],
+    especialidades: ["pediatria"],
+  });
   assert.match(texto, /Região dos Lagos/);
   assert.match(texto, /Residência médica/);
+  assert.match(texto, /Pediatria e neonatologia/);
 });
 
 test("o resumo avisa quando a lista ficou vazia", () => {
-  const texto = summaryText({ regioes: [], tipos: ["residencia"] });
+  const texto = summaryText({ regioes: [], tipos: ["residencia"], especialidades: [] });
   assert.match(texto, /nenhuma/);
 });
 
-test("assinatura sem região ou sem tipo nunca casaria com nada", () => {
-  assert.ok(isSubscriptionUseless({ regioes: [], tipos: ["concurso"] }));
-  assert.ok(isSubscriptionUseless({ regioes: ["outras_rj"], tipos: [] }));
-  assert.ok(!isSubscriptionUseless({ regioes: ["outras_rj"], tipos: ["concurso"] }));
+test("campo de especialidade ausente vale como TODAS, nunca como nenhuma", () => {
+  // Quem se inscreveu antes deste passo existir não tem o campo no KV. Tratar
+  // isso como lista vazia silenciaria a pessoa sem aviso — e, antes disso,
+  // derrubaria o /minhas dela.
+  const antigo = { regioes: ["outras_rj"], tipos: ["concurso"] };
+
+  assert.deepEqual(especialidadesDe(antigo), SPECIALTY_KEYS);
+  assert.ok(!isSubscriptionUseless(antigo));
+  assert.match(summaryText(antigo), /Clínica médica/);
+});
+
+test("assinatura com qualquer das três listas vazia nunca casaria com nada", () => {
+  const cheio = { regioes: ["outras_rj"], tipos: ["concurso"], especialidades: ["pediatria"] };
+  assert.ok(isSubscriptionUseless({ ...cheio, regioes: [] }));
+  assert.ok(isSubscriptionUseless({ ...cheio, tipos: [] }));
+  assert.ok(isSubscriptionUseless({ ...cheio, especialidades: [] }));
+  assert.ok(!isSubscriptionUseless(cheio));
 });

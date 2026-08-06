@@ -1,7 +1,12 @@
 <tr class="job-row{% if include.job.job_type == 'noticia' %} job-row--noticia{% endif %}{% if include.job.status == 'encerrado' %} job-row--encerrada{% endif %}"
     data-region="{{ include.job.region }}"
     data-type="{{ include.job.job_type }}"
-    data-status="{{ include.job.status }}">
+    data-status="{{ include.job.status }}"
+    {%- comment -%}
+      Várias chaves separadas por espaço: uma vaga tem N especialidades, ao
+      contrário de região e tipo. O JS compara por token, não por igualdade.
+    {%- endcomment -%}
+    data-specialty="{{ include.job.specialties | join: ' ' }}">
   <td>{{ include.job.discovered_at }}</td>
   <td>
     <span class="badge badge--region">{{ include.job.region_label }}</span>
@@ -14,6 +19,16 @@
     {%- endcomment -%}
     {% if include.job.status == 'encerrado' %}<span class="badge badge--encerrada">⏱ {{ include.job.status_label }}</span>{% endif %}
     <div class="job-title"><strong>{{ include.job.title }}</strong></div>
+    {%- comment -%}
+      "Sem especialidade identificada" não vira selo: apareceria na maioria
+      das linhas e viraria ruído. Ela continua existindo como filtro, onde
+      é útil, mas não como enfeite repetido.
+    {%- endcomment -%}
+    {% unless include.job.specialties contains 'nao_especificada' %}
+      <div class="job-specialties">
+        {% for rotulo in include.job.specialty_labels %}<span class="badge badge--specialty">🩺 {{ rotulo }}</span>{% endfor %}
+      </div>
+    {% endunless %}
     {% if include.job.job_type == 'noticia' %}
       <small class="job-note">Notícia sobre um processo — não é uma vaga confirmada.</small><br>
     {% endif %}

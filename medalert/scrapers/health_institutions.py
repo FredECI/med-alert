@@ -16,7 +16,11 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
-from medalert.taxonomy import CAPITAL_METROPOLITANA, PROCESSO_SELETIVO
+from medalert.taxonomy import (
+    CAPITAL_METROPOLITANA,
+    PROCESSO_SELETIVO,
+    classify_specialties,
+)
 from medalert.textutils import sanitize_title
 from medalert.timeutil import now_brt, today_str
 
@@ -201,6 +205,11 @@ class RioSaudePssScraper(BaseScraper):
             "link": link,
             "source_url": self.url,
             "pub_date": today_str(),
+            # Classificado sobre a lista COMPLETA de cargos, não sobre o
+            # resumo do título: o edital 003/2026 abre 23 cargos médicos e o
+            # título mostra 3. Sem isto, vinte especialidades reais ficariam
+            # invisíveis para quem filtra por elas.
+            "specialties": classify_specialties(" ".join(cargos)),
         }
 
 

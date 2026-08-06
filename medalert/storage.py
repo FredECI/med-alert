@@ -5,13 +5,35 @@ from typing import List, Optional
 
 from medalert.dedup import build_signature
 from medalert.models import Job
-from medalert.taxonomy import DESCONHECIDO
+from medalert.taxonomy import DESCONHECIDO, NAO_ESPECIFICADA
 from medalert.timeutil import now_brt
 
 _JOB_COLUMNS = (
     "job_title, link, publication_date, last_seen_at, dedup_key, job_type, region, source_url, "
-    "status, deadline, status_source"
+    "status, deadline, status_source, specialties"
 )
+
+#: Especialidade é a única dimensão MULTIVALORADA: região e tipo têm um valor
+#: por vaga, mas um edital do RioSaúde abre vinte cargos médicos diferentes.
+#:
+#: Guardada como lista delimitada ("|cirurgia|pediatria|") em vez de tabela de
+#: junção. Nesta escala — centenas de linhas — o ganho da normalização é
+#: teórico, e o banco vive versionado no Git: uma tabela a menos para migrar.
+#: As barras nas pontas existem para o LIKE poder casar chave inteira e não
+#: pegar "cirurgia" dentro de outra palavra.
+_SEP = "|"
+
+
+def encode_specialties(keys: Optional[List[str]]) -> Optional[str]:
+    if not keys:
+        return None
+    return _SEP + _SEP.join(keys) + _SEP
+
+
+def decode_specialties(encoded: Optional[str]) -> List[str]:
+    if not encoded:
+        return []
+    return [k for k in encoded.split(_SEP) if k]
 
 #: Host do arquivo -> página onde a vaga vive. Usado só para retroagir o
 #: acervo anterior à coluna `source_url`; daqui em diante quem informa a
@@ -36,7 +58,8 @@ _CREATE_JOBS_TABLE = """
         source_url TEXT,
         status TEXT,
         deadline TEXT,
-        status_source TEXT
+        status_source TEXT,
+        specialties TEXT
     )
 """
 
@@ -102,6 +125,8 @@ class DatabaseManager:
                 self.conn.execute("ALTER TABLE jobs ADD COLUMN deadline TEXT")
             if "status_source" not in existing_columns:
                 self.conn.execute("ALTER TABLE jobs ADD COLUMN status_source TEXT")
+            if "specialties" not in existing_columns:
+                self.conn.execute("ALTER TABLE jobs ADD COLUMN specialties TEXT")
 
     def _backfill_source_urls(self) -> None:
         """Preenche a origem das vagas que já estavam no banco.
@@ -132,13 +157,14 @@ class DatabaseManager:
         status: Optional[str] = None,
         deadline: Optional[str] = None,
         status_source: Optional[str] = None,
+        specialties: Optional[List[str]] = None,
     ) -> bool:
         """Insere uma vaga nova. Retorna False (via UNIQUE(link)) se o link já existir."""
         query = (
             "INSERT INTO jobs "
             "(job_title, link, publication_date, last_seen_at, dedup_key, "
-            "job_type, region, source_url, status, deadline, status_source) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            "job_type, region, source_url, status, deadline, status_source, specialties) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         )
         try:
             with self.conn:
@@ -152,6 +178,7 @@ class DatabaseManager:
                         # endereço duas vezes.
                         source_url if source_url and source_url != link else None,
                         status or DESCONHECIDO, deadline, status_source,
+                        encode_specialties(specialties),
                     ),
                 )
             return True
@@ -194,6 +221,7 @@ class DatabaseManager:
         status: Optional[str] = None,
         deadline: Optional[str] = None,
         status_source: Optional[str] = None,
+        specialties: Optional[List[str]] = None,
     ) -> None:
         """Marca que uma vaga já conhecida foi encontrada de novo nesta rodada.
 
@@ -217,6 +245,13 @@ class DatabaseManager:
         if deadline:
             campos.append("deadline = ?")
             params.append(deadline)
+        # Mesma regra do status, e aqui ela vale dobrado: quando o vocabulário
+        # de especialidades melhora, o acervo antigo é reclassificado sozinho
+        # nas rodadas seguintes — sem download, sem ferramenta à parte. Lista
+        # vazia não apaga o que já se sabia.
+        if specialties:
+            campos.append("specialties = ?")
+            params.append(encode_specialties(specialties))
 
         params.append(link)
         with self.conn:
@@ -257,6 +292,7 @@ class DatabaseManager:
         limit: int = 10,
         regions: Optional[List[str]] = None,
         job_types: Optional[List[str]] = None,
+        specialties: Optional[List[str]] = None,
     ) -> List[Job]:
         """Vagas que ainda não foram entregues a ESTE destinatário.
 
@@ -285,6 +321,19 @@ class DatabaseManager:
         if job_types:
             clauses.append(f"job_type IN ({','.join('?' * len(job_types))})")
             params.extend(job_types)
+        if specialties:
+            # Interseção: basta UMA das especialidades do assinante estar entre
+            # as da vaga.
+            alvos = ["specialties LIKE ?" for _ in specialties]
+            params.extend(f"%|{chave}|%" for chave in specialties)
+            # Vaga sem especialidade reconhecida tem a coluna NULA, e LIKE
+            # nunca casa com NULL — ela sumiria da fila em vez de valer por
+            # "não especificada". A mesma equivalência que _wants() aplica em
+            # Python precisa existir aqui, senão as duas metades do filtro
+            # discordam e a diferença só aparece na fila de reenvio.
+            if NAO_ESPECIFICADA in specialties:
+                alvos.append("specialties IS NULL")
+            clauses.append(f"({' OR '.join(alvos)})")
 
         params.append(limit)
         query = (
@@ -309,6 +358,7 @@ class DatabaseManager:
             status=row[8],
             deadline=row[9],
             status_source=row[10],
+            specialties=decode_specialties(row[11]),
         )
 
     def close(self) -> None:

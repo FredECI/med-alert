@@ -9,13 +9,22 @@ conteúdo/apresentação (Liquid/HTML) da lógica de coleta (Python).
 import csv
 import json
 import logging
+from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
 from medalert.models import Job
 from medalert.storage import DatabaseManager
-from medalert.taxonomy import DESCONHECIDO, job_type_label, region_label, status_label
+from medalert.taxonomy import (
+    DESCONHECIDO,
+    NAO_ESPECIFICADA,
+    SPECIALTIES,
+    job_type_label,
+    region_label,
+    specialty_labels,
+    status_label,
+)
 from medalert.textutils import infer_source_from_link, sanitize_title, split_source_and_title
 from medalert.timeutil import format_date_br, now_brt
 
@@ -106,10 +115,33 @@ class ReportGenerator:
                 "status": job.status or DESCONHECIDO,
                 "status_label": status_label(job.status),
                 "deadline": format_date_br(job.deadline),
+                # Lista vazia vira a chave NAO_ESPECIFICADA aqui, e não no
+                # banco: assim a coluna guarda o que foi de fato reconhecido, e
+                # quem exibe recebe sempre algo com que filtrar.
+                "specialties": job.specialties or [NAO_ESPECIFICADA],
+                "specialty_labels": specialty_labels(job.specialties or [NAO_ESPECIFICADA]),
             })
 
         _write_json(filename, payload)
         logging.info(f"🗂️ Dados gerados: {filename} com {len(payload)} vagas.")
+        self._generate_specialty_index(payload)
+
+    @staticmethod
+    def _generate_specialty_index(payload, filename: str = "_data/specialties.json") -> None:
+        """Especialidades presentes no acervo, com contagem, para os chips.
+
+        Calculado aqui e não no template porque especialidade é uma LISTA por
+        vaga: o Liquid não tem `flatten`, e montar isso lá viraria um laço
+        aninhado que ninguém consegue testar sem subir o Jekyll — que é
+        justamente o que não dá para fazer nesta máquina. Mesmo raciocínio já
+        aplicado à formatação de data (ver _format_display_timestamp).
+        """
+        contagem = Counter(chave for vaga in payload for chave in vaga["specialties"])
+        _write_json(filename, [
+            {"key": chave, "label": rotulo, "count": contagem[chave]}
+            for chave, rotulo in zip(SPECIALTIES, specialty_labels(SPECIALTIES))
+            if contagem[chave]
+        ])
 
 
 def write_robot_status(

@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from medalert.taxonomy import JOB_TYPES, REGIONS
+from medalert.taxonomy import JOB_TYPES, REGIONS, SPECIALTIES
 
 _WORKER_TAXONOMY = Path(__file__).resolve().parents[1] / "worker" / "src" / "taxonomy.js"
 
@@ -38,6 +38,19 @@ def test_regions_match_between_python_and_worker(js_source):
 
 def test_job_types_match_between_python_and_worker(js_source):
     assert _extract_keys(js_source, "JOB_TYPES") == JOB_TYPES
+
+
+def test_specialties_match_between_python_and_worker(js_source):
+    """A dimensão mais fácil de dessincronizar: são doze chaves, e a maioria
+    delas parecida entre si."""
+    assert _extract_keys(js_source, "SPECIALTIES") == SPECIALTIES
+
+
+def test_worker_defaults_to_every_specialty(js_source):
+    """Inclusive "sem especialidade identificada". Estreando desmarcada, quem
+    se inscrevesse deixaria de ver a maioria das vagas — que é justamente o
+    conjunto que não diz a especialidade em lugar nenhum."""
+    assert "DEFAULT_SPECIALTIES = [...SPECIALTY_KEYS]" in js_source
 
 
 def test_worker_default_excludes_only_news(js_source):

@@ -8,9 +8,12 @@ import {
 } from "./store.js";
 import {
   REGION_STEP_TEXT,
+  SPECIALTY_STEP_TEXT,
   TYPE_STEP_TEXT,
   isSubscriptionUseless,
+  especialidadesDe,
   regionKeyboard,
+  specialtyKeyboard,
   summaryText,
   toggle,
   typeKeyboard,
@@ -24,7 +27,8 @@ const BOAS_VINDAS =
 
 const AVISO_SEM_FILTRO =
   "⚠️ Você desmarcou tudo em uma das listas, então nenhum alerta se encaixa " +
-  "no seu filtro. Use /regioes ou /tipos para escolher ao menos uma opção.";
+  "no seu filtro. Use /regioes, /tipos ou /especialidades para escolher ao " +
+  "menos uma opção.";
 
 // ==========================================
 // Autenticação das rotas usadas pelo robô
@@ -69,6 +73,9 @@ async function handleCommand(env, chatId, text) {
   if (comando === "/tipos") {
     return sendMessage(env, chatId, TYPE_STEP_TEXT, typeKeyboard(sub.tipos));
   }
+  if (comando === "/especialidades") {
+    return sendMessage(env, chatId, SPECIALTY_STEP_TEXT, specialtyKeyboard(especialidadesDe(sub)));
+  }
   if (comando === "/minhas") {
     return sendMessage(env, chatId, summaryText(sub));
   }
@@ -84,7 +91,7 @@ async function handleCommand(env, chatId, text) {
   return sendMessage(
     env,
     chatId,
-    "Comandos: /minhas, /regioes, /tipos, /parar",
+    "Comandos: /minhas, /regioes, /tipos, /especialidades, /parar",
   );
 }
 
@@ -116,6 +123,18 @@ async function handleCallback(env, callback) {
     return editMessage(env, chatId, messageId, TYPE_STEP_TEXT, typeKeyboard(sub.tipos));
   }
 
+  if (tipo === "e") {
+    // Assinante criado antes das especialidades existirem não tem o campo.
+    // Começar de TODAS e não de vazio: o primeiro toque deve desmarcar uma
+    // opção, não zerar tudo o que a pessoa recebia.
+    sub.especialidades = toggle(especialidadesDe(sub), valor);
+    await putSubscriber(env, sub);
+    await answerCallback(env, callback.id);
+    return editMessage(
+      env, chatId, messageId, SPECIALTY_STEP_TEXT, specialtyKeyboard(especialidadesDe(sub)),
+    );
+  }
+
   if (tipo === "go") {
     if (valor === "regioes") {
       await answerCallback(env, callback.id);
@@ -124,6 +143,13 @@ async function handleCallback(env, callback) {
     if (valor === "tipos") {
       await answerCallback(env, callback.id);
       return editMessage(env, chatId, messageId, TYPE_STEP_TEXT, typeKeyboard(sub.tipos));
+    }
+    if (valor === "especialidades") {
+      await answerCallback(env, callback.id);
+      return editMessage(
+        env, chatId, messageId, SPECIALTY_STEP_TEXT,
+        specialtyKeyboard(especialidadesDe(sub)),
+      );
     }
     if (valor === "fim") {
       await answerCallback(env, callback.id, "Preferências salvas!");

@@ -33,7 +33,7 @@ def header() -> str:
 
 
 def test_row_exposes_the_attributes_the_filter_reads(job_row, search_js):
-    for atributo in ("data-region", "data-type", "data-status"):
+    for atributo in ("data-region", "data-type", "data-status", "data-specialty"):
         assert atributo in job_row, f"o template precisa emitir {atributo}"
         assert atributo in search_js, f"o filtro precisa ler {atributo}"
 
@@ -43,13 +43,14 @@ def test_chips_declare_the_same_dimensions_the_filter_knows(header, search_js):
     estado por esse mesmo nome."""
     assert 'data-filter="region"' in header
     assert 'data-filter="type"' in header
+    assert 'data-filter="specialty"' in header
     assert 'state[chip.getAttribute("data-filter")]' in search_js
 
 
 def test_row_uses_the_fields_report_publishes(job_row):
     """Campos gerados por ReportGenerator.generate_jobs_data()."""
     for campo in ("region_label", "job_type_label", "source_url", "last_seen_at", "link",
-                  "status", "status_label", "deadline"):
+                  "status", "status_label", "deadline", "specialties", "specialty_labels"):
         assert f"include.job.{campo}" in job_row, f"{campo} não está sendo usado no template"
 
 
@@ -101,8 +102,16 @@ def test_script_tag_busts_the_browser_cache():
     assert "?v=" in index, "a URL do script precisa mudar a cada build"
 
 
+def test_a_row_can_carry_several_specialties(job_row, search_js):
+    """Especialidade é a única dimensão multivalorada na LINHA: um edital abre
+    cargos de várias áreas. Comparar por igualdade, como se faz com região e
+    tipo, faria o filtro não achar nada."""
+    assert "join: ' '" in job_row, "as chaves saem separadas por espaço"
+    assert "intersects(row" in search_js, "o filtro precisa comparar por token"
+
+
 def test_url_keeps_the_filter_state(search_js):
     """Para dar para mandar a alguém um link já filtrado."""
-    for parametro in ("regiao", "tipo", "busca"):
+    for parametro in ("regiao", "tipo", "especialidade", "busca"):
         assert f'"{parametro}"' in search_js
     assert "replaceState" in search_js

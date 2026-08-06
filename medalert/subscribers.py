@@ -11,6 +11,7 @@ from typing import List, Optional
 import requests
 
 from medalert.config import load_sync_token, load_worker_url
+from medalert.taxonomy import SPECIALTIES
 
 _TIMEOUT = 15
 
@@ -20,19 +21,27 @@ class Subscriber:
     chat_id: str
     regions: List[str] = field(default_factory=list)
     job_types: List[str] = field(default_factory=list)
+    specialties: List[str] = field(default_factory=lambda: list(SPECIALTIES))
 
     def wants_nothing(self) -> bool:
-        """Sem região ou sem tipo, nenhuma vaga jamais casaria."""
-        return not self.regions or not self.job_types
+        """Sem região, sem tipo ou sem especialidade, nenhuma vaga casaria."""
+        return not self.regions or not self.job_types or not self.specialties
 
 
 def _to_subscriber(payload: dict) -> Subscriber:
-    # As chaves vêm em português do Worker (regioes/tipos); aqui dentro o
-    # projeto usa os mesmos nomes das colunas do banco.
+    # As chaves vêm em português do Worker (regioes/tipos/especialidades); aqui
+    # dentro o projeto usa os mesmos nomes das colunas do banco.
+    #
+    # Campo AUSENTE significa "todas", e não "nenhuma". A diferença decide se
+    # quem já estava inscrito antes das especialidades existirem continua
+    # recebendo ou é silenciado sem saber por quê — e o silêncio não daria
+    # nenhum sinal, nem para quem assina nem para quem mantém o robô.
+    especialidades = payload.get("especialidades")
     return Subscriber(
         chat_id=str(payload.get("chat_id", "")),
         regions=list(payload.get("regioes") or []),
         job_types=list(payload.get("tipos") or []),
+        specialties=list(especialidades) if especialidades is not None else list(SPECIALTIES),
     )
 
 

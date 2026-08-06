@@ -21,6 +21,7 @@ from medalert.taxonomy import (
     TEXTO,
     job_type_label,
     region_label,
+    specialty_labels,
 )
 from medalert.timeutil import format_date_br
 
@@ -67,6 +68,31 @@ def _link(url: str, label: str) -> str:
     return f'<a href="{escape_html(url)}">{escape_html(label)}</a>'
 
 
+#: Quantas especialidades a mensagem lista antes de resumir o resto.
+#: Um edital do RioSaúde abre vinte cargos e o ENARE cobre as onze famílias —
+#: despejar tudo transformaria o alerta num paredão que ninguém lê.
+_MAX_ESPECIALIDADES_NA_MENSAGEM = 4
+
+
+def _specialty_line(job: Job) -> Optional[str]:
+    """Linha das especialidades, quando alguma foi identificada.
+
+    Some quando não há nenhuma. Escrever "especialidade não identificada" em
+    quase toda mensagem seria ruído, e ainda daria a impressão de que faltou
+    algo — quando na verdade a vaga é geral ou o edital não diz.
+    """
+    rotulos = specialty_labels(job.specialties)
+    if not rotulos:
+        return None
+
+    mostradas = rotulos[:_MAX_ESPECIALIDADES_NA_MENSAGEM]
+    texto = ", ".join(escape_html(r) for r in mostradas)
+    restantes = len(rotulos) - len(mostradas)
+    if restantes:
+        texto += f" <i>e mais {restantes}</i>"
+    return f"🩺 {texto}"
+
+
 def _deadline_line(job: Job) -> Optional[str]:
     """Linha do prazo de inscrição, quando ele é conhecido.
 
@@ -97,8 +123,13 @@ def build_job_message(job: Job) -> str:
         f" · 🏷 {escape_html(job_type_label(job.job_type))}",
     ]
 
-    # Acima da data de descoberta de propósito: o prazo é o que decide se a
-    # pessoa ainda pode agir, e a descoberta é só procedência.
+    # Especialidade e prazo vêm ACIMA da data de descoberta de propósito: são
+    # eles que dizem se a vaga interessa e se ainda dá tempo. A descoberta é
+    # só procedência, e procedência é o que menos importa aqui.
+    especialidades = _specialty_line(job)
+    if especialidades:
+        linhas.append(especialidades)
+
     prazo = _deadline_line(job)
     if prazo:
         linhas.append(prazo)
@@ -142,6 +173,7 @@ def build_job_message_from_parts(
     source_url: Optional[str] = None,
     deadline: Optional[str] = None,
     status_source: Optional[str] = None,
+    specialties: Optional[list] = None,
 ) -> str:
     """Atalho para quem tem os campos soltos em vez de um Job."""
     return build_job_message(
@@ -154,5 +186,6 @@ def build_job_message_from_parts(
             source_url=source_url,
             deadline=deadline,
             status_source=status_source,
+            specialties=list(specialties or []),
         )
     )

@@ -1,6 +1,6 @@
 """Modelo de dados de uma vaga/oportunidade descoberta pelos scrapers."""
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import List, Optional
 
 
 @dataclass
@@ -30,3 +30,8 @@ class Job:
     #: De onde veio a conclusão sobre a situação. Determina se o sistema pode
     #: suprimir o alerta ou apenas exibir a informação com ressalva.
     status_source: Optional[str] = None
+    #: Famílias de especialidade oferecidas. É a única dimensão multivalorada:
+    #: um edital do RioSaúde abre vinte cargos médicos diferentes. Lista vazia
+    #: significa "não identificada", e quem exibe traduz isso para a chave
+    #: NAO_ESPECIFICADA — que é uma opção de assinatura, não uma falha.
+    specialties: List[str] = field(default_factory=list)
