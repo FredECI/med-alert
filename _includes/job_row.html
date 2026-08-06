@@ -1,8 +1,17 @@
 {%- comment -%}
-  NÃO ponha comentário Liquid DENTRO da tag <tr> abaixo. O `{%-` engole o
-  espaço que separa um atributo do seguinte, e `data-status="x"data-specialty`
-  não é HTML válido: o Kramdown desiste de ler o bloco como HTML e cospe a tag
-  inteira como texto na página. Foi assim que a tabela do site quebrou uma vez.
+  Duas armadilhas já custaram uma quebra do site cada uma. As duas são
+  silenciosas: nada falha em teste, o estrago só aparece na página publicada.
+
+  1. Não ponha comentário Liquid DENTRO da tag tr abaixo. A marca de abertura
+     com hífen engole o espaço que separa um atributo do seguinte, os dois
+     grudam, o HTML deixa de ser válido e o Kramdown cospe a tag inteira como
+     texto na página.
+
+  2. Não escreva marcas de Liquid aqui dentro, nem entre crases. O Liquid
+     tokeniza o corpo do comentário: uma abertura solta procura o fechamento,
+     engole o endcomment e o bloco fica sem fim — erro de sintaxe que aborta o
+     build do Pages inteiro. Foi exatamente assim que este comentário, escrito
+     para avisar do item 1, derrubou o site.
 
   Sobre data-specialty: várias chaves separadas por espaço, porque uma vaga tem
   N especialidades, ao contrário de região e tipo. O JS compara por token.

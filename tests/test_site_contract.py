@@ -102,6 +102,27 @@ def test_script_tag_busts_the_browser_cache():
     assert "?v=" in index, "a URL do script precisa mudar a cada build"
 
 
+def test_no_liquid_delimiter_survives_inside_a_liquid_comment():
+    """Regressão que derrubou o build do GitHub Pages por inteiro.
+
+    O Liquid tokeniza o corpo de um comentário em vez de ignorá-lo: uma marca
+    de abertura solta lá dentro procura o fechamento, engole o `endcomment` e
+    o bloco fica sem fim. O build aborta com erro de sintaxe e o site congela
+    na versão anterior — sem nada falhar em teste, porque não há Ruby nesta
+    máquina para renderizar Jekyll.
+
+    Este teste é o que substitui esse Jekyll que não dá para rodar: é barato,
+    é textual, e cobre a única classe de erro de Liquid que já quebrou o site.
+    """
+    import re
+
+    for arquivo in list(RAIZ.glob("_includes/*.html")) + [RAIZ / "index.md"]:
+        texto = arquivo.read_text(encoding="utf-8")
+        for bloco in re.finditer(r"\{%-?\s*comment\s*-?%\}(.*?)\{%-?\s*endcomment", texto, re.S):
+            achados = re.findall(r"\{\{|\{%", bloco.group(1))
+            assert not achados, f"{arquivo.name}: comentário contém {achados}"
+
+
 def test_the_row_tag_keeps_its_attributes_separated(job_row):
     """Regressão do dia em que a tabela do site apareceu como texto cru.
 
