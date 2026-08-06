@@ -145,6 +145,22 @@
    "nota": "'das 08h00 do dia 15/09/2025 ate as 17h00 do dia 10/10/2025'"
   },
   {
+   "arquivo": "medgrupo-marcilio-dias.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br//static/concursos/editais/hnmd/2026/edital-retificado02_hnmd_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL NAVAL MARCÍLIO DIAS",
+   "encerramento": "2025-08-15",
+   "nota": "ARMADILHA: a data do D.O.U. (30/07/2025) aparece a poucas palavras de 'inscricoes'"
+  },
+  {
+   "arquivo": "medgrupo-pasteur.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/amil - sp/2026/edital01_amil-sp_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL PASTEUR",
+   "encerramento": "2025-11-13",
+   "nota": "ARMADILHA: 'especializacao com rqe ate 20/10/2025' é prazo do CANDIDATO, nao da inscricao"
+  },
+  {
    "arquivo": "medgrupo-rede-americas.txt.gz",
    "fonte": "medgrupo",
    "link": "https://static.medgrupo.com.br/static/concursos/editais/rede-americas/2026/edital01_rede-américas_2026.pdf",
@@ -153,12 +169,28 @@
    "nota": "por extenso na prosa e em numeros no cronograma; concordam"
   },
   {
+   "arquivo": "medgrupo-santa-casa-campos.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/scmc-rj/edital01_scmc-rj_2026.pdf",
+   "titulo": "[MedGrupo] SANTA CASA DE MISERICÓRDIA DE CAMPOS",
+   "encerramento": "2026-01-23",
+   "nota": "ARMADILHA DE TABELA: 'isencao da taxa de inscricao 29/12/2025 a 05/01/2026 encerramento das inscricoes 23/01/2026' — o fim do intervalo de uma linha encosta no rotulo da linha seguinte"
+  },
+  {
    "arquivo": "medgrupo-ses-rj.txt.gz",
    "fonte": "medgrupo",
    "link": "https://static.medgrupo.com.br/static/concursos/editais/sesrj/2026/edital03_ses-rj_2026.pdf",
    "titulo": "[MedGrupo] INSTITUTO ESTADUAL DE DIABETES E ENDOCRINOLOGIA LUIZ CAPRIGLIONE",
    "encerramento": "2025-09-29",
    "nota": "cronograma do anexo IV; o inicio ('29/08') vem sem ano"
+  },
+  {
+   "arquivo": "medgrupo-unimed-costa-do-sol.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/unimed-macae/2026/edital01_unimed-macaé_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL UNIMED - COSTA DO SOL",
+   "encerramento": "2026-01-23",
+   "nota": "LACUNA CONHECIDA: a ancora vem DEPOIS do intervalo ('no periodo de 24/11/2025 a 23/01/2026, as inscricoes'), formato que a extracao de cronograma ainda nao cobre"
   },
   {
    "arquivo": "riosaude-edital-003-2026-gazolla.txt.gz",

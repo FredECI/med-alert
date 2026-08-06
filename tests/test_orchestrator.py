@@ -14,7 +14,11 @@ import os
 import pytest
 
 from medalert.notify import DeliveryResult
-from medalert.orchestrator import MAX_NEW_NOTIFICATIONS_PER_RUN, run
+from medalert.orchestrator import (
+    MAX_ENRICHMENTS_PER_RUN,
+    MAX_NEW_NOTIFICATIONS_PER_RUN,
+    run,
+)
 from medalert.scrapers.base import BaseScraper
 from medalert.storage import DatabaseManager
 from medalert.subscribers import Subscriber
@@ -50,6 +54,17 @@ def _lista_de_assinantes(monkeypatch):
     proteger produção, mas mascararia todos os testes de notificação.
     """
     monkeypatch.setattr("medalert.orchestrator.fetch_subscribers", lambda: [_assinante()])
+
+
+@pytest.fixture(autouse=True)
+def _sem_leitura_de_edital(monkeypatch):
+    """Nenhum teste baixa PDF de verdade.
+
+    Sem isto a suíte tenta resolver os links de exemplo na rede: fica lenta,
+    fica dependente de conectividade e passa a medir o mundo em vez de medir o
+    código. Os testes que exercitam o prazo trocam este stub pelo seu próprio.
+    """
+    monkeypatch.setattr("medalert.orchestrator.read_deadline", lambda url, session: None)
 
 
 @pytest.fixture(autouse=True)
@@ -598,6 +613,133 @@ def test_known_job_gets_its_status_refreshed_when_the_source_closes_it(db):
 
     vaga = next(j for j in db.fetch_all_jobs() if j.link.endswith("/fechada"))
     assert vaga.status == "encerrado"
+
+
+class _EditalScraper(BaseScraper):
+    """Fonte cuja vaga aponta para o PDF de um edital."""
+    url = "https://example.com/fonte"
+
+    def __init__(self, link="https://example.com/edital01.pdf"):
+        super().__init__()
+        self._link = link
+
+    def scrape(self):
+        return [{"title": "[T] Processo seletivo", "link": self._link, "pub_date": _today()}]
+
+
+def _lendo(prazo, registro=None):
+    """Substitui a leitura do edital por um prazo fixo, anotando as chamadas."""
+    def _stub(url, session):
+        if registro is not None:
+            registro.append(url)
+        return prazo
+    return _stub
+
+
+def test_deadline_read_from_the_edital_is_persisted(db, monkeypatch):
+    monkeypatch.setattr("medalert.orchestrator.read_deadline", _lendo("2030-01-01"))
+
+    run(scrapers=[_EditalScraper()], db=db, notifier=_FakeNotifier())
+
+    vaga = next(j for j in db.fetch_all_jobs() if j.link.endswith(".pdf"))
+    assert vaga.deadline == "2030-01-01"
+    assert vaga.status == "aberto"
+    assert vaga.status_source == "cronograma"
+
+
+def test_a_job_whose_deadline_already_passed_does_not_alert(db, monkeypatch):
+    """O problema concreto que motivou tudo isto: o radar anunciava como
+    novidade edital cujas inscrições tinham fechado meses antes."""
+    monkeypatch.setattr("medalert.orchestrator.read_deadline", _lendo("2020-01-01"))
+    notifier = _FakeNotifier()
+
+    run(scrapers=[_EditalScraper()], db=db, notifier=notifier)
+
+    assert notifier.sent == []
+    vaga = next(j for j in db.fetch_all_jobs() if j.link.endswith(".pdf"))
+    assert vaga.status == "encerrado"
+
+
+def test_an_unreadable_edital_never_breaks_the_run(db, monkeypatch):
+    """Enriquecimento é bônus, não pré-requisito."""
+    def explode(url, session):
+        raise RuntimeError("PDF corrompido")
+
+    monkeypatch.setattr("medalert.orchestrator.read_deadline", explode)
+
+    assert run(scrapers=[_EditalScraper()], db=db, notifier=_FakeNotifier()) == 0
+    vaga = next(j for j in db.fetch_all_jobs() if j.link.endswith(".pdf"))
+    assert vaga.deadline is None
+    assert vaga.status == "desconhecido"
+
+
+def test_a_known_job_is_not_downloaded_again(db, monkeypatch):
+    """O prazo de uma vaga já registrada não muda, e rebaixar o mesmo PDF duas
+    vezes por dia gastaria o tempo da rodada à toa."""
+    chamadas = []
+    monkeypatch.setattr("medalert.orchestrator.read_deadline", _lendo("2030-01-01", chamadas))
+    scraper = _EditalScraper()
+
+    run(scrapers=[scraper], db=db, notifier=_FakeNotifier())
+    run(scrapers=[scraper], db=db, notifier=_FakeNotifier())
+
+    assert len(chamadas) == 1
+
+
+def test_a_status_declared_by_the_source_skips_the_download(db, monkeypatch):
+    """Se a fonte já afirmou que encerrou, baixar o PDF só confirmaria o que
+    ela disse — e a afirmação dela é mais confiável que a nossa leitura."""
+    chamadas = []
+    monkeypatch.setattr("medalert.orchestrator.read_deadline", _lendo("2030-01-01", chamadas))
+
+    run(scrapers=[_ClosedJobScraper()], db=db, notifier=_FakeNotifier())
+
+    assert chamadas == []
+
+
+def test_news_links_are_never_read_for_a_deadline(db, monkeypatch):
+    """Matéria sobre concurso cita data de edital anterior e previsão de
+    lançamento; ler ali produziria prazo errado com cara de certo."""
+    chamadas = []
+    monkeypatch.setattr("medalert.orchestrator.read_deadline", _lendo("2030-01-01", chamadas))
+    noticia = _EditalScraper(link="https://portal.example/materia.pdf")
+    noticia.job_type = "noticia"
+
+    run(scrapers=[noticia], db=db, notifier=_FakeNotifier())
+
+    assert chamadas == []
+
+
+def test_non_pdf_links_are_not_read(db, monkeypatch):
+    """A extração foi medida contra PDFs de edital. Ligá-la em página HTML
+    sem ter medido estenderia a promessa de erro zero a terreno não testado."""
+    chamadas = []
+    monkeypatch.setattr("medalert.orchestrator.read_deadline", _lendo("2030-01-01", chamadas))
+
+    run(scrapers=[_EditalScraper(link="https://example.com/vaga")], db=db, notifier=_FakeNotifier())
+
+    assert chamadas == []
+
+
+def test_reading_editais_is_capped_per_run(db, monkeypatch):
+    """Ao ligar uma fonte nova entram dezenas de vagas de uma vez; baixar
+    todas na mesma rodada estouraria o timeout do workflow."""
+    chamadas = []
+    monkeypatch.setattr("medalert.orchestrator.read_deadline", _lendo(None, chamadas))
+
+    class _MuitosEditais(BaseScraper):
+        url = "https://example.com/muitos"
+
+        def scrape(self):
+            return [
+                {"title": f"[T] Edital {i}", "link": f"https://example.com/e{i}.pdf",
+                 "pub_date": _today()}
+                for i in range(MAX_ENRICHMENTS_PER_RUN + 12)
+            ]
+
+    run(scrapers=[_MuitosEditais()], db=db, notifier=_FakeNotifier())
+
+    assert len(chamadas) == MAX_ENRICHMENTS_PER_RUN
 
 
 def test_run_refreshes_last_seen_shown_on_the_site_for_known_jobs(db):

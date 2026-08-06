@@ -240,3 +240,15 @@ def status_label(status: Optional[str]) -> str:
 def can_suppress_alert(status: Optional[str], status_source: Optional[str]) -> bool:
     """Se dá para deixar de avisar sobre esta vaga por ela estar encerrada."""
     return status == ENCERRADO and status_source in TRUSTED_STATUS_SOURCES
+
+
+def status_from_deadline(deadline: Optional[str], today: str) -> str:
+    """Situação deduzida do prazo lido no edital.
+
+    A comparação é estrita: no próprio dia do encerramento a vaga ainda conta
+    como aberta. O edital costuma dar até as 23h59 daquele dia, e antecipar o
+    fechamento em 24 horas tiraria do radar justamente quem corre no último dia.
+    """
+    if not deadline:
+        return DESCONHECIDO
+    return ENCERRADO if deadline < today else ABERTO

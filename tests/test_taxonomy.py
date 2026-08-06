@@ -21,6 +21,7 @@ from medalert.taxonomy import (
     can_suppress_alert,
     classify_job_type,
     classify_region,
+    status_from_deadline,
     status_label,
 )
 
@@ -91,6 +92,20 @@ def test_an_open_or_unknown_job_is_never_silenced():
     assert can_suppress_alert(ABERTO, FONTE) is False
     assert can_suppress_alert(DESCONHECIDO, FONTE) is False
     assert can_suppress_alert(None, None) is False
+
+
+def test_the_deadline_day_itself_still_counts_as_open():
+    """O edital costuma dar até as 23h59 do dia do encerramento. Fechar 24h
+    antes tiraria do radar justamente quem corre no último dia."""
+    assert status_from_deadline("2026-08-06", today="2026-08-06") == ABERTO
+
+
+def test_a_deadline_in_the_past_closes_the_job():
+    assert status_from_deadline("2026-05-20", today="2026-08-06") == ENCERRADO
+
+
+def test_no_deadline_means_unknown():
+    assert status_from_deadline(None, today="2026-08-06") == DESCONHECIDO
 
 
 def test_unclassified_status_reads_as_unknown_not_as_open():

@@ -3,6 +3,7 @@ import logging
 from typing import Dict, List, Optional
 
 from medalert.config import TARGET_CITIES, load_admin_chat_id, load_telegram_bot_token
+from medalert.enrich import read_deadline
 from medalert.messages import (
     build_failure_alert,
     build_job_message,
@@ -38,11 +39,15 @@ from medalert.scrapers.pci import build_pci_scrapers
 from medalert.scrapers.portals import JCConcursosScraper, PandaPeUnimedScraper, TrabalhaBrasilScraper
 from medalert.storage import DatabaseManager
 from medalert.taxonomy import (
+    CRONOGRAMA,
     ESTADUAL_NACIONAL,
+    NOTICIA,
     can_suppress_alert,
     classify_job_type,
     classify_region,
+    status_from_deadline,
 )
+from medalert.timeutil import today_str
 
 logging.basicConfig(
     level=logging.INFO,
@@ -99,6 +104,46 @@ def build_scrapers() -> List[BaseScraper]:
 #: poucos nas rodadas seguintes, pela mesma fila que cobre falha transitória.
 #: Nada se perde: no site as vagas aparecem todas de imediato.
 MAX_NEW_NOTIFICATIONS_PER_RUN = 15
+
+
+#: Teto de editais lidos por execução.
+#:
+#: Ler um edital custa um download de algumas centenas de KB mais o parsing do
+#: PDF. Num dia normal aparecem poucas vagas novas e o teto nunca é atingido;
+#: ele existe para o caso de acúmulo — ao ligar uma fonte nova entram dezenas
+#: de vagas de uma vez, e baixar todas na mesma rodada estouraria o
+#: `timeout-minutes` do workflow. O excedente é lido nas rodadas seguintes.
+MAX_ENRICHMENTS_PER_RUN = 25
+
+
+def _vale_ler_o_edital(job: Dict, job_type: str) -> bool:
+    """Se compensa baixar o documento desta vaga para procurar o prazo.
+
+    Dois recortes, ambos por precisão e não por economia:
+
+    * Só PDF. É o que a extração de prazo foi medida contra (ver
+      tests/fixtures/prazos.json); ligá-la em páginas HTML sem ter medido
+      seria estender a promessa de "erro zero" para terreno não testado.
+    * Notícia nunca. Uma matéria sobre concurso costuma citar datas de
+      editais anteriores ou previsões, e ler ali produziria prazo errado com
+      aparência de certo — além de poder marcar como "encerrada" justamente a
+      pista antecipada que dá valor ao radar.
+    """
+    return job["link"].lower().endswith(".pdf") and job_type != NOTICIA
+
+
+def _read_deadline(job: Dict, scraper: BaseScraper) -> Optional[str]:
+    """Prazo lido do edital da vaga, ou None.
+
+    Isolado num try porque enriquecimento é bônus, não pré-requisito: PDF
+    corrompido, site fora do ar ou layout novo não podem impedir a vaga de
+    entrar no banco e aparecer no site.
+    """
+    try:
+        return read_deadline(job["link"], scraper.scraper)
+    except Exception as e:
+        logging.info(f"📄 Falha ao ler o edital de {job['link']}: {e}")
+        return None
 
 
 def _resolve_region(title: str, scraper_region: Optional[str]) -> str:
@@ -239,6 +284,12 @@ def run(
     if bootstrap:
         logging.info("🌱 Banco vazio: rodada de bootstrap — vagas serão salvas SEM notificar.")
 
+    # Só vale ler o edital de vaga que ainda não conhecemos: o prazo de uma
+    # vaga já registrada não muda (e, se mudar por retificação, o link do PDF
+    # muda junto e ela entra como nova).
+    conhecidos = set(db.fetch_all_links())
+    enriquecimentos = 0
+
     _backfill_legacy_deliveries(db, chat_ids)
     messages_sent = 0 if subscribers_unknown else _deliver_pending(db, notifier, subscribers, blocked)
 
@@ -248,11 +299,29 @@ def run(
             jobs = scraper.scrape()
 
             for job in jobs:
+                job_kind = classify_job_type(job["title"], scraper.job_type)
+
+                # A fonte manda: quando ela própria declara a situação (o
+                # MedGrupo marca "encerradas"), não há por que baixar o PDF
+                # para confirmar o que já foi afirmado.
+                if (
+                    not job.get("status_source")
+                    and job["link"] not in conhecidos
+                    and enriquecimentos < MAX_ENRICHMENTS_PER_RUN
+                    and _vale_ler_o_edital(job, job_kind)
+                ):
+                    enriquecimentos += 1
+                    prazo = _read_deadline(job, scraper)
+                    if prazo:
+                        job["deadline"] = prazo
+                        job["status"] = status_from_deadline(prazo, today_str())
+                        job["status_source"] = CRONOGRAMA
+
                 is_new = db.insert_job(
                     title=job["title"],
                     link=job["link"],
                     pub_date=job["pub_date"],
-                    job_type=classify_job_type(job["title"], scraper.job_type),
+                    job_type=job_kind,
                     region=_resolve_region(job["title"], scraper.region),
                     source_url=job.get("source_url"),
                     status=job.get("status"),
@@ -289,7 +358,6 @@ def run(
                         continue
 
                     job_region = _resolve_region(job["title"], scraper.region)
-                    job_kind = classify_job_type(job["title"], scraper.job_type)
                     message = build_job_message_from_parts(
                         title=job["title"],
                         discovered_at=job["pub_date"],

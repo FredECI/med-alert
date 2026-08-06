@@ -9,3 +9,8 @@ venv/
 node_modules/
 worker/.wrangler/
 .dev.vars
+
+# Cache local do texto dos editais. Fica FORA do repositório de propósito:
+# 80 editais de ~55 mil caracteres inflariam o histórico para sempre, e o
+# conteúdo é reconstruível a partir dos links.
+.cache/
