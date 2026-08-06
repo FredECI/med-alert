@@ -145,12 +145,52 @@
    "nota": "'das 08h00 do dia 15/09/2025 ate as 17h00 do dia 10/10/2025'"
   },
   {
+   "arquivo": "medgrupo-hupe.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br//static/concursos/editais/uerj/2026/edital01_uerj_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL UNIVERSITÁRIO PEDRO ERNESTO",
+   "encerramento": "2025-10-02",
+   "nota": "mesmo cabecalho de coluna do Oncoclinicas"
+  },
+  {
+   "arquivo": "medgrupo-idor.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/idor/2026/edital01_retificado-07_idor_2026.pdf",
+   "titulo": "[MedGrupo] INSTITUTO DOR DE PESQUISA E ENSINO",
+   "encerramento": "2025-12-08",
+   "nota": "cronograma tabular; o inicio ('15/10') vem sem ano"
+  },
+  {
+   "arquivo": "medgrupo-ims.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br//static/concursos/editais/ims/2026/edital01_ims_2026.pdf",
+   "titulo": "[MedGrupo] INSTITUTO IMS",
+   "encerramento": "2025-11-21",
+   "nota": "COLUNAS INICIO|FIM sem conectivo: 'periodo de inscricoes (exclusivamente online) 14/10/2025 21/11/2025'"
+  },
+  {
    "arquivo": "medgrupo-marcilio-dias.txt.gz",
    "fonte": "medgrupo",
    "link": "https://static.medgrupo.com.br//static/concursos/editais/hnmd/2026/edital-retificado02_hnmd_2026.pdf",
    "titulo": "[MedGrupo] HOSPITAL NAVAL MARCÍLIO DIAS",
    "encerramento": "2025-08-15",
    "nota": "ARMADILHA: a data do D.O.U. (30/07/2025) aparece a poucas palavras de 'inscricoes'"
+  },
+  {
+   "arquivo": "medgrupo-nsa-conceicao.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/hnsc-rj/2026/edital01_hnsc-rj_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL DE CLÍNICAS NOSSA SENHORA DA CONCEIÇÃO",
+   "encerramento": "2025-10-24",
+   "nota": "INTERVALO ANTES DA ANCORA: 'no periodo de 09/09 a 24/10/2025, estarao abertas as inscricoes'"
+  },
+  {
+   "arquivo": "medgrupo-oncoclinicas.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/ioc/2026/edital01_ioc_2026.pdf",
+   "titulo": "[MedGrupo] INSTITUTO ONCOCLÍNICAS",
+   "encerramento": "2025-11-06",
+   "nota": "ARMADILHA DE VETO: 'taxa' aqui e cabecalho de coluna ('periodo / local / horario / taxa de inscricao 08/10 a 06/11/2025'), nao prazo de pagamento"
   },
   {
    "arquivo": "medgrupo-pasteur.txt.gz",
@@ -177,6 +217,22 @@
    "nota": "ARMADILHA DE TABELA: 'isencao da taxa de inscricao 29/12/2025 a 05/01/2026 encerramento das inscricoes 23/01/2026' — o fim do intervalo de uma linha encosta no rotulo da linha seguinte"
   },
   {
+   "arquivo": "medgrupo-santa-helena.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/hsh-rj/2026/edital01_hsh-rj_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL SANTA HELENA",
+   "encerramento": "2026-01-23",
+   "nota": "ANCORA RUIM VENCIA POR POSICAO: 'a taxa de inscricao sera devolvida' casava antes de 'as inscricoes serao efetuadas de 12 a 23 de janeiro de 2026' e a engolia"
+  },
+  {
+   "arquivo": "medgrupo-sao-jose-do-avai.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/hsja/2026/edital01_hsja_2026.pdf",
+   "titulo": "[MedGrupo] HOSPITAL SÃO JOSÉ DO AVAÍ",
+   "encerramento": "2025-11-28",
+   "nota": "mesma redacao do Santa Helena, com datas numericas"
+  },
+  {
    "arquivo": "medgrupo-ses-rj.txt.gz",
    "fonte": "medgrupo",
    "link": "https://static.medgrupo.com.br/static/concursos/editais/sesrj/2026/edital03_ses-rj_2026.pdf",
@@ -185,12 +241,20 @@
    "nota": "cronograma do anexo IV; o inicio ('29/08') vem sem ano"
   },
   {
+   "arquivo": "medgrupo-tep-pediatria.txt.gz",
+   "fonte": "medgrupo",
+   "link": "https://static.medgrupo.com.br/static/concursos/editais/tep/2026/edital01_tep_2026.pdf",
+   "titulo": "[MedGrupo] TÍTULO DE ESPECIALISTA EM PEDIATRIA",
+   "encerramento": null,
+   "nota": "DEVE ABSTER: a mesma redacao ('ate as 17 horas ... do dia X') aparece tres vezes — inscricao (24/04), entrega de documento (12/06) e atendimento de exigencia (18/06). Sem distinguir qual e qual, a regra da maior data escolheria a errada"
+  },
+  {
    "arquivo": "medgrupo-unimed-costa-do-sol.txt.gz",
    "fonte": "medgrupo",
    "link": "https://static.medgrupo.com.br/static/concursos/editais/unimed-macae/2026/edital01_unimed-macaé_2026.pdf",
    "titulo": "[MedGrupo] HOSPITAL UNIMED - COSTA DO SOL",
    "encerramento": "2026-01-23",
-   "nota": "LACUNA CONHECIDA: a ancora vem DEPOIS do intervalo ('no periodo de 24/11/2025 a 23/01/2026, as inscricoes'), formato que a extracao de cronograma ainda nao cobre"
+   "nota": "INTERVALO ANTES DA ANCORA: 'no periodo de 24/11/2025 a 23/01/2026, as inscricoes' — o periodo antecede o que ele delimita"
   },
   {
    "arquivo": "riosaude-edital-003-2026-gazolla.txt.gz",

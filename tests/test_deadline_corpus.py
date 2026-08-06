@@ -37,17 +37,26 @@ def test_corpus_covers_more_than_one_source(corpus):
 
 
 def test_corpus_includes_cases_where_abstaining_is_the_right_answer(corpus):
-    """Sem eles o conjunto premiaria um extrator que sempre chuta alguma coisa.
-
-    Sobrou só uma causa de abstenção — o PDF escaneado, onde não há o que ler.
-    As demais (documento que se contradiz, retificação com o tachado perdido
-    na extração) passaram a ter resposta pela regra do conflito.
-    """
+    """Sem eles o conjunto premiaria um extrator que sempre chuta alguma coisa."""
     devem_abster = [e for e in corpus if e.encerramento is None]
 
-    assert len(devem_abster) >= 2
+    assert len(devem_abster) >= 3
     assert all(e.nota for e in devem_abster), "todo caso de abstenção precisa dizer por quê"
-    assert all("ESCANEADO" in e.nota.upper() for e in devem_abster)
+
+
+def test_abstention_has_two_distinct_causes(corpus):
+    """Uma é não ter o que ler; a outra é ter demais.
+
+    O PDF escaneado não devolve caractere nenhum. Já o edital do Título de
+    Especialista em Pediatria usa a MESMA redação três vezes — para a
+    inscrição, para entregar documento e para atender exigência —, e sem
+    distinguir qual é qual a regra da maior data escolheria a errada. Juntar
+    as duas causas esconderia qual delas ainda não foi tratada.
+    """
+    notas = " ".join(e.nota.upper() for e in corpus if e.encerramento is None)
+
+    assert "ESCANEADO" in notas
+    assert "TRES VEZES" in notas
 
 
 def test_conflicting_dates_are_resolved_by_the_latest_one(corpus):

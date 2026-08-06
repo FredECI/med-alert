@@ -82,6 +82,27 @@ _ROTULO_DEPOIS = re.compile(
     rf"(?:termino|encerramento|fim|ultimo dia)\s+d(?:as|e)\s+{_ANCORA}"
 )
 
+#: Intervalo ANTES da âncora: "estarão abertas, no período de 24/11/2025 a
+#: 23/01/2026, as inscrições para o processo seletivo". A abertura do edital
+#: costuma ser escrita assim, com o período antes do que ele delimita — e é
+#: uma frase inteira, não uma linha de tabela, então a âncora tem de vir logo
+#: em seguida para não capturar o período de outra coisa.
+#: O início pode vir sem ano ("no período de 09/09 a 24/10/2025"), como em
+#: qualquer intervalo dentro do mesmo ano — por isso ele é opcional na
+#: verificação de coerência abaixo, e não na captura.
+_INTERVALO_ANTES_DA_ANCORA = re.compile(
+    rf"(?:no periodo de|entre os dias|no periodo)\s*({_DATA}|\d{{1,2}}/\d{{1,2}})"
+    rf"\s*{_ATE}\s*({_DATA})(.{{0,70}}?{_ANCORA})"
+)
+
+#: Tabela com colunas início|fim e nenhum conectivo entre elas: "período de
+#: inscrições (exclusivamente online) 14/10/2025 21/11/2025". A âncora é
+#: exigida por extenso ("período de inscrição") de propósito — duas datas
+#: adjacentes são um padrão fraco, e só uma âncora forte o torna confiável.
+_COLUNAS_INICIO_FIM = re.compile(
+    rf"periodo\s+d[eao]s?\s+{_ANCORA}[^.]{{0,60}}?({_DATA_NUM})\s+({_DATA_NUM})"
+)
+
 #: Cronograma tabular sem separador de linha: o fim do intervalo de uma linha
 #: encosta no rótulo da linha seguinte. Foi o que aconteceu na Santa Casa de
 #: Campos — "isenção da taxa de inscrição 29/12/2025 a 05/01/2026 encerramento
@@ -89,16 +110,32 @@ _ROTULO_DEPOIS = re.compile(
 #: inscrições. Uma data precedida de "<data> a" pertence à linha de cima.
 _CAUDA_DE_INTERVALO = re.compile(rf"{_DATA_NUM}\s*{_ATE}\s*$")
 
+#: Toda ocorrência de "inscrição" é uma âncora candidata, e cada uma é testada
+#: por conta própria — ver _candidatas(). Antes os padrões embutiam a âncora e
+#: eram varridos com finditer, que não sobrepõe: no Hospital Santa Helena, a
+#: âncora ruim ("a taxa de inscrição será devolvida") casava primeiro, consumia
+#: o trecho e impedia a boa ("as inscrições serão efetuadas de 12 a 23 de
+#: janeiro de 2026") de ser sequer avaliada. A pior âncora vencia por posição.
+_ANCORA_RE = re.compile(_ANCORA)
+
 #: Rótulo antes de um intervalo: a data que interessa é a SEGUNDA.
 #: A distância entre âncora e intervalo chega a ~120 caracteres num dos
 #: editais (o do IEDE intercala o endereço do site), daí a folga.
 _INTERVALO_APOS_ANCORA = re.compile(
-    rf"{_ANCORA}(.{{0,130}}?)({_DATA}|\d{{1,2}}/\d{{1,2}}|\d{{1,2}})\s*{_ATE}\s*({_DATA})"
+    rf"(.{{0,130}}?)({_DATA}|\d{{1,2}}/\d{{1,2}}|\d{{1,2}})\s*{_ATE}\s*({_DATA})"
 )
 
 #: Rótulo antes, com hora e um único fim ("até as 17h00 do dia 10/10/2025").
+#:
+#: Deliberadamente estreito quanto ao que cabe entre a hora e a data. Já foi
+#: afrouxado para aceitar "às 17 horas (horário de Brasília) do dia X" e o
+#: resultado foi pior: no edital do Título de Especialista em Pediatria, a
+#: mesma redação aparece três vezes — uma para a inscrição (24/04) e duas para
+#: entregar documento e atender exigência (12/06 e 18/06). Como "ambiente de
+#: inscrição" contém a âncora, as três viravam candidata, e a regra da maior
+#: data escolhia a errada. Abster ali é o comportamento certo.
 _ATE_O_DIA_APOS_ANCORA = re.compile(
-    rf"{_ANCORA}(.{{0,160}}?)ate\s+as?\s+[\dh:.]{{2,8}}\s*(?:\([^)]{{0,40}}\))?\s*"
+    rf"(.{{0,160}}?)ate\s+as?\s+[\dh:.]{{2,8}}\s*(?:\([^)]{{0,40}}\))?\s*"
     rf"(?:h(?:oras)?\s*)?(?:d[oe]\s+dia\s+|de\s+)({_DATA})"
 )
 
@@ -109,8 +146,13 @@ _ATE_O_DIA_APOS_ANCORA = re.compile(
 #: Todos vieram de erro real observado no conjunto de referência: o boleto do
 #: primeiro dia útil APÓS o encerramento, o prazo de RQE do candidato, a data
 #: de publicação no Diário Oficial.
+#: "taxa" NÃO está na lista, embora pareça natural. Em vários editais ela é
+#: cabeçalho de coluna — "3. período / local / horário / taxa de inscrição
+#: 08/10 a 06/11/2025" —, e vetá-la descartava o período verdadeiro. O prazo
+#: de pagamento, que é o que se queria evitar, já é pego por "pagamento",
+#: "boleto" e "bancari".
 _VETOS = (
-    "pagamento", "boleto", "bancari", "taxa", "isencao",
+    "pagamento", "boleto", "bancari", "isencao",
     "prova", "resultado", "recurso", "matricula", "homologa", "impugnacao",
     "d.o.u", "diario oficial", "publicacao", "publicado",
     "rqe", "resolucao", "portaria", "decreto", "nascimento",
@@ -118,19 +160,22 @@ _VETOS = (
 
 
 def _para_iso(texto_data: str) -> Optional[str]:
-    texto_data = texto_data.strip()
-    if "/" in texto_data:
-        dia, mes, ano = texto_data.split("/")
-    else:
-        dia, _, mes_nome, _, ano = texto_data.split(" ", 4)
-        mes = _MESES.get(mes_nome.strip())
-        if not mes:
-            return None
+    """Data em AAAA-MM-DD, ou None quando não dá para ler.
+
+    Nunca levanta. Recebe pedaço de texto de PDF, que inclui data incompleta
+    ("09/09", sem ano), data impossível (31/02) e erro de digitação do próprio
+    edital — e uma exceção aqui desligaria a extração do documento inteiro em
+    silêncio, deixando a vaga sem prazo sem ninguém saber por quê.
+    """
     try:
+        texto_data = texto_data.strip()
+        if "/" in texto_data:
+            dia, mes, ano = texto_data.split("/")
+        else:
+            dia, _, mes_nome, _, ano = texto_data.split(" ", 4)
+            mes = _MESES.get(mes_nome.strip())
         return date(int(ano), int(mes), int(dia)).isoformat()
-    except ValueError:
-        # Data impossível (31/02, ano absurdo). Descartar é melhor do que
-        # deixar uma exceção derrubar a rodada por causa de um erro de digitação.
+    except (ValueError, TypeError):
         return None
 
 
@@ -145,15 +190,21 @@ _JANELA_ANTES = 120
 def _inicio_da_janela(texto: str, ancora: int, fins_de_data: List[int]) -> int:
     """Onde começa o contexto que decide se a candidata vale.
 
-    Vai da âncora para trás até a data anterior — que num cronograma é o fim
-    da linha de cima. Sem esse corte, o veto leria o evento anterior e
-    descartaria uma data boa; sem olhar para trás nenhum, "interposição de
-    recursos sobre a homologação das inscrições 17 e 18/01/2026" passaria como
-    prazo de inscrição, que foi o erro real que motivou este código.
+    Vai da âncora para trás e para no primeiro dos três: a data anterior (num
+    cronograma, o fim da linha de cima), o começo da frase, ou 120 caracteres.
+
+    Os dois primeiros cortes existem por erros opostos. Sem olhar para trás
+    nenhum, "interposição de recursos sobre a homologação das inscrições 17 e
+    18/01/2026" passaria como prazo. Olhando longe demais, "em nenhuma
+    hipótese a taxa de inscrição será devolvida. 3.7. das inscrições ... de 12
+    a 23 de janeiro de 2026" seria vetada por uma frase que já terminou.
     """
     piso = max(0, ancora - _JANELA_ANTES)
     anteriores = [fim for fim in fins_de_data if fim <= ancora]
-    return max(piso, anteriores[-1]) if anteriores else piso
+    if anteriores:
+        piso = max(piso, anteriores[-1])
+    fim_de_frase = texto.rfind(". ", piso, ancora)
+    return max(piso, fim_de_frase + 2) if fim_de_frase != -1 else piso
 
 
 def _candidatas(texto: str) -> List[Tuple[str, str]]:
@@ -167,9 +218,28 @@ def _candidatas(texto: str) -> List[Tuple[str, str]]:
         # Rótulo colado na data: a própria expressão já diz do que se trata.
         achadas.append((m.group(1), ""))
 
-    for padrao in (_INTERVALO_APOS_ANCORA, _ATE_O_DIA_APOS_ANCORA):
-        for m in padrao.finditer(texto):
-            inicio = _inicio_da_janela(texto, m.start(), fins_de_data)
+    for m in _COLUNAS_INICIO_FIM.finditer(texto):
+        inicio, fim = _para_iso(m.group(1)), _para_iso(m.group(2))
+        if fim and inicio and fim >= inicio:
+            achadas.append((m.group(2), m.group(0)))
+
+    for m in _INTERVALO_ANTES_DA_ANCORA.finditer(texto):
+        # Coerência de graça: um período que "termina" antes de começar é
+        # leitura errada, não período curto. Só dá para conferir quando o
+        # início traz o ano; sem ele, não há o que comparar.
+        inicio, fim = _para_iso(m.group(1)), _para_iso(m.group(2))
+        if fim and (inicio is None or fim >= inicio):
+            achadas.append((m.group(2), m.group(3)))
+
+    # Cada âncora é testada isoladamente, e não por uma varredura que embute a
+    # âncora no padrão: finditer não sobrepõe, então a primeira âncora a casar
+    # engoliria as seguintes — inclusive a que traria a resposta certa.
+    for ancora in _ANCORA_RE.finditer(texto):
+        for padrao in (_INTERVALO_APOS_ANCORA, _ATE_O_DIA_APOS_ANCORA):
+            m = padrao.match(texto, ancora.end())
+            if not m:
+                continue
+            inicio = _inicio_da_janela(texto, ancora.start(), fins_de_data)
             achadas.append((m.groups()[-1], texto[inicio:m.end()]))
 
     resultado = []
@@ -189,7 +259,10 @@ def _retificacoes(texto: str, aceitas: List[str]) -> List[str]:
     """
     extras = []
     for iso in set(aceitas):
-        dia, mes, ano = iso.split("-")[::-1]
+        partes = iso.split("-")
+        if len(partes) != 3:
+            continue
+        ano, mes, dia = partes
         for formato in (f"{dia}/{mes}/{ano}", f"{int(dia)}/{int(mes)}/{ano}"):
             for m in re.finditer(re.escape(formato) + rf"\s{{1,3}}({_DATA_NUM})", texto):
                 seguinte = _para_iso(m.group(1))

@@ -289,6 +289,7 @@ def run(
     # muda junto e ela entra como nova).
     conhecidos = set(db.fetch_all_links())
     enriquecimentos = 0
+    sem_prazo: List[str] = []  # editais lidos em que o prazo não foi identificado
 
     _backfill_legacy_deliveries(db, chat_ids)
     messages_sent = 0 if subscribers_unknown else _deliver_pending(db, notifier, subscribers, blocked)
@@ -316,6 +317,12 @@ def run(
                         job["deadline"] = prazo
                         job["status"] = status_from_deadline(prazo, today_str())
                         job["status_source"] = CRONOGRAMA
+                    else:
+                        # Registrado um a um de propósito. É esta lista, no log
+                        # da execução, que diz quais redações o extrator ainda
+                        # não sabe ler — e é assim que os padrões novos saem de
+                        # casos reais em vez de saírem de suposição.
+                        sem_prazo.append(job["title"])
 
                 is_new = db.insert_job(
                     title=job["title"],
@@ -409,6 +416,15 @@ def run(
             continue
 
     logging.info(f"Execution finished. {new_jobs_count} new jobs added. {messages_sent} Telegram alerts sent.")
+
+    if sem_prazo:
+        # Esta lista é a fila de trabalho da extração de prazo: cada item é
+        # uma redação que o extrator encontrou no mundo real e não soube ler.
+        # Escrever padrão a partir daqui é diferente de escrever a partir de
+        # suposição sobre como um edital "costuma" ser.
+        logging.info(f"⏳ {len(sem_prazo)} edital(is) lido(s) sem prazo identificado:")
+        for titulo in sem_prazo:
+            logging.info(f"    · {titulo}")
 
     # Os artefatos são regenerados em TODA execução, de propósito.
     #
