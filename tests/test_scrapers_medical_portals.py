@@ -55,6 +55,34 @@ def test_medgrupo_skips_rows_without_an_edital_link(monkeypatch):
     assert len(jobs) == 2
 
 
+def test_medgrupo_reads_the_closed_status_declared_by_the_source(monkeypatch):
+    """A fonte declara quando o prazo acabou. Ler isso é o oposto de inferir:
+    não há palpite sobre qual das dezenas de datas do edital é o prazo — e é
+    por isso que esta é a única origem em que confiamos para calar um alerta."""
+    scraper = MedGrupoScraper()
+    _stub_post(monkeypatch, scraper, load_fixture("medgrupo.html"))
+
+    jobs = scraper.scrape()
+
+    afamci = next(j for j in jobs if "FLUMINENSE" in j["title"])
+    assert afamci["status"] == "encerrado"
+    assert afamci["status_source"] == "fonte"
+
+
+def test_medgrupo_does_not_read_open_from_the_absence_of_closed(monkeypatch):
+    """"ver editais" quer dizer "consulte o edital", não "está aberto".
+    Traduzir esse silêncio como abertura seria inventar uma informação que a
+    fonte não deu."""
+    scraper = MedGrupoScraper()
+    _stub_post(monkeypatch, scraper, load_fixture("medgrupo.html"))
+
+    jobs = scraper.scrape()
+
+    cepoa = next(j for j in jobs if "OCULISTAS" in j["title"])
+    assert cepoa["status"] == "desconhecido"
+    assert "status_source" not in cepoa
+
+
 def test_medgrupo_requests_rio_de_janeiro_and_a_year(monkeypatch):
     """O endpoint devolve 500 se `ano` vier nulo — o payload precisa manter
     tanto o filtro de estado quanto o ano."""

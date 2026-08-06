@@ -1,15 +1,23 @@
-<tr class="job-row{% if include.job.job_type == 'noticia' %} job-row--noticia{% endif %}"
+<tr class="job-row{% if include.job.job_type == 'noticia' %} job-row--noticia{% endif %}{% if include.job.status == 'encerrado' %} job-row--encerrada{% endif %}"
     data-region="{{ include.job.region }}"
-    data-type="{{ include.job.job_type }}">
+    data-type="{{ include.job.job_type }}"
+    data-status="{{ include.job.status }}">
   <td>{{ include.job.discovered_at }}</td>
   <td>
     <span class="badge badge--region">{{ include.job.region_label }}</span>
     <span class="badge badge--type badge--{{ include.job.job_type }}">{{ include.job.job_type_label }}</span>
     {% if include.job.source and include.job.source != "" %}<span class="badge badge--source">{{ include.job.source }}</span>{% endif %}
+    {%- comment -%}
+      Só marcamos o que a fonte afirmou. "desconhecido" não vira selo: um
+      rótulo de "prazo não informado" em quase toda linha viraria ruído e
+      ainda daria a impressão de que o robô sabe algo que ele não sabe.
+    {%- endcomment -%}
+    {% if include.job.status == 'encerrado' %}<span class="badge badge--encerrada">⏱ {{ include.job.status_label }}</span>{% endif %}
     <div class="job-title"><strong>{{ include.job.title }}</strong></div>
     {% if include.job.job_type == 'noticia' %}
       <small class="job-note">Notícia sobre um processo — não é uma vaga confirmada.</small><br>
     {% endif %}
+    {% if include.job.deadline %}<small class="job-deadline">Inscrições até {{ include.job.deadline }}</small><br>{% endif %}
     {% if include.job.last_seen_at %}<small>Visto pela última vez em {{ include.job.last_seen_at }}</small>{% endif %}
   </td>
   <td>

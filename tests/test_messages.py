@@ -82,6 +82,35 @@ def test_unknown_type_falls_back_to_a_generic_header():
     assert "Acessar" in msg
 
 
+def test_deadline_is_shown_in_brazilian_format():
+    msg = build_job_message(_job(deadline="2026-05-20", status_source="cronograma"))
+
+    assert "Inscrições até 20/05/2026" in msg
+
+
+def test_deadline_read_from_the_edital_body_carries_a_caveat():
+    """Prazo lido da redação corrida pode estar errado. Apresentá-lo como
+    certeza faria a pessoa desistir de uma vaga que talvez esteja aberta —
+    ela precisa saber que vale conferir na fonte."""
+    msg = build_job_message(_job(deadline="2026-05-20", status_source="texto"))
+
+    assert "Inscrições até 20/05/2026" in msg
+    assert "leitura automática" in msg
+
+
+def test_message_without_a_known_deadline_says_nothing_about_it():
+    """Silêncio é melhor que "prazo não informado" em toda mensagem."""
+    assert "Inscrições até" not in build_job_message(_job())
+
+
+def test_malformed_deadline_does_not_break_the_alert():
+    """O pior aceitável é a vaga chegar sem o prazo — nunca o alerta se perder."""
+    msg = build_job_message(_job(deadline="20/05/2026"))
+
+    assert "Concurso para médico" in msg
+    assert "Inscrições até" not in msg
+
+
 def test_failure_alert_lists_the_broken_scrapers():
     msg = build_failure_alert(3, ["PCIScraper: timeout", "G1Scraper: 500"])
 

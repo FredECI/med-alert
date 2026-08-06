@@ -15,9 +15,9 @@ from typing import List, Optional
 
 from medalert.models import Job
 from medalert.storage import DatabaseManager
-from medalert.taxonomy import job_type_label, region_label
+from medalert.taxonomy import DESCONHECIDO, job_type_label, region_label, status_label
 from medalert.textutils import infer_source_from_link, sanitize_title, split_source_and_title
-from medalert.timeutil import now_brt
+from medalert.timeutil import format_date_br, now_brt
 
 CSV_HEADER = ["Data de Captura", "Título do Processo Seletivo", "Link de Acesso"]
 
@@ -101,6 +101,11 @@ class ReportGenerator:
                 # Página onde a vaga vive, quando `link` é o PDF do edital.
                 # Costuma ter anexos e retificações que o PDF não traz.
                 "source_url": job.source_url,
+                # Situação das inscrições. `desconhecido` é o padrão honesto
+                # para tudo que nenhuma fonte declarou — ver taxonomy.py.
+                "status": job.status or DESCONHECIDO,
+                "status_label": status_label(job.status),
+                "deadline": format_date_br(job.deadline),
             })
 
         _write_json(filename, payload)

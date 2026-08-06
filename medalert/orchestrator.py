@@ -37,7 +37,12 @@ from medalert.scrapers.news import BingNewsScraper, G1Scraper, GoogleNewsScraper
 from medalert.scrapers.pci import build_pci_scrapers
 from medalert.scrapers.portals import JCConcursosScraper, PandaPeUnimedScraper, TrabalhaBrasilScraper
 from medalert.storage import DatabaseManager
-from medalert.taxonomy import ESTADUAL_NACIONAL, classify_job_type, classify_region
+from medalert.taxonomy import (
+    ESTADUAL_NACIONAL,
+    can_suppress_alert,
+    classify_job_type,
+    classify_region,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -159,6 +164,13 @@ def _deliver_pending(
 
         logging.info(f"↻ {len(pending)} pendência(s) para o chat {sub.chat_id}.")
         for job in pending:
+            # A vaga pode ter fechado enquanto esperava na fila. Resolvemos
+            # sem enviar: deixá-la pendente faria o robô reoferecer para
+            # sempre um prazo que já passou.
+            if can_suppress_alert(job.status, job.status_source):
+                db.record_delivery(job.link, sub.chat_id)
+                continue
+
             resultado = notifier.send_to(sub.chat_id, build_job_message(job))
             if resultado is DeliveryResult.BLOCKED:
                 blocked.append(sub.chat_id)
@@ -243,6 +255,9 @@ def run(
                     job_type=classify_job_type(job["title"], scraper.job_type),
                     region=_resolve_region(job["title"], scraper.region),
                     source_url=job.get("source_url"),
+                    status=job.get("status"),
+                    deadline=job.get("deadline"),
+                    status_source=job.get("status_source"),
                 )
 
                 if is_new:
@@ -252,6 +267,16 @@ def run(
                     if bootstrap or subscribers_unknown:
                         if bootstrap:
                             db.record_deliveries_for_all(job["link"], chat_ids)
+                        continue
+
+                    # Descoberta hoje, mas com as inscrições já encerradas
+                    # segundo a própria fonte. Anunciá-la como "nova
+                    # oportunidade" seria falso: o prazo acabou antes de a
+                    # gente saber que ela existia. Fica registrada para o site
+                    # e resolvida para não voltar pela fila de pendentes.
+                    if can_suppress_alert(job.get("status"), job.get("status_source")):
+                        logging.info(f"⏱ Inscrições já encerradas, alerta suprimido: {job['title']}")
+                        db.record_deliveries_for_all(job["link"], chat_ids)
                         continue
 
                     # O mesmo edital costuma aparecer em duas fontes (ex: IBAM
@@ -272,6 +297,8 @@ def run(
                         job_type=job_kind,
                         region=job_region,
                         source_url=job.get("source_url"),
+                        deadline=job.get("deadline"),
+                        status_source=job.get("status_source"),
                     )
 
                     for sub in subscribers:
@@ -295,8 +322,15 @@ def run(
                                 messages_sent += 1
                                 sent_per_chat[sub.chat_id] += 1
                 else:
-                    # Vaga já conhecida: registra que ela ainda está sendo encontrada.
-                    db.touch_last_seen(job["link"])
+                    # Vaga já conhecida: registra que ela ainda está sendo
+                    # encontrada e reavalia a situação das inscrições, que
+                    # muda com o tempo (ver DatabaseManager.touch_seen).
+                    db.touch_seen(
+                        job["link"],
+                        status=job.get("status"),
+                        deadline=job.get("deadline"),
+                        status_source=job.get("status_source"),
+                    )
 
         except Exception as e:
             # Se UM scraper explodir (ex: site fora do ar, erro 500), ele avisa no log mas continua para o próximo!
@@ -312,7 +346,7 @@ def run(
     #
     # Já houve uma tentativa de só regenerar quando `new_jobs_count > 0`, para
     # o guard de commit do workflow ("só commita se algo mudou") poder pular
-    # rodadas vazias. Isso não funciona: `touch_last_seen()` grava no banco
+    # rodadas vazias. Isso não funciona: `touch_seen()` grava no banco
     # sempre que uma vaga conhecida é reencontrada, então `med_alerts.db` muda
     # em toda rodada e o commit acontece de qualquer jeito. O efeito líquido
     # era só deixar o site desatualizado — o "visto pela última vez em X"

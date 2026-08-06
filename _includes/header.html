@@ -56,6 +56,22 @@
     </div>
   </div>
 
+  {%- comment -%}
+    Este não é um chip das outras dimensões: região e tipo são conjuntos onde
+    marcar duas opções mostra as duas, enquanto aqui existe uma única ação —
+    esconder o que a fonte já disse estar encerrado. Por isso ele exclui em
+    vez de incluir, e por isso não é gerado pelo laço acima.
+  {%- endcomment -%}
+  <div class="filters__group">
+    <span class="filters__label" id="label-situacao">Situação</span>
+    <div role="group" aria-labelledby="label-situacao">
+      <button type="button" class="chip" id="hide-closed" aria-pressed="false">
+        Esconder inscrições encerradas
+        <span class="chip__count">{{ site.data.jobs | where: "status", "encerrado" | size }}</span>
+      </button>
+    </div>
+  </div>
+
   <p><button type="button" id="clear-filters" class="chip" hidden>✕ Limpar filtros</button></p>
 </div>
 

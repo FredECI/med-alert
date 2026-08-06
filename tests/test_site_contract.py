@@ -33,7 +33,7 @@ def header() -> str:
 
 
 def test_row_exposes_the_attributes_the_filter_reads(job_row, search_js):
-    for atributo in ("data-region", "data-type"):
+    for atributo in ("data-region", "data-type", "data-status"):
         assert atributo in job_row, f"o template precisa emitir {atributo}"
         assert atributo in search_js, f"o filtro precisa ler {atributo}"
 
@@ -48,8 +48,26 @@ def test_chips_declare_the_same_dimensions_the_filter_knows(header, search_js):
 
 def test_row_uses_the_fields_report_publishes(job_row):
     """Campos gerados por ReportGenerator.generate_jobs_data()."""
-    for campo in ("region_label", "job_type_label", "source_url", "last_seen_at", "link"):
+    for campo in ("region_label", "job_type_label", "source_url", "last_seen_at", "link",
+                  "status", "status_label", "deadline"):
         assert f"include.job.{campo}" in job_row, f"{campo} não está sendo usado no template"
+
+
+def test_only_a_closed_job_is_visually_marked(job_row):
+    """"desconhecido" não vira selo: um "prazo não informado" em quase toda
+    linha seria ruído, e ainda passaria a impressão de que o robô sabe algo
+    sobre o prazo que ele não sabe."""
+    assert "job-row--encerrada" in job_row
+    assert "'encerrado'" in job_row
+
+
+def test_hiding_closed_jobs_is_opt_in_and_never_touches_the_unknown(header, search_js):
+    """Só se esconde o que a fonte afirmou estar encerrado. Sumir com uma vaga
+    de prazo desconhecido — possivelmente aberta — seria o pior erro que este
+    filtro poderia cometer."""
+    assert 'id="hide-closed"' in header
+    assert "state.hideClosed" in search_js
+    assert '"encerrado"' in search_js
 
 
 def test_news_rows_are_visually_marked(job_row):

@@ -1,17 +1,27 @@
-"""Testes da classificação por região e tipo — as duas dimensões de filtro."""
+"""Testes da classificação por região e tipo — as duas dimensões de filtro —
+e da situação das inscrições, que decide o que o robô pode deixar de enviar.
+"""
 from medalert.taxonomy import (
+    ABERTO,
     CAPITAL_METROPOLITANA,
     CONCURSO,
+    CRONOGRAMA,
+    DESCONHECIDO,
     EMPREGO,
+    ENCERRADO,
     ESTADUAL_NACIONAL,
+    FONTE,
     NORTE_FLUMINENSE,
     NOTICIA,
     OUTRAS_RJ,
     PROCESSO_SELETIVO,
     REGIAO_DOS_LAGOS,
     RESIDENCIA,
+    TEXTO,
+    can_suppress_alert,
     classify_job_type,
     classify_region,
+    status_label,
 )
 
 
@@ -65,3 +75,24 @@ def test_strong_title_clues_refine_non_news_sources():
 def test_default_is_kept_without_clues():
     assert classify_job_type("Edital 01/2026", CONCURSO) == CONCURSO
     assert classify_job_type("Vaga de Médico Clínico", EMPREGO) == EMPREGO
+
+
+def test_only_trusted_sources_may_silence_an_alert():
+    """A regra central da situação das inscrições: o custo do erro é
+    assimétrico. Anunciar uma vaga já fechada gasta uma mensagem; silenciar
+    uma vaga aberta custa a oportunidade que o projeto existe para entregar.
+    Por isso a leitura incerta pode informar, mas nunca esconder."""
+    assert can_suppress_alert(ENCERRADO, FONTE) is True
+    assert can_suppress_alert(ENCERRADO, CRONOGRAMA) is True
+    assert can_suppress_alert(ENCERRADO, TEXTO) is False
+
+
+def test_an_open_or_unknown_job_is_never_silenced():
+    assert can_suppress_alert(ABERTO, FONTE) is False
+    assert can_suppress_alert(DESCONHECIDO, FONTE) is False
+    assert can_suppress_alert(None, None) is False
+
+
+def test_unclassified_status_reads_as_unknown_not_as_open():
+    assert status_label(None) == status_label(DESCONHECIDO)
+    assert "não informado" in status_label(None)

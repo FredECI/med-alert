@@ -15,11 +15,12 @@
   var input = document.getElementById("job-search");
   var filtersBox = document.getElementById("filters");
   var clearButton = document.getElementById("clear-filters");
+  var hideClosedButton = document.getElementById("hide-closed");
   var summary = document.getElementById("filters-summary");
   var chips = Array.prototype.slice.call(document.querySelectorAll(".chip[data-filter]"));
   var rows = Array.prototype.slice.call(tbody.querySelectorAll("tr"));
 
-  var state = { region: [], type: [], text: "" };
+  var state = { region: [], type: [], text: "", hideClosed: false };
   var limitActive = rows.length > INITIAL_VISIBLE;
 
   // --- Lógica de correspondência -------------------------------------------
@@ -28,12 +29,16 @@
   function matches(row) {
     if (state.region.length && state.region.indexOf(row.getAttribute("data-region")) === -1) return false;
     if (state.type.length && state.type.indexOf(row.getAttribute("data-type")) === -1) return false;
+    // Esconde só o que a fonte afirmou estar encerrado. "desconhecido"
+    // continua visível de propósito: ele significa "não sabemos", e sumir
+    // com uma vaga possivelmente aberta é o pior erro possível aqui.
+    if (state.hideClosed && row.getAttribute("data-status") === "encerrado") return false;
     if (state.text && row.textContent.toLowerCase().indexOf(state.text) === -1) return false;
     return true;
   }
 
   function isFiltering() {
-    return state.region.length > 0 || state.type.length > 0 || state.text !== "";
+    return state.region.length > 0 || state.type.length > 0 || state.text !== "" || state.hideClosed;
   }
 
   // --- Estado na URL --------------------------------------------------------
@@ -43,6 +48,7 @@
     state.region = (params.get("regiao") || "").split(",").filter(Boolean);
     state.type = (params.get("tipo") || "").split(",").filter(Boolean);
     state.text = (params.get("busca") || "").trim().toLowerCase();
+    state.hideClosed = params.get("encerradas") === "nao";
     if (input && state.text) input.value = params.get("busca");
   }
 
@@ -51,6 +57,7 @@
     if (state.region.length) params.set("regiao", state.region.join(","));
     if (state.type.length) params.set("tipo", state.type.join(","));
     if (state.text) params.set("busca", state.text);
+    if (state.hideClosed) params.set("encerradas", "nao");
     var query = params.toString();
     // replaceState e não pushState: filtrar não deveria encher o botão de
     // voltar do navegador com um passo por clique.
@@ -64,6 +71,9 @@
       var ativo = lista.indexOf(chip.getAttribute("data-value")) !== -1;
       chip.setAttribute("aria-pressed", ativo ? "true" : "false");
     });
+    if (hideClosedButton) {
+      hideClosedButton.setAttribute("aria-pressed", state.hideClosed ? "true" : "false");
+    }
     if (clearButton) clearButton.hidden = !isFiltering();
   }
 
@@ -122,11 +132,20 @@
     });
   }
 
+  if (hideClosedButton) {
+    hideClosedButton.addEventListener("click", function () {
+      state.hideClosed = !state.hideClosed;
+      writeUrl();
+      render();
+    });
+  }
+
   if (clearButton) {
     clearButton.addEventListener("click", function () {
       state.region = [];
       state.type = [];
       state.text = "";
+      state.hideClosed = false;
       if (input) input.value = "";
       writeUrl();
       render();

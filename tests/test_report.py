@@ -53,7 +53,7 @@ def test_generate_jobs_data_handles_title_without_source_prefix(tmp_path, db):
 
 def test_generate_jobs_data_formats_last_seen_for_display(tmp_path, db):
     db.insert_job("[G1] Concurso médico", "https://example.com/c", "2026-07-20")
-    db.touch_last_seen("https://example.com/c")
+    db.touch_seen("https://example.com/c")
 
     reporter = ReportGenerator(db_manager=db)
     out_path = tmp_path / "_data" / "jobs.json"

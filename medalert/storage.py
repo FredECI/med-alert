@@ -5,10 +5,12 @@ from typing import List, Optional
 
 from medalert.dedup import build_signature
 from medalert.models import Job
+from medalert.taxonomy import DESCONHECIDO
 from medalert.timeutil import now_brt
 
 _JOB_COLUMNS = (
-    "job_title, link, publication_date, last_seen_at, dedup_key, job_type, region, source_url"
+    "job_title, link, publication_date, last_seen_at, dedup_key, job_type, region, source_url, "
+    "status, deadline, status_source"
 )
 
 #: Host do arquivo -> página onde a vaga vive. Usado só para retroagir o
@@ -31,7 +33,10 @@ _CREATE_JOBS_TABLE = """
         dedup_key TEXT,
         job_type TEXT,
         region TEXT,
-        source_url TEXT
+        source_url TEXT,
+        status TEXT,
+        deadline TEXT,
+        status_source TEXT
     )
 """
 
@@ -88,6 +93,15 @@ class DatabaseManager:
             if "source_url" not in existing_columns:
                 self.conn.execute("ALTER TABLE jobs ADD COLUMN source_url TEXT")
                 self._backfill_source_urls()
+            # Situação das inscrições. Entra vazia de propósito: `desconhecido`
+            # é a resposta correta para o acervo existente, e a rodada seguinte
+            # preenche o que as fontes souberem dizer.
+            if "status" not in existing_columns:
+                self.conn.execute("ALTER TABLE jobs ADD COLUMN status TEXT")
+            if "deadline" not in existing_columns:
+                self.conn.execute("ALTER TABLE jobs ADD COLUMN deadline TEXT")
+            if "status_source" not in existing_columns:
+                self.conn.execute("ALTER TABLE jobs ADD COLUMN status_source TEXT")
 
     def _backfill_source_urls(self) -> None:
         """Preenche a origem das vagas que já estavam no banco.
@@ -115,13 +129,16 @@ class DatabaseManager:
         job_type: Optional[str] = None,
         region: Optional[str] = None,
         source_url: Optional[str] = None,
+        status: Optional[str] = None,
+        deadline: Optional[str] = None,
+        status_source: Optional[str] = None,
     ) -> bool:
         """Insere uma vaga nova. Retorna False (via UNIQUE(link)) se o link já existir."""
         query = (
             "INSERT INTO jobs "
             "(job_title, link, publication_date, last_seen_at, dedup_key, "
-            "job_type, region, source_url) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            "job_type, region, source_url, status, deadline, status_source) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         )
         try:
             with self.conn:
@@ -134,6 +151,7 @@ class DatabaseManager:
                         # acrescenta nada e faria a interface mostrar o mesmo
                         # endereço duas vezes.
                         source_url if source_url and source_url != link else None,
+                        status or DESCONHECIDO, deadline, status_source,
                     ),
                 )
             return True
@@ -170,17 +188,39 @@ class DatabaseManager:
         row = self.conn.execute(query, (link,)).fetchone()
         return row[0] if row else None
 
-    def touch_last_seen(self, link: str) -> None:
+    def touch_seen(
+        self,
+        link: str,
+        status: Optional[str] = None,
+        deadline: Optional[str] = None,
+        status_source: Optional[str] = None,
+    ) -> None:
         """Marca que uma vaga já conhecida foi encontrada de novo nesta rodada.
 
-        O dado só é registrado e exibido ("visto pela última vez em X"), nunca
-        usado para esconder vaga automaticamente: como nenhum scraper lê a data
-        real de encerramento, qualquer inferência de "expirou" arriscaria
-        sumir com vaga que ainda está aberta.
+        Também reavalia a situação das inscrições, e é por isso que este método
+        existe em vez de um simples `touch_last_seen`: região e tipo são
+        decididos uma vez e valem para sempre, mas o que está aberto hoje fecha
+        no mês que vem. Sem reavaliar a cada rodada, a situação congelaria no
+        valor do dia em que a vaga foi descoberta e apodreceria ali.
         """
-        query = "UPDATE jobs SET last_seen_at = ? WHERE link = ?"
+        campos = ["last_seen_at = ?"]
+        params: List = [now_brt().isoformat()]
+
+        # Silêncio não é notícia: uma fonte que hoje não diz nada não pode
+        # apagar o "encerrado" que ela mesma declarou ontem. Só sobrescrevemos
+        # quando a rodada de fato trouxe informação.
+        if status and status != DESCONHECIDO:
+            campos.append("status = ?")
+            params.append(status)
+            campos.append("status_source = ?")
+            params.append(status_source)
+        if deadline:
+            campos.append("deadline = ?")
+            params.append(deadline)
+
+        params.append(link)
         with self.conn:
-            self.conn.execute(query, (now_brt().isoformat(), link))
+            self.conn.execute(f"UPDATE jobs SET {', '.join(campos)} WHERE link = ?", params)
 
     def record_delivery(self, job_link: str, chat_id: str) -> None:
         """Registra que uma vaga foi entregue a um destinatário específico."""
@@ -266,6 +306,9 @@ class DatabaseManager:
             job_type=row[5],
             region=row[6],
             source_url=row[7],
+            status=row[8],
+            deadline=row[9],
+            status_source=row[10],
         )
 
     def close(self) -> None:

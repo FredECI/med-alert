@@ -80,7 +80,7 @@ class _EmptyScraper(BaseScraper):
 
 class _KnownJobScraper(BaseScraper):
     """Devolve sempre a mesma vaga — simula uma fonte cujo anúncio continua
-    publicado, o caso que exercita touch_last_seen()."""
+    publicado, o caso que exercita touch_seen()."""
     url = "https://example.com/known"
 
     def scrape(self):
@@ -495,6 +495,109 @@ def test_total_failure_alert_goes_to_the_admin_not_to_subscribers(db):
     assert exit_code == 1
     assert len(notifier.sent) == 1, "um aviso só, para o admin — não um por assinante"
     assert "falha total" in notifier.sent[0][1].lower()
+
+
+class _ClosedJobScraper(BaseScraper):
+    """Fonte que declara o prazo encerrado — o caso do MedGrupo, onde 44 dos
+    83 concursos do RJ vinham marcados como "encerradas"."""
+    url = "https://example.com/fechada"
+
+    def scrape(self):
+        return [{
+            "title": "[T] Vaga com inscrições encerradas",
+            "link": "https://example.com/fechada",
+            "pub_date": _today(),
+            "status": "encerrado",
+            "status_source": "fonte",
+        }]
+
+
+def test_new_job_already_closed_does_not_alert(db):
+    """Descoberta hoje, mas com o prazo vencido antes de a gente saber que
+    existia. Anunciá-la como "nova oportunidade" seria simplesmente falso."""
+    notifier = _FakeNotifier()
+
+    run(scrapers=[_ClosedJobScraper()], db=db, notifier=notifier)
+
+    assert notifier.sent == []
+    assert len(db.fetch_all_jobs()) == 2, "continua registrada e visível no site"
+
+
+def test_closed_job_does_not_come_back_through_the_pending_queue(db):
+    """O alerta suprimido não pode voltar pela fila de reenvio na rodada
+    seguinte — seria mandar justamente o que se decidiu não mandar."""
+    notifier = _FakeNotifier()
+
+    run(scrapers=[_ClosedJobScraper()], db=db, notifier=notifier)
+    run(scrapers=[], db=db, notifier=notifier)
+
+    assert notifier.sent == []
+
+
+def test_job_that_closes_while_pending_is_offered_at_most_once_more(db):
+    """Documenta um atraso de uma rodada, conhecido e aceito.
+
+    A fila de pendências é drenada no INÍCIO da execução, antes de os scrapers
+    rodarem — então ela enxerga a situação da rodada anterior. Uma vaga que
+    fechou desde ontem ainda sai uma última vez; a partir daí, nunca mais.
+
+    Corrigir o atraso exigiria entregar as pendências depois da coleta, o que
+    faria o excedente do teto por rodada sair na mesma execução em que foi
+    represado — justamente o que o teto existe para evitar. Uma mensagem
+    atrasada é mais barata que uma enxurrada.
+    """
+    aberta = _NewJobScraper("[T] Vaga", "https://example.com/fechada")
+    run(scrapers=[aberta], db=db, notifier=_FlakyNotifier(failures=99))
+
+    primeira = _FakeNotifier()
+    run(scrapers=[_ClosedJobScraper()], db=db, notifier=primeira)
+    assert len(primeira.sent) == 1, "a última mensagem sai com o status de ontem"
+
+    segunda = _FakeNotifier()
+    run(scrapers=[_ClosedJobScraper()], db=db, notifier=segunda)
+    assert segunda.sent == [], "com o status já atualizado, não é mais oferecida"
+
+
+def test_uncertain_deadline_never_silences_an_alert(db):
+    """A regra central: uma data lida da redação corrida do edital pode estar
+    errada, e o custo do erro é assimétrico — anunciar vaga fechada gasta uma
+    mensagem, silenciar vaga aberta custa a oportunidade."""
+    class _TextoScraper(BaseScraper):
+        url = "https://example.com/incerta"
+
+        def scrape(self):
+            return [{
+                "title": "[T] Vaga com prazo lido do texto",
+                "link": "https://example.com/incerta",
+                "pub_date": _today(),
+                "status": "encerrado",
+                "status_source": "texto",
+            }]
+
+    notifier = _FakeNotifier()
+    run(scrapers=[_TextoScraper()], db=db, notifier=notifier)
+
+    assert len(notifier.sent) == 1
+
+
+def test_status_declared_by_the_source_is_persisted(db):
+    run(scrapers=[_ClosedJobScraper()], db=db, notifier=_FakeNotifier())
+
+    vaga = next(j for j in db.fetch_all_jobs() if j.link.endswith("/fechada"))
+    assert vaga.status == "encerrado"
+    assert vaga.status_source == "fonte"
+
+
+def test_known_job_gets_its_status_refreshed_when_the_source_closes_it(db):
+    """Sem isso, a situação congelaria no valor do dia da descoberta — e o
+    acervo inteiro ficaria marcado como estava meses atrás."""
+    run(scrapers=[_NewJobScraper("[T] Vaga", "https://example.com/fechada")],
+        db=db, notifier=_FakeNotifier())
+
+    run(scrapers=[_ClosedJobScraper()], db=db, notifier=_FakeNotifier())
+
+    vaga = next(j for j in db.fetch_all_jobs() if j.link.endswith("/fechada"))
+    assert vaga.status == "encerrado"
 
 
 def test_run_refreshes_last_seen_shown_on_the_site_for_known_jobs(db):

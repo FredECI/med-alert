@@ -18,9 +18,11 @@ from medalert.taxonomy import (
     NOTICIA,
     PROCESSO_SELETIVO,
     RESIDENCIA,
+    TEXTO,
     job_type_label,
     region_label,
 )
+from medalert.timeutil import format_date_br
 
 #: Cabeçalho por tipo. O de notícia é diferente de propósito: uma matéria de
 #: jornal sobre um concurso que "deve sair" não é uma vaga aberta, e anunciá-la
@@ -65,6 +67,23 @@ def _link(url: str, label: str) -> str:
     return f'<a href="{escape_html(url)}">{escape_html(label)}</a>'
 
 
+def _deadline_line(job: Job) -> Optional[str]:
+    """Linha do prazo de inscrição, quando ele é conhecido.
+
+    Leitura incerta (origem `texto`) vai acompanhada de ressalva. A pessoa
+    precisa saber quando o prazo foi lido automaticamente do corpo do edital,
+    porque é aí que ela deve conferir na fonte antes de desistir da vaga — um
+    prazo errado apresentado como certeza custaria justamente a oportunidade
+    que o alerta existe para entregar.
+    """
+    prazo = format_date_br(job.deadline)
+    if not prazo:
+        return None
+    if job.status_source == TEXTO:
+        return f"⏳ Inscrições até {escape_html(prazo)} <i>(leitura automática do edital)</i>"
+    return f"⏳ Inscrições até {escape_html(prazo)}"
+
+
 def build_job_message(job: Job) -> str:
     """Monta o alerta de uma vaga."""
     header = _HEADERS.get(job.job_type or "", _DEFAULT_HEADER)
@@ -76,12 +95,21 @@ def build_job_message(job: Job) -> str:
         f"🏥 <b>{escape_html(job.title)}</b>",
         f"📍 {escape_html(region_label(job.region))}"
         f" · 🏷 {escape_html(job_type_label(job.job_type))}",
+    ]
+
+    # Acima da data de descoberta de propósito: o prazo é o que decide se a
+    # pessoa ainda pode agir, e a descoberta é só procedência.
+    prazo = _deadline_line(job)
+    if prazo:
+        linhas.append(prazo)
+
+    linhas.extend([
         # "Descoberta em" e não "Data": nenhum scraper lê a data real de
         # publicação da fonte, então prometer isso seria impreciso.
         f"📅 Descoberta em {escape_html(job.discovered_at)}",
         "",
         f"🔗 {_link(job.link, link_label)}",
-    ]
+    ])
 
     # A página de origem costuma ter anexos, cronograma e retificações que o
     # PDF do edital sozinho não traz. Só aparece quando é de fato outro
@@ -112,6 +140,8 @@ def build_job_message_from_parts(
     job_type: Optional[str] = None,
     region: Optional[str] = None,
     source_url: Optional[str] = None,
+    deadline: Optional[str] = None,
+    status_source: Optional[str] = None,
 ) -> str:
     """Atalho para quem tem os campos soltos em vez de um Job."""
     return build_job_message(
@@ -122,5 +152,7 @@ def build_job_message_from_parts(
             job_type=job_type,
             region=region,
             source_url=source_url,
+            deadline=deadline,
+            status_source=status_source,
         )
     )

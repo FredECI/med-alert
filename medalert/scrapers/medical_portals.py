@@ -6,7 +6,7 @@ from typing import Dict, List, Optional
 from bs4 import BeautifulSoup
 
 from medalert.scrapers.base import BaseScraper
-from medalert.taxonomy import NOTICIA, RESIDENCIA
+from medalert.taxonomy import DESCONHECIDO, ENCERRADO, FONTE, NOTICIA, RESIDENCIA
 from medalert.textutils import sanitize_title
 from medalert.timeutil import now_brt, today_str
 
@@ -14,6 +14,11 @@ from medalert.timeutil import now_brt, today_str
 #: checkbox "Rio de Janeiro" em #lstEstados).
 _MEDGRUPO_RJ = "1"
 _MEDGRUPO_FILTER_URL = "https://concursos.medgrupo.com.br/Home/Filtrar"
+
+#: Única palavra da coluna "inscrição" que afirma alguma coisa. Medido na
+#: listagem real do RJ: de 83 concursos, 44 vinham como "encerradas", 28 como
+#: "ver edital(is)" e 11 vazios.
+_MEDGRUPO_ENCERRADA = "encerradas"
 
 
 class MedGrupoScraper(BaseScraper):
@@ -88,7 +93,28 @@ class MedGrupoScraper(BaseScraper):
             "link": link,
             "source_url": self.url,
             "pub_date": today_str(),
+            **self._read_status(candidate),
         }
+
+    @staticmethod
+    def _read_status(row) -> Dict[str, str]:
+        """Situação das inscrições, declarada pela própria fonte.
+
+        A coluna "inscrição" da listagem é assimétrica: ela afirma quando o
+        prazo acabou, mas NÃO afirma o contrário. "ver editais" e a célula
+        vazia significam "consulte o edital", não "está aberto" — por isso só
+        `encerradas` vira uma conclusão, e o resto fica desconhecido.
+
+        Ler daqui é o oposto de inferir: não há regex sobre PDF nem palpite
+        sobre qual das dezenas de datas do edital é o prazo. É a fonte
+        respondendo, então esta é a única origem em que confiamos a ponto de
+        deixar de mandar o alerta.
+        """
+        celula = row.select_one("td.col-5")
+        texto = celula.get_text(strip=True).lower() if celula else ""
+        if texto == _MEDGRUPO_ENCERRADA:
+            return {"status": ENCERRADO, "status_source": FONTE}
+        return {"status": DESCONHECIDO}
 
     @staticmethod
     def _extract_edital_link(row) -> Optional[str]:

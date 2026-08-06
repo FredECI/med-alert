@@ -25,13 +25,76 @@ def test_duplicate_insert_does_not_create_a_second_row(db):
     assert len(db.fetch_all_jobs()) == 1
 
 
-def test_touch_last_seen_updates_existing_row(db):
+def test_touch_seen_updates_existing_row(db):
     db.insert_job("Vaga Teste", "https://example.com/1", "2026-01-01")
-    db.touch_last_seen("https://example.com/1")
+    db.touch_seen("https://example.com/1")
 
     jobs = db.fetch_all_jobs()
     assert len(jobs) == 1
     assert jobs[0].last_seen_at is not None
+
+
+def test_new_job_without_a_declared_status_is_unknown_not_open(db):
+    """"Não sei" e "está aberto" são coisas diferentes. Tratar o silêncio da
+    fonte como abertura produziria justamente o erro que este campo existe
+    para evitar."""
+    db.insert_job("Vaga", "https://example.com/1", "2026-01-01")
+
+    assert db.fetch_all_jobs()[0].status == "desconhecido"
+
+
+def test_touch_seen_records_that_the_source_closed_the_job(db):
+    """A situação muda com o tempo — diferente de região e tipo, ela precisa
+    ser reavaliada a cada rodada em que a vaga é reencontrada."""
+    db.insert_job("Vaga", "https://example.com/1", "2026-01-01")
+
+    db.touch_seen("https://example.com/1", status="encerrado", status_source="fonte")
+
+    vaga = db.fetch_all_jobs()[0]
+    assert vaga.status == "encerrado"
+    assert vaga.status_source == "fonte"
+
+
+def test_touch_seen_does_not_erase_a_known_status_with_silence(db):
+    """Regressão: a coluna "inscrição" do MedGrupo às vezes vem vazia. Se o
+    silêncio sobrescrevesse o "encerrada" declarado antes, a vaga voltaria a
+    parecer disponível e o alerta suprimido seria reenviado."""
+    db.insert_job("Vaga", "https://example.com/1", "2026-01-01",
+                  status="encerrado", status_source="fonte")
+
+    db.touch_seen("https://example.com/1", status="desconhecido")
+
+    assert db.fetch_all_jobs()[0].status == "encerrado"
+
+
+def test_deadline_survives_a_round_trip(db):
+    db.insert_job("Vaga", "https://example.com/1", "2026-01-01",
+                  deadline="2026-05-20", status_source="cronograma")
+
+    vaga = db.fetch_all_jobs()[0]
+    assert vaga.deadline == "2026-05-20"
+    assert vaga.status_source == "cronograma"
+
+
+def test_status_columns_are_added_to_a_pre_existing_database(tmp_path):
+    """O banco de produção tem meses de dados sem essas colunas; a migração
+    precisa ser aditiva e deixar o acervo como 'desconhecido' — que é a
+    resposta correta para vagas que nenhuma fonte classificou ainda."""
+    caminho = str(tmp_path / "antigo.db")
+    antigo = DatabaseManager(db_name=caminho)
+    antigo.insert_job("Vaga antiga", "https://example.com/velha", "2026-01-01")
+    for coluna in ("status", "deadline", "status_source"):
+        antigo.conn.execute(f"ALTER TABLE jobs DROP COLUMN {coluna}")
+    antigo.conn.commit()
+    antigo.close()
+
+    migrado = DatabaseManager(db_name=caminho)
+    try:
+        vaga = migrado.fetch_all_jobs()[0]
+        assert vaga.title == "Vaga antiga"
+        assert vaga.status is None  # nada declarado ainda; a próxima rodada preenche
+    finally:
+        migrado.close()
 
 
 def test_fetch_all_jobs_returns_every_row_regardless_of_age(db):

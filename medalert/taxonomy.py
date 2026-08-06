@@ -194,3 +194,49 @@ def region_label(region: Optional[str]) -> str:
 
 def job_type_label(job_type: Optional[str]) -> str:
     return JOB_TYPE_LABELS.get(job_type or "", "Não classificado")
+
+
+# ==========================================
+# SITUAÇÃO DAS INSCRIÇÕES
+# ==========================================
+# Ao contrário de região e tipo, isto NÃO é uma dimensão de assinatura —
+# ninguém pede para receber vaga encerrada. Por isso não precisa de paridade
+# com o Worker (ver tests/test_taxonomy_parity.py): serve para suprimir alerta
+# e marcar o site, não para decidir quem recebe o quê.
+ABERTO = "aberto"
+ENCERRADO = "encerrado"
+#: Padrão honesto e deliberado. Uma fonte que não diz "encerradas" está
+#: dizendo "consulte o edital", nunca "está aberto" — inferir abertura de um
+#: silêncio produziria exatamente o erro que este campo existe para evitar.
+DESCONHECIDO = "desconhecido"
+
+STATUSES = [ABERTO, ENCERRADO, DESCONHECIDO]
+
+STATUS_LABELS = {
+    ABERTO: "Inscrições abertas",
+    ENCERRADO: "Inscrições encerradas",
+    DESCONHECIDO: "Prazo não informado",
+}
+
+# Procedência da conclusão sobre a situação — é ela que decide o que o sistema
+# tem PERMISSÃO de fazer, e não apenas o que ele sabe.
+FONTE = "fonte"  # a própria fonte declarou (ex: MedGrupo, coluna "encerradas")
+CRONOGRAMA = "cronograma"  # tabela de cronograma do edital, formato fixo
+TEXTO = "texto"  # lido da redação corrida do edital — admite erro
+
+#: Origens confiáveis o bastante para CALAR um alerta.
+#:
+#: `TEXTO` fica de fora de propósito, e essa é a regra central do recurso: o
+#: custo do erro é assimétrico. Anunciar uma vaga já fechada gasta uma
+#: mensagem; silenciar uma vaga aberta custa a oportunidade — que é a razão de
+#: o projeto existir. Então a leitura incerta pode informar, nunca esconder.
+TRUSTED_STATUS_SOURCES = frozenset({FONTE, CRONOGRAMA})
+
+
+def status_label(status: Optional[str]) -> str:
+    return STATUS_LABELS.get(status or "", STATUS_LABELS[DESCONHECIDO])
+
+
+def can_suppress_alert(status: Optional[str], status_source: Optional[str]) -> bool:
+    """Se dá para deixar de avisar sobre esta vaga por ela estar encerrada."""
+    return status == ENCERRADO and status_source in TRUSTED_STATUS_SOURCES

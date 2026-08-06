@@ -21,13 +21,21 @@
   .badge--emprego           { background: #fdeacc; color: #6b3d05; }
   .badge--noticia           { background: #eceff1; color: #4a5459; }
 
+  .badge--encerrada { background: #fbdcdc; color: #7a1c1c; }
+
   .job-title { margin-top: 0.2rem; }
   .job-origin { font-size: 0.85rem; }
+  .job-deadline { color: #5f6368; }
 
   /* Notícia não é vaga confirmada — fica visualmente mais discreta para não
      competir com o que é oportunidade de verdade. */
   .job-row--noticia { opacity: 0.72; }
   .job-note { color: #6b6b6b; font-style: italic; }
+
+  /* Encerrada continua na página, só recuada: quem chegou por um link antigo
+     precisa entender que aquilo existiu e fechou, em vez de achar que o
+     endereço quebrou. Quem não quer ver usa o filtro. */
+  .job-row--encerrada { opacity: 0.6; }
 
   /* Filtros */
   .filters { margin: 1rem 0; }
