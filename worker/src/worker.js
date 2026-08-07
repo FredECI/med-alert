@@ -8,6 +8,7 @@ import {
 } from "./store.js";
 import {
   REGION_STEP_TEXT,
+  SITE_TEXT,
   SPECIALTY_STEP_TEXT,
   TYPE_STEP_TEXT,
   isSubscriptionUseless,
